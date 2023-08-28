@@ -1,4 +1,8 @@
-clic.epfl.ch {
+{
+	auto_https off
+}
+
+http://localhost:80 {
 	# TODO set provided ssl certificates
 
 	handle /mattermost {
@@ -83,7 +87,11 @@ clic.epfl.ch {
 		# try_files $uri $uri/ =404; (I don't think it is useful)
 	}
 
-	# TODO add wiki in a subpath
+	@wiki_matcher {
+		path_regexp wiki /wiki/(.*)
+	}
+
+	redir @wiki_matcher https://clic.epfl.ch:8443/{re.wiki.1}
 	reverse_proxy /armoire http://vaulwarden
 	reverse_proxy / http://website
 }
