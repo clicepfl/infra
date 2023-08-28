@@ -1,14 +1,26 @@
 services:
   proxy:
     image: caddy
+
+    environment:
+      CERTIFICATE_LOCATION: /etc/certs/cert.pem
+      KEY_LOCATION: /etc/certs/key.pem
+
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
+
     volumes:
       - ../caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+
+    secrets:
+      - source: ssl-certificate
+        target: /etc/certs/cert.pem
+      - source: ssl-key
+        target: /etc/certs/key.pem
 
     networks:
       - caddy
@@ -20,4 +32,10 @@ volumes:
 
 networks:
   caddy:
+    external: true
+
+secrets:
+  ssl-certificate:
+    external: true
+  ssl-key:
     external: true

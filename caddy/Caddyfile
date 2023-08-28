@@ -2,8 +2,9 @@
 	auto_https off
 }
 
-http://localhost:80 {
+clic.epfl.ch {
 	# TODO set provided ssl certificates
+	tls {$CERTIFICATE_LOCATION} {$KEY_LOCATION}
 
 	handle /mattermost {
 		request_body {
