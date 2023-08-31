@@ -1,0 +1,11 @@
+- name: Deploy all services
+  hosts: all
+  tasks:
+    - name: Deploy
+      loop: "{{ [] }}"
+      community.docker.docker_stack:
+        state: present
+        name: "{{ item }}"
+        resolve_image: changed
+        compose:
+          - "../stacks/{{ item }}.yaml"

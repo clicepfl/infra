@@ -1,0 +1,51 @@
+- name: Initialize server
+  hosts: all
+  tasks:
+    - name: Update APT packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: true
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        pkg:
+          - docker
+
+    - name: Init Docker swarm
+      community.docker.docker_swarm:
+        state: present
+
+    # TODO Mount secondary drive for backups
+
+    - name: Init backup repository
+      ansible.builtin.command:
+        argv:
+          - borg
+          - init
+          - -e
+          - none
+          - /var/backup # TODO
+      register: out
+      changed_when: out.rc == 0
+
+    - name: Launch borgmatic
+      ansible.builtin.include_role:
+        name: borgbase.ansible_role_borgbackup
+
+  roles:
+    - role: borgbase.ansible_role_borgbackup
+      borg_repository: /var/backup
+      borgmatic_timer: cron
+      borgmatic_timer_hour: 0
+      borgmatic_timer_minute: 0
+      borg_source_directories:
+        - /var/lib/docker/volumes
+      borgmatic_hooks:
+        before_backup:
+          - echo "`date` - Starting backup."
+        postgresql_databases:
+      borg_retention_policy:
+        keep_hourly: 3
+        keep_daily: 7
+        keep_weekly: 4
+        keep_monthly: 6
