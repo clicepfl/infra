@@ -15,7 +15,12 @@
       community.docker.docker_swarm:
         state: present
 
-    # TODO Mount secondary drive for backups
+    - name: Mount secondary disk onto backup directory
+      ansible.posix.mount:
+        state: mounted
+        path: "{{ ansible_env.BACKUP_DIR }}"
+        src: "{{ ansible_env.BACKUP_DISK }}"
+        fstype: ext4
 
     - name: Init backup repository
       ansible.builtin.command:
@@ -24,7 +29,7 @@
           - init
           - -e
           - none
-          - /var/backup # TODO
+          - "{{ ansible_env.BACKUP_DIR }}"
       register: out
       changed_when: out.rc == 0
 
@@ -34,7 +39,7 @@
 
   roles:
     - role: borgbase.ansible_role_borgbackup
-      borg_repository: /var/backup
+      borg_repository: "{{ ansible_env.BACKUP_DIR }}"
       borgmatic_timer: cron
       borgmatic_timer_hour: 0
       borgmatic_timer_minute: 0
