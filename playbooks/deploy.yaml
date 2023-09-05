@@ -8,4 +8,4 @@
         name: "{{ item }}"
         resolve_image: changed
         compose:
-          - "../stacks/{{ item }}.yaml"
+          - "../{{ item }}/docker-compose.yaml"
