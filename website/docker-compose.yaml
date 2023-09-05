@@ -1,0 +1,9 @@
+services:
+  v1:
+    image: ghrc.io/clicepfl/clic-website
+    networks:
+      - caddy
+
+networks:
+  caddy:
+    external: true
