@@ -1,0 +1,8 @@
+{
+  "token": "awesome bot token",
+
+  // Groups allowed to use restricted commands (like /bureau or /poll)
+  "groups": [1234, 2345, 3456],
+  "admin": 1234567,
+  "phone": "+12 34 567 89 10"
+}
