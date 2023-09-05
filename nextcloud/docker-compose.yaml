@@ -1,0 +1,47 @@
+services:
+  database:
+    image: mariadb:10.5
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+    env_file: ../nextcloud/.env
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+
+  nextcloud:
+    image: nextcloud:27-apache
+    links:
+      - db
+    volumes:
+      - nextcloud-app:/var/www/html
+      - ../nextcloud/config.php:/var/www/html/config/config.php
+    env_file: ../nextcloud/.env
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_HOST: database
+    networks:
+      caddy:
+
+  cron:
+    image: nextcloud:27-apache
+    links:
+      - db
+    volumes:
+      - nextcloud-app:/var/www/html
+      - ../nextcloud/config.php:/var/www/html/config/config.php
+    env_file: ../nextcloud/.env
+    environment:
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_HOST: database
+    entrypoint: /cron.sh
+
+networks:
+  caddy:
+    external: true
+
+volumes:
+  nextcloud-db:
+  nextcloud-app:
