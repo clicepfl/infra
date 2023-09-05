@@ -45,7 +45,6 @@
       borgmatic_timer_hour: 0
       borgmatic_timer_minute: 0
       borg_source_directories:
-        - /var/lib/docker/volumes
       borgmatic_hooks:
         before_backup:
           - echo "`date` - Starting backup."
