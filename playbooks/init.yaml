@@ -10,6 +10,7 @@
       ansible.builtin.apt:
         pkg:
           - docker
+          - cron
 
     - name: Init Docker swarm
       community.docker.docker_swarm:
