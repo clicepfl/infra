@@ -1,0 +1,17 @@
+services:
+  vaultwarden:
+    hostname: vaultwarden
+    image: vaultwarden/server
+    volumes:
+      - vaultwarden:/data
+      - ../vaultwarden/config.json:/data/config.json
+    env_file: /var/secrets/vaultwarden.env
+    
+    networks:
+      caddy:
+
+networks:
+  caddy:
+    external: true
+volumes:
+  vaultwarden:
