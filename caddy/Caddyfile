@@ -1,10 +1,9 @@
 {
-	auto_https off
+	auto_https disable_certs
 }
 
 clic.epfl.ch {
-	# TODO set provided ssl certificates
-	tls {$CERTIFICATE_LOCATION} {$KEY_LOCATION}
+	tls {$SSL_CERTIFICATE_LOCATION} {$SSL_KEY_LOCATION}
 
 	handle /mattermost {
 		request_body {
@@ -88,11 +87,7 @@ clic.epfl.ch {
 		# try_files $uri $uri/ =404; (I don't think it is useful)
 	}
 
-	@wiki_matcher {
-		path_regexp wiki /wiki/(.*)
-	}
-
-	redir @wiki_matcher https://clic.epfl.ch:8443/{re.wiki.1}
+	redir path_regexp wiki /wiki/(.*) https://clic.epfl.ch:8443/{re.wiki.1}
 	reverse_proxy /armoire http://vaulwarden
 	reverse_proxy / http://website
 }
