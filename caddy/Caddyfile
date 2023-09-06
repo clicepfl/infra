@@ -3,7 +3,7 @@
 }
 
 clic.epfl.ch {
-	tls {$SSL_CERTIFICATE_LOCATION} {$SSL_KEY_LOCATION}
+	tls {$SSL_CERTIFICATE_PATH} {$SSL_KEY_PATH}
 
 	handle /mattermost {
 		request_body {

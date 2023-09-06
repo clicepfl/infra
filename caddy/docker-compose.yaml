@@ -3,8 +3,8 @@ services:
     image: caddy
 
     environment:
-      SSL_CERTIFICATE_LOCATION: /etc/certs/cert.pem
-      SSL_KEY_LOCATION: /etc/certs/key.pem
+      SSL_CERTIFICATE_PATH: /etc/certs/cert.pem
+      SSL_KEY_PATH: /etc/certs/key.pem
 
     ports:
       - "80:80"
