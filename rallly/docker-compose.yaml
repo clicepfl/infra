@@ -1,0 +1,36 @@
+version: "3"
+services:
+  rallly_db:
+    image: postgres:14.2
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  rallly:
+    image: lukevella/rallly:latest
+    restart: always
+    depends_on:
+      rallly_db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@rallly_db:5432/db
+    env_file:
+      - config.env
+    networks:
+      caddy:
+
+networks:
+  caddy:
+    external: true
+
+volumes:
+  db-data:
+    driver: local
