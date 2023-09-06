@@ -11,6 +11,7 @@
         pkg:
           - docker
           - cron
+          - git
 
     - name: Init Docker swarm
       community.docker.docker_swarm:
