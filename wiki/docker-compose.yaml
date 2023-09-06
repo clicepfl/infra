@@ -1,0 +1,33 @@
+services:
+  mediawiki:
+    image: mediawiki
+    working_dir: /var/www/html/mediawiki
+    ports:
+      - 8080:80
+    env_file:
+      - ../wiki/.env
+    volumes:
+      - images:/var/www/html/mediawiki/images
+      - ../wiki/LocalSettings.php:/var/www/html/LocalSettings.php
+    depends_on:
+      - database
+    networks:
+      - caddy
+
+  database:
+    image: mariadb
+    env_file:
+      - ../wiki/database.env
+    environment:
+      MYSQL_DATABASE: my_wiki
+      MYSQL_USER: wikiuser
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - database:/var/lib/mysql
+
+volumes:
+  images:
+  database:
+networks:
+  caddy:
+    external: true
