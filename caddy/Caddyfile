@@ -5,89 +5,24 @@
 clic.epfl.ch {
 	tls {$SSL_CERTIFICATE_PATH} {$SSL_KEY_PATH}
 
-	handle /mattermost {
-		request_body {
-			max_size 50MB
-		}
-
-		header {
-			Host {http.request.host}
-			X-Real-IP {http.request.remote.host}
-			X-Frame-Options SAMEORIGIN
-		}
-		# X-Forwarded headers are automatically handled by the reverse_proxy directive
-
-		reverse_proxy path_regexp ^/mattermost/api/v[0-9]+/(users/)?websocket$ {
-			# Not converted nginx directives:
-			# proxy_set_header Upgrade $http_upgrade;
-			# client_body_timeout 60;
-			# send_timeout 300;
-			# lingering_timeout 5;
-
-			header_up Connection Upgrade
-
-			transport http {
-				dial_timeout 90s
-				read_buffer 16KiB
-				read_timeout 90s
-				write_timeout 300s
-			}
-		}
-
-		reverse_proxy /mattermost http://mattermost {
-			# Not converted nginx directives:
-			# proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=mattermost_cache:10m max_size=3g inactive=120m use_temp_path=off;
-			# proxy_cache mattermost_cache;
-			# proxy_cache_revalidate on;
-			# proxy_cache_min_uses 2;
-			# proxy_cache_use_stale timeout;
-			# proxy_cache_lock on;
-
-			header_up -Connection
-
-			transport http {
-				versions 1.1
-				read_buffer 16KiB
-				read_timeout 600s
-			}
-		}
-	}
-
 	handle /nextcloud {
-		# Not converted nginx directives:
-		# rewrite ^/nextcloud$ /nextcloud/;
-		# rewrite ^/nextcloud(.*) $1 break;
-		# proxy_buffering off;
-
-		request_body {
-			max_size 50GB
-		}
-
 		header {
-			Host {http.request.host}
-			X-Real-IP {http.request.remote.host}
-			X-Frame-Options SAMEORIGIN # Commented in the nginx config, why ?
+			Strict-Transport-Security max-age=31536000;
 		}
 
-		reverse_proxy http://nextcloud
+		reverse_proxy http://nextcloud:8080
 	}
 
 	handle /.well-known {
 		redir /.well-known/carddav /nextcloud/remote.php/dav/ permanent
 		redir /.well-known/caldav /nextcloud/remote.php/dav/ permanent
 
-		# according to the documentation these two lines are not necessary, but version 21.0.0 will produce warnings in the overview setup check
 		redir /.well-known/webfinger /nextcloud/index.php{uri} permanent
 		redir /.well-known/nodeinfo /nextcloud/index.php{uri} permanent
-
-		# anything else is dynamically handled by Nextcloud
-		redir /.well-known /nextcloud/index.php{uri} permanent
-
-		# Not converted nginx directives:
-		# try_files $uri $uri/ =404; (I don't think it is useful)
 	}
 
+	reverse_proxy /mattermost http://mattermost:8080
+	reverse_proxy /armoire http://vaulwarden:8080
+	reverse_proxy / http://website:8080
 	redir path_regexp wiki /wiki/(.*) https://clic.epfl.ch:8443/{re.wiki.1}
-	reverse_proxy /armoire http://vaulwarden
-	reverse_proxy / http://website
 }
