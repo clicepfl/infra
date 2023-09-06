@@ -1,5 +1,5 @@
 services:
   roboclic:
-    image: ghrc.io/clicepfl/roboclic # TODO Check if correct
+    image: ghcr.io/clicepfl/roboclic:main
     volumes:
       - ../.keys:/app/keys
