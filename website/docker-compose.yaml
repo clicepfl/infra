@@ -1,6 +1,6 @@
 services:
   v1:
-    image: ghrc.io/clicepfl/clic-website
+    image: ghcr.io/clicepfl/clic-website:main
     networks:
       - caddy
 
