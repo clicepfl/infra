@@ -2,7 +2,6 @@ version: "3"
 services:
   rallly_db:
     image: postgres:14.2
-    restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -16,14 +15,13 @@ services:
 
   rallly:
     image: lukevella/rallly:latest
-    restart: always
     depends_on:
       rallly_db:
         condition: service_healthy
     environment:
       - DATABASE_URL=postgres://postgres:postgres@rallly_db:5432/db
     env_file:
-      - config.env
+      - .env
     networks:
       caddy:
 
@@ -33,4 +31,3 @@ networks:
 
 volumes:
   db-data:
-    driver: local
