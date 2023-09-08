@@ -11,8 +11,6 @@ services:
 
   nextcloud:
     image: nextcloud:27-apache
-    ports:
-      - 80:80
     volumes:
       - nextcloud-app:/var/www/html
       - type: bind
