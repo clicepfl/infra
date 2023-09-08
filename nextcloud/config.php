@@ -19,21 +19,23 @@ $CONFIG = array(
     'instanceid' => 'ocahihcdz0lk',
     'passwordsalt' => getenv('PASSWORD_SALT'),
     'secret' => getenv('ENCRYPTION_SECRET'),
+    'trusted_proxies' => array(
+        0 => '0.0.0.0'
+    ),
     'trusted_domains' =>
     array(
         0 => 'clic.epfl.ch',
     ),
     'datadirectory' => '/var/www/html/data',
-    'dbtype' => 'mysql',
-    'version' => '27.0.1.2',
+    'version' => '27.0.2.1',
     'default_phone_region' => 'CH',
-    'dbname' => 'nextcloud',
+    'dbtype' => 'mysql',
     'dbhost' => 'database',
-    'dbport' => '',
+    'dbname' => 'nextcloud',
+    'dbuser' => 'nextcloud',
+    'dbpassword' => getenv('MYSQL_PASSWORD'),
     'dbtableprefix' => 'oc_',
     'mysql.utf8mb4' => true,
-    'dbuser' => 'nextcloud',
-    'dbpassword' => '1234',
     'installed' => true,
     'theme' => '',
     'loglevel' => 3,
@@ -53,7 +55,7 @@ $CONFIG = array(
     'mail_smtpauthtype' => 'LOGIN',
     'mail_smtpauth' => 1,
     'mail_smtpname' => 'it.clic',
-    'mail_smtppassword' => getenv('STMP_PASSWORD'),
+    'mail_smtppassword' => getenv('SMTP_PASSWORD'),
     'twofactor_enforced' => 'true',
     'twofactor_enforced_groups' =>
     array(
