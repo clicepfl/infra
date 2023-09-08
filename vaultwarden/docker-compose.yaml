@@ -5,7 +5,7 @@ services:
     volumes:
       - vaultwarden:/data
       - ../vaultwarden/config.json:/data/config.json
-    env_file: /var/secrets/vaultwarden.env
+    env_file: ./.env
     
     networks:
       caddy:
