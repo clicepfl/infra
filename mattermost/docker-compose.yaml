@@ -1,0 +1,31 @@
+services:
+  database:
+      image: postgres
+      volumes:
+        - database:/var/lib/postgresql/data
+      env_file: ./database.env
+      environment:
+        TZ: UTC
+        POSTGRES_USER: mattermost
+        POSTGRES_DB: mattermost
+
+  mattermost:
+    depends_on:
+      - database
+    image: mattermost/mattermost-team-edition
+    volumes:
+      - data:/mattermost
+    env_file: .env
+    environment:
+      TZ: UTC
+      MM_SQLSETTINGS_DRIVERNAME: postgres
+      MM_SERVICESETTINGS_SITEURL: https://clic.epfl.ch/mattermost
+    networks:
+      - caddy
+
+volumes:
+  database:
+  data:
+networks:
+  caddy:
+    external: true
