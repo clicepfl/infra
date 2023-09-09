@@ -12,21 +12,21 @@ services:
   nextcloud:
     image: nextcloud:27-apache
     volumes:
-      - nextcloud-app:/var/www/html
-      - type: bind
-        source: ../nextcloud/config.php
-        target: /var/www/html/config/config.php
-        
-    env_file: app.env
+      - nextcloud-app:/var/www/html        
+    env_file: 
+      - app.env
+      - config.env
     networks:
       caddy:
+      default:
 
   cron:
     image: nextcloud:27-apache
     volumes:
       - nextcloud-app:/var/www/html
-      - ../nextcloud/config.php:/var/www/html/config/config.php
-    env_file: app.env
+    env_file: 
+      - app.env
+      - config.env
     entrypoint: /cron.sh
 
 networks:
