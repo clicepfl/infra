@@ -4,8 +4,9 @@ services:
     image: vaultwarden/server
     volumes:
       - vaultwarden:/data
-      - ../vaultwarden/config.json:/data/config.json
-    env_file: ./.env
+    env_file: .env
+    environment:
+      DOMAIN: https://clic.epfl.ch/armoire
     
     networks:
       caddy:
