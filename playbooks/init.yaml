@@ -6,17 +6,9 @@
         update_cache: true
         upgrade: true
 
-    - name: Install required packages
-      ansible.builtin.apt:
-        pkg:
-          - docker
-          - cron
-          - git
-
-    - name: Init Docker swarm
-      community.docker.docker_swarm:
-        state: present
-
+- name: Setup automatic backups with Borg
+  hosts: all
+  tasks:
     - name: Mount secondary disk onto backup directory
       ansible.posix.mount:
         state: mounted
@@ -55,3 +47,14 @@
         keep_daily: 7
         keep_weekly: 4
         keep_monthly: 6
+
+- name: Setup docker components
+  hosts: all
+  tasks:
+    - name: Init Docker swarm
+      community.docker.docker_swarm:
+        state: present
+
+    - name: Create docker network
+      community.docker.docker_network:
+        name: caddy
