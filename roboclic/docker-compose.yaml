@@ -1,5 +1,10 @@
 services:
   roboclic:
     image: ghcr.io/clicepfl/roboclic:main
-    volumes:
-      - ../.keys:/app/keys
+    configs:
+      - source: keys
+        target: /app/.keys
+
+configs:
+  keys:
+    file: ./.keys
