@@ -2,7 +2,7 @@
   hosts: all
   tasks:
     - name: Deploy
-      loop: "{{ [] }}"
+      loop: "{{ [wiki, vaultwarden, roboclic] }}"
       community.docker.docker_stack:
         state: present
         name: "{{ item }}"
