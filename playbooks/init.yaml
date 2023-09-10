@@ -4,7 +4,6 @@
     - name: Update APT packages
       ansible.builtin.apt:
         update_cache: true
-        upgrade: true
 
 - name: Setup automatic backups with Borg
   hosts: all
@@ -12,9 +11,19 @@
     - name: Mount secondary disk onto backup directory
       ansible.posix.mount:
         state: mounted
-        path: "{{ ansible_env.BACKUP_DIR }}"
-        src: "{{ ansible_env.BACKUP_DISK }}"
+        path: "{{ BACKUP_DIR }}"
+        src: "{{ BACKUP_DISK }}"
         fstype: ext4
+
+    - name: Verify backup repository
+      ansible.builtin.command:
+        argv:
+          - borg
+          - check
+          - "{{ BACKUP_DIR }}"
+      register: repo_check
+      failed_when: false
+      changed_when: false
 
     - name: Init backup repository
       ansible.builtin.command:
@@ -23,30 +32,29 @@
           - init
           - -e
           - none
-          - "{{ ansible_env.BACKUP_DIR }}"
-      register: out
-      changed_when: out.rc == 0
+          - "{{ BACKUP_DIR }}"
+      register: repo_init
+      when: repo_check.rc != 0
+      changed_when: repo_init.rc == 0
 
     - name: Launch borgmatic
       ansible.builtin.include_role:
         name: borgbase.ansible_role_borgbackup
-
-  roles:
-    - role: borgbase.ansible_role_borgbackup
-      borg_repository: "{{ ansible_env.BACKUP_DIR }}"
-      borgmatic_timer: cron
-      borgmatic_timer_hour: 0
-      borgmatic_timer_minute: 0
-      borg_source_directories:
-      borgmatic_hooks:
-        before_backup:
-          - echo "`date` - Starting backup."
-        postgresql_databases:
-      borg_retention_policy:
-        keep_hourly: 3
-        keep_daily: 7
-        keep_weekly: 4
-        keep_monthly: 6
+      vars:
+        borg_repository: "{{ BACKUP_DIR }}"
+        borgmatic_timer: cron
+        borgmatic_timer_hour: 0
+        borgmatic_timer_minute: 0
+        borg_source_directories:
+          - /var/lib/docker/volumes/ # TODO Update (right now it is just such that the config is valid)
+        borgmatic_hooks:
+          before_backup:
+            - echo "`date` - Starting backup."
+        borg_retention_policy:
+          keep_hourly: 3
+          keep_daily: 7
+          keep_weekly: 4
+          keep_monthly: 6
 
 - name: Setup docker components
   hosts: all
