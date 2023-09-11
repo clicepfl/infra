@@ -4,11 +4,13 @@
     - name: Install required packages
       ansible.builtin.apt:
         update_cache: true
+        upgrade: full
         pkg:
           - ansible-core
           - docker.io
-          - python3-docker
           - borgbackup
+          - python3-docker
+          - python3-jsondiff
 
 - name: Setup automatic backups with Borg
   hosts: all
@@ -64,14 +66,3 @@
           keep_daily: 3
           keep_weekly: 4
           keep_monthly: 6
-
-- name: Setup docker components
-  hosts: all
-  tasks:
-    - name: Init Docker swarm
-      community.docker.docker_swarm:
-        state: present
-
-    - name: Create docker network
-      community.docker.docker_network:
-        name: caddy

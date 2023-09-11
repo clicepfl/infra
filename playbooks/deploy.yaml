@@ -1,11 +1,28 @@
 - name: Deploy all services
-  hosts: all
+  hosts: localhost
+  connection: local
   tasks:
+    - name: Init Docker swarm
+      community.docker.docker_swarm:
+        state: present
+
+    - name: Create docker network
+      community.docker.docker_network:
+        name: caddy
+        scope: swarm
+
     - name: Deploy
-      loop: "{{ [wiki, vaultwarden, roboclic] }}"
       community.docker.docker_stack:
         state: present
         name: "{{ item }}"
         resolve_image: changed
         compose:
           - "../{{ item }}/docker-compose.yaml"
+      loop:
+        - caddy
+        - mattermost
+        - nextcloud
+        - roboclic
+        - vaultwarden
+        - website
+        - wiki
