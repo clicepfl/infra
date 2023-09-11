@@ -5,8 +5,10 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=db
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db
+    networks:
+      caddy:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -19,35 +21,35 @@ services:
       rallly_db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@rallly_db:5432/db
+      DATABASE_URL: postgres://postgres:postgres@rallly_db:5432/db
       # REQUIRED CONFIG
       # The base url where this instance is accessible, including the scheme.
       # Example: https://example.com
-      - NEXT_PUBLIC_BASE_URL=https://clic.epfl.ch/rallly
+      NEXT_PUBLIC_BASE_URL: https://clic.epfl.ch/rallly
 
       # EMAIL CONFIG (required for sending emails)
 
       # All outgoing emails will show this email as the sender's email address, which also serves as the support email.
-      - SUPPORT_EMAIL=it.clic@epfl.ch
+      SUPPORT_EMAIL: it.clic@epfl.ch
       # The host address of your SMTP server
-      - SMTP_HOST=mail.epfl.ch
+      SMTP_HOST: mail.epfl.ch
       # The port of your SMTP server
-      - SMTP_PORT=587
+      SMTP_PORT: 587
       # Set to "true" if SSL is enabled for your SMTP connection
-      - SMTP_SECURE=false
+      SMTP_SECURE: "false"
       # Set to "true" to enable TLS. Might be needed for some SMTP connections
-      - SMTP_TLS_ENABLED=true
+      SMTP_TLS_ENABLED: "true"
 
       # OPTIONAL CONFIG
 
       # Set to `true` to require authentication for creating new polls and accessing admin pages
-      - AUTH_REQUIRED=false
+      AUTH_REQUIRED: "false"
       # Comma separated list of email addresses that are allowed to register and login.
       # You can use wildcard syntax to match a range of email addresses.
       # Example: "john@example.com,jane@example.com" or "*@example.com"
       #- ALLOWED_EMAILS=
       # Whether or not to disable the landing page
-      - DISABLE_LANDING_PAGE=false
+      DISABLE_LANDING_PAGE: "true"
     env_file:
       - .env
     networks:
