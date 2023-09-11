@@ -1,9 +1,14 @@
 - name: Initialize server
   hosts: all
   tasks:
-    - name: Update APT packages
+    - name: Install required packages
       ansible.builtin.apt:
         update_cache: true
+        pkg:
+          - ansible-core
+          - docker.io
+          - python3-docker
+          - borgbackup
 
 - name: Setup automatic backups with Borg
   hosts: all
@@ -15,14 +20,19 @@
         src: "{{ BACKUP_DISK }}"
         fstype: ext4
 
-    - name: Verify backup repository
+    - name: Verify backup repository existence
+      ansible.builtin.find:
+        paths:
+          - "{{ BACKUP_DIR }}"
+      register: repo_content
+
+    - name: Verify backup repository validity
       ansible.builtin.command:
         argv:
           - borg
           - check
           - "{{ BACKUP_DIR }}"
-      register: repo_check
-      failed_when: false
+      when: repo_content.matched > 0
       changed_when: false
 
     - name: Init backup repository
@@ -34,7 +44,7 @@
           - none
           - "{{ BACKUP_DIR }}"
       register: repo_init
-      when: repo_check.rc != 0
+      when: repo_content.matched == 0
       changed_when: repo_init.rc == 0
 
     - name: Launch borgmatic
@@ -51,8 +61,7 @@
           before_backup:
             - echo "`date` - Starting backup."
         borg_retention_policy:
-          keep_hourly: 3
-          keep_daily: 7
+          keep_daily: 3
           keep_weekly: 4
           keep_monthly: 6
 
