@@ -13,6 +13,7 @@ services:
     depends_on:
       - database
     image: mattermost/mattermost-team-edition
+    hostname: mattermost
     volumes:
       - data:/mattermost
     env_file: .env
@@ -21,7 +22,8 @@ services:
       MM_SQLSETTINGS_DRIVERNAME: postgres
       MM_SERVICESETTINGS_SITEURL: https://clic.epfl.ch/mattermost
     networks:
-      - caddy
+      default:
+      caddy:
 
 volumes:
   database:
