@@ -11,11 +11,19 @@ services:
 
   nextcloud:
     image: nextcloud:27-apache
+    hostname: nextcloud
     volumes:
-      - nextcloud-app:/var/www/html        
-    env_file: 
-      - app.env
-      - config.env
+      - nextcloud-app:/var/www/html
+    env_file: app.env
+    environment:
+      NC_overwriteprotocol: http
+      NC_overwritehost: 127.0.0.1
+      NC_overwritewebroot: /nextcloud
+
+      NC_dbtype: mysql
+      NC_dbhost: database
+      NC_dbname: nextcloud
+      NC_dbuser: nextcloud
     networks:
       caddy:
       default:
@@ -24,9 +32,16 @@ services:
     image: nextcloud:27-apache
     volumes:
       - nextcloud-app:/var/www/html
-    env_file: 
-      - app.env
-      - config.env
+    env_file: app.env
+    environment:
+      NC_overwriteprotocol: http
+      NC_overwritehost: 127.0.0.1
+      NC_overwritewebroot: /nextcloud
+
+      NC_dbtype: mysql
+      NC_dbhost: database
+      NC_dbname: nextcloud
+      NC_dbuser: nextcloud
     entrypoint: /cron.sh
 
 networks:
