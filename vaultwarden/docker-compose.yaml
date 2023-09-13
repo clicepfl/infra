@@ -1,6 +1,6 @@
 services:
   vaultwarden:
-    image: vaultwarden/server
+    image: vaultwarden/server:1.29.2-alpine
     hostname: vaultwarden
     volumes:
       - vaultwarden:/data

@@ -1,6 +1,6 @@
 services:
   mediawiki:
-    image: mediawiki
+    image: mediawiki:1.40.0
     hostname: wiki
     working_dir: /var/www/html/mediawiki
     env_file:
@@ -15,7 +15,7 @@ services:
       caddy:
 
   database:
-    image: mariadb
+    image: mariadb:10.5
     env_file:
       - ../wiki/database.env
     environment:
