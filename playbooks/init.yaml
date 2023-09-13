@@ -1,0 +1,73 @@
+# Requires two variables in the inventory:
+# - BACKUP_DISK: Partition to store the backups (example: /dev/sda1)
+# - BACKUP_DIR: Directory onto which the BACKUP_DISK will be mounted,
+#               and a Borg repository will be initialized (example: /backup)
+
+- name: Initialize server
+  hosts: all
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: full
+        pkg:
+          - ansible-core # Required for ansible-pull
+          - borgbackup # Required since we need borg CLI to init repository
+          - docker.io # Required for docker
+          - python3-docker # Required for docker
+          - python3-jsondiff # Required for docker
+
+- name: Setup automatic backups with Borg
+  hosts: all
+  tasks:
+    - name: Mount secondary disk onto backup directory
+      ansible.posix.mount:
+        state: mounted
+        path: "{{ BACKUP_DIR }}"
+        src: "{{ BACKUP_DISK }}"
+        fstype: ext4
+
+    - name: Verify backup repository existence
+      ansible.builtin.find:
+        paths:
+          - "{{ BACKUP_DIR }}"
+      register: repo_content
+
+    - name: Verify backup repository validity
+      ansible.builtin.command:
+        argv:
+          - borg
+          - check
+          - "{{ BACKUP_DIR }}"
+      when: repo_content.matched > 0
+      changed_when: false
+
+    - name: Init backup repository
+      ansible.builtin.command:
+        argv:
+          - borg
+          - init
+          - -e
+          - none
+          - "{{ BACKUP_DIR }}"
+      register: repo_init
+      when: repo_content.matched == 0
+      changed_when: repo_init.rc == 0
+
+    - name: Launch borgmatic
+      ansible.builtin.include_role:
+        name: borgbase.ansible_role_borgbackup
+      vars:
+        borg_repository: "{{ BACKUP_DIR }}"
+        borgmatic_timer: cron
+        borgmatic_timer_hour: 0
+        borgmatic_timer_minute: 0
+        borg_source_directories:
+          - /var/lib/docker/volumes/ # TODO Update (right now it is just such that the config is valid)
+        borgmatic_hooks:
+          before_backup:
+            - echo "`date` - Starting backup."
+        borg_retention_policy:
+          keep_daily: 3
+          keep_weekly: 4
+          keep_monthly: 6
