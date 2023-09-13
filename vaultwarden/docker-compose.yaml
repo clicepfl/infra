@@ -1,7 +1,7 @@
 services:
   vaultwarden:
-    hostname: vaultwarden
     image: vaultwarden/server
+    hostname: vaultwarden
     volumes:
       - vaultwarden:/data
     env_file: .env
