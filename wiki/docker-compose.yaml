@@ -1,9 +1,8 @@
 services:
   mediawiki:
-    image: mediawiki
+    image: mediawiki:1.40.0
+    hostname: wiki
     working_dir: /var/www/html/mediawiki
-    ports:
-      - 8080:80
     env_file:
       - ../wiki/.env
     volumes:
@@ -12,10 +11,11 @@ services:
     depends_on:
       - database
     networks:
-      - caddy
+      default:
+      caddy:
 
   database:
-    image: mariadb
+    image: mariadb:10.5
     env_file:
       - ../wiki/database.env
     environment:
