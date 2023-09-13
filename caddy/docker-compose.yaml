@@ -18,8 +18,14 @@ services:
         source: ./Caddyfile
         target: /etc/caddy/Caddyfile
 
+    secrets:
+      - source: ssl_certificate
+        target: /etc/certs/cert.pem
+      - source: ssl_key
+        target: /etc/certs/key.pem
+
     networks:
-      - caddy
+      caddy: 
 
 volumes:
   caddy_data:
@@ -28,4 +34,10 @@ volumes:
 
 networks:
   caddy:
+    external: true
+
+secrets:
+  ssl_certificate:
+    external: true
+  ssl_key:
     external: true
