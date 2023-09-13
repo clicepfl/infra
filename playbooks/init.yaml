@@ -11,11 +11,11 @@
         update_cache: true
         upgrade: full
         pkg:
-          - ansible-core
-          - docker.io
-          - borgbackup
-          - python3-docker
-          - python3-jsondiff
+          - ansible-core # Required for ansible-pull
+          - borgbackup # Required since we need borg CLI to init repository
+          - docker.io # Required for docker
+          - python3-docker # Required for docker
+          - python3-jsondiff # Required for docker
 
 - name: Setup automatic backups with Borg
   hosts: all
