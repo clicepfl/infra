@@ -7,20 +7,16 @@ services:
       SSL_KEY_PATH: /etc/certs/key.pem
 
     ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
+      - 80:80
+      - 443:443
+      - 8443:8443
 
     volumes:
-      - ../caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-
-    secrets:
-      - source: ssl-certificate
-        target: /etc/certs/cert.pem
-      - source: ssl-key
-        target: /etc/certs/key.pem
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
 
     networks:
       - caddy
@@ -32,10 +28,4 @@ volumes:
 
 networks:
   caddy:
-    external: true
-
-secrets:
-  ssl-certificate:
-    external: true
-  ssl-key:
     external: true

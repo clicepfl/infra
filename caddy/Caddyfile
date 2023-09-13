@@ -5,24 +5,31 @@
 clic.epfl.ch {
 	tls {$SSL_CERTIFICATE_PATH} {$SSL_KEY_PATH}
 
-	handle /nextcloud {
+	handle_path /nextcloud* {
 		header {
 			Strict-Transport-Security max-age=31536000;
 		}
 
-		reverse_proxy http://nextcloud:8080
+		reverse_proxy http://nextcloud:80
 	}
 
 	handle /.well-known {
 		redir /.well-known/carddav /nextcloud/remote.php/dav/ permanent
 		redir /.well-known/caldav /nextcloud/remote.php/dav/ permanent
-
-		redir /.well-known/webfinger /nextcloud/index.php{uri} permanent
-		redir /.well-known/nodeinfo /nextcloud/index.php{uri} permanent
 	}
 
-	reverse_proxy /mattermost http://mattermost:8080
-	reverse_proxy /armoire http://vaulwarden:8080
-	reverse_proxy / http://website:8080
-	redir path_regexp wiki /wiki/(.*) https://clic.epfl.ch:8443/{re.wiki.1}
+	reverse_proxy /mattermost* http://mattermost:8065
+
+	redir /amoire /armoire/ permanent
+	reverse_proxy /armoire* http://vaultwarden:80
+
+	reverse_proxy /* http://website:8000
+
+	redir /wiki* https://clic.epfl.ch/
+}
+
+clic.epfl.ch:8443 {
+	tls {$SSL_CERTIFICATE_PATH} {$SSL_KEY_PATH}
+
+	reverse_proxy /* http://wiki:80
 }
