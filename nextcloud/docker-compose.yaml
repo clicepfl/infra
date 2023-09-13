@@ -28,7 +28,9 @@ services:
       caddy:
       default:
 
-  # Runs background tasks required by Nextcloud
+  # Nextcloud requires periodic tasks, usually scheduled with cron. 
+  # We can simply run a second container on the same volume, with the entrypoint /cron.sh
+  # See: https://help.nextcloud.com/t/clarification-regarding-cron-jobs-setup-config/134450/2
   cron:
     image: nextcloud:27-apache
     volumes:
