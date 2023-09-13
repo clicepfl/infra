@@ -14,7 +14,7 @@ services:
       retries: 5
 
   rallly:
-    image: lukevella/rallly:latest
+    image: lukevella/rallly:3
     depends_on:
       rallly_db:
         condition: service_healthy
