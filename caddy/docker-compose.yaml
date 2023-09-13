@@ -1,0 +1,43 @@
+services:
+  proxy:
+    image: caddy:2.7.4-alpine
+
+    environment:
+      SSL_CERTIFICATE_PATH: /etc/certs/cert.pem
+      SSL_KEY_PATH: /etc/certs/key.pem
+
+    ports:
+      - 80:80
+      - 443:443
+      - 8443:8443
+
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
+
+    secrets:
+      - source: ssl_certificate
+        target: /etc/certs/cert.pem
+      - source: ssl_key
+        target: /etc/certs/key.pem
+
+    networks:
+      caddy: 
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
+
+networks:
+  caddy:
+    external: true
+
+secrets:
+  ssl_certificate:
+    external: true
+  ssl_key:
+    external: true
