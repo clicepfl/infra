@@ -1,6 +1,6 @@
 services:
   proxy:
-    image: caddy
+    image: caddy:2.7.4-alpine
 
     environment:
       SSL_CERTIFICATE_PATH: /etc/certs/cert.pem
