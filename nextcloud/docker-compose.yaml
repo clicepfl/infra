@@ -16,8 +16,8 @@ services:
       - nextcloud-app:/var/www/html
     env_file: app.env
     environment:
-      NC_overwriteprotocol: https
-      NC_overwritehost: clic.epfl.ch
+      NC_overwriteprotocol: http
+      NC_overwritehost: 127.0.0.1
       NC_overwritewebroot: /nextcloud
 
       NC_dbtype: mysql
@@ -34,8 +34,8 @@ services:
       - nextcloud-app:/var/www/html
     env_file: app.env
     environment:
-      NC_overwriteprotocol: https
-      NC_overwritehost: clic.epfl.ch
+      NC_overwriteprotocol: http
+      NC_overwritehost: 127.0.0.1
       NC_overwritewebroot: /nextcloud
 
       NC_dbtype: mysql
