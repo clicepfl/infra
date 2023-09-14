@@ -4,21 +4,20 @@
 #               and a Borg repository will be initialized (example: /backup)
 
 - name: Initialize server
-  hosts: all
+  hosts: clic
   tasks:
     - name: Install required packages
       ansible.builtin.apt:
         update_cache: true
-        upgrade: full
         pkg:
-          - ansible-core # Required for ansible-pull
+          - ansible # Required for ansible-pull
           - borgbackup # Required since we need borg CLI to init repository
           - docker.io # Required for docker
           - python3-docker # Required for docker
           - python3-jsondiff # Required for docker
 
 - name: Setup automatic backups with Borg
-  hosts: all
+  hosts: clic
   tasks:
     - name: Mount secondary disk onto backup directory
       ansible.posix.mount:
