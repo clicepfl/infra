@@ -30,7 +30,7 @@ $wgMetaNamespace = "Test";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "https://clic.epfl.ch";
+$wgServer = "https://clic.epfl.ch:8443";
 
 $wgArticlePath = "/wiki/$1";
 $wgUsePathInfo = true;
