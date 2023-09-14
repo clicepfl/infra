@@ -1,10 +1,4 @@
-{
-	auto_https disable_certs
-}
-
 clic.epfl.ch {
-	tls {$SSL_CERTIFICATE_PATH} {$SSL_KEY_PATH}
-
 	handle_path /nextcloud* {
 		header {
 			Strict-Transport-Security max-age=31536000;
@@ -29,7 +23,5 @@ clic.epfl.ch {
 }
 
 clic.epfl.ch:8443 {
-	tls {$SSL_CERTIFICATE_PATH} {$SSL_KEY_PATH}
-
 	reverse_proxy /* http://wiki:80
 }
