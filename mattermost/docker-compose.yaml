@@ -8,6 +8,8 @@ services:
         TZ: UTC
         POSTGRES_USER: mattermost
         POSTGRES_DB: mattermost
+      ports:
+        - 5001:5432
 
   mattermost:
     depends_on:

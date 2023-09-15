@@ -8,6 +8,8 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes" # Generate a random admin password
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
+    ports:
+      - 5000:3306
 
   nextcloud:
     image: nextcloud:27-apache

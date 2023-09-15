@@ -24,6 +24,8 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
     volumes:
       - database:/var/lib/mysql
+    ports:
+      - 5002:3306
 
 volumes:
   images:
