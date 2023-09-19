@@ -4,9 +4,9 @@ services:
     hostname: vaultwarden
     volumes:
       - vaultwarden:/data
-    env_file: .env
     environment:
-      DOMAIN: https://clic.epfl.ch/armoire
+      DOMAIN: http://localhost/armoire
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
     
     networks:
       caddy:
