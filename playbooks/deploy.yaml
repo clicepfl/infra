@@ -49,7 +49,8 @@
         WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"
 
 - name: Setup automatic backups with Borg
-  hosts: clic
+  hosts: localhost
+  connection: local
   tasks:
     - name: Install required packages
       ansible.builtin.apt:
