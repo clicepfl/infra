@@ -3,11 +3,11 @@ services:
       image: postgres:15.4-alpine3.18
       volumes:
         - database:/var/lib/postgresql/data
-      env_file: ./database.env
       environment:
         TZ: UTC
         POSTGRES_USER: mattermost
         POSTGRES_DB: mattermost
+        POSTGRES_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
       ports:
         - 5001:5432
 
@@ -18,11 +18,11 @@ services:
     hostname: mattermost
     volumes:
       - data:/mattermost
-    env_file: .env
     environment:
       TZ: UTC
       MM_SQLSETTINGS_DRIVERNAME: postgres
       MM_SERVICESETTINGS_SITEURL: https://clic.epfl.ch/mattermost
+      MM_SQLSETTINGS_DATASOURCE: postgres://mattermost:${MATTERMOST_DATABASE_PASSWORD}@database:5432/mattermost?sslmode=disable&connect_timeout=10
     networks:
       default:
       caddy:

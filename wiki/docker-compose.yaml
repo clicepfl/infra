@@ -3,8 +3,9 @@ services:
     image: mediawiki:1.40.0
     hostname: wiki
     working_dir: /var/www/html/mediawiki
-    env_file:
-      - ../wiki/.env
+    environment:
+      MYSQL_PASSWORD: ${WIKI_DATABASE_PASSWORD}
+      SECRET_KEY: ${WIKI_SECRET_KEY}
     volumes:
       - images:/var/www/html/mediawiki/images
       - ../wiki/LocalSettings.php:/var/www/html/LocalSettings.php
@@ -16,12 +17,11 @@ services:
 
   database:
     image: mariadb:10.5
-    env_file:
-      - ../wiki/database.env
     environment:
       MYSQL_DATABASE: my_wiki
       MYSQL_USER: wikiuser
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_PASSWORD: ${WIKI_DATABASE_PASSWORD}
     volumes:
       - database:/var/lib/mysql
     ports:

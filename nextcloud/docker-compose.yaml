@@ -3,11 +3,11 @@ services:
     image: mariadb:10.5
     volumes:
       - nextcloud-db:/var/lib/mysql
-    env_file: database.env
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes" # Generate a random admin password
       MYSQL_DATABASE: nextcloud
       MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: ${NEXTCLOUD_DATABASE_PASSWORD}
     ports:
       - 5000:3306
 
@@ -16,7 +16,6 @@ services:
     hostname: nextcloud
     volumes:
       - nextcloud-app:/var/www/html
-    env_file: app.env
     environment:
       NC_overwriteprotocol: https
       NC_overwritehost: clic.epfl.ch
@@ -26,6 +25,7 @@ services:
       NC_dbhost: database
       NC_dbname: nextcloud
       NC_dbuser: nextcloud
+      NC_dbpassword: ${NEXTCLOUD_DATABASE_PASSWORD}
     networks:
       caddy:
       default:
@@ -37,7 +37,6 @@ services:
     image: nextcloud:27-apache
     volumes:
       - nextcloud-app:/var/www/html
-    env_file: app.env
     environment:
       NC_overwriteprotocol: https
       NC_overwritehost: clic.epfl.ch
@@ -47,6 +46,7 @@ services:
       NC_dbhost: database
       NC_dbname: nextcloud
       NC_dbuser: nextcloud
+      NC_dbpassword: ${NEXTCLOUD_DATABASE_PASSWORD}
     entrypoint: /cron.sh
 
 networks:

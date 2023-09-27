@@ -1,4 +1,8 @@
-clic.epfl.ch {
+{
+	auto_https off
+}
+
+http://localhost {
 	handle_path /nextcloud* {
 		header {
 			Strict-Transport-Security max-age=31536000;

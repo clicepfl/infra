@@ -2,6 +2,21 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: Check extra variables
+      ansible.builtin.fail:
+        msg: "{{ item }} must be present and non-empty"
+      loop:
+        - MATTERMOST_DATABASE_PASSWORD
+        - NEXTCLOUD_DATABASE_PASSWORD
+        - VAULTWARDEN_ADMIN_TOKEN
+        - WIKI_DATABASE_PASSWORD
+        - WIKI_SECRET_KEY
+        - BACKUP_DIR
+        - BACKUP_DISK
+      when: value == ""
+      vars:
+        value: "{{ lookup('ansible.builtin.vars', item) }}"
+
     - name: Init Docker swarm
       community.docker.docker_swarm:
         state: present
@@ -26,3 +41,96 @@
         - vaultwarden
         - website
         - wiki
+      environment:
+        MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
+        NEXTCLOUD_DATABASE_PASSWORD: "{{ NEXTCLOUD_DATABASE_PASSWORD }}"
+        VAULTWARDEN_ADMIN_TOKEN: "{{ VAULTWARDEN_ADMIN_TOKEN }}"
+        WIKI_DATABASE_PASSWORD: "{{ WIKI_DATABASE_PASSWORD }}"
+        WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"
+
+- name: Setup automatic backups with Borg
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        update_cache: true
+        package:
+          - borgbackup
+          - postgresql-client
+          - mariadb-client
+
+    - name: Mount secondary disk onto backup directory
+      ansible.posix.mount:
+        state: mounted
+        path: "{{ BACKUP_DIR }}"
+        src: "{{ BACKUP_DISK }}"
+        fstype: ext4
+
+    - name: Verify backup repository existence
+      ansible.builtin.find:
+        paths:
+          - "{{ BACKUP_DIR }}"
+      register: repo_content
+
+    - name: Verify backup repository validity
+      ansible.builtin.command:
+        argv:
+          - borg
+          - check
+          - "{{ BACKUP_DIR }}"
+      when: repo_content.matched > 0
+      changed_when: false
+
+    - name: Init backup repository
+      ansible.builtin.command:
+        argv:
+          - borg
+          - init
+          - -e
+          - none
+          - "{{ BACKUP_DIR }}"
+      register: repo_init
+      when: repo_content.matched == 0
+      changed_when: repo_init.rc == 0
+
+    - name: Launch borgmatic
+      ansible.builtin.include_role:
+        name: borgbase.ansible_role_borgbackup
+      vars:
+        borg_repository: "{{ BACKUP_DIR }}"
+        borg_encryption_passphrase: none # The variable is required, but ignored since we do not encrypt the backups
+        borgmatic_timer: cron
+        borgmatic_timer_hour: 0
+        borgmatic_timer_minute: 0
+        borg_source_directories:
+          - /var/lib/docker/volumes/caddy_caddy_config
+          - /var/lib/docker/volumes/caddy_data
+          - /var/lib/docker/volumes/mattermost_data
+          - /var/lib/docker/volumes/nextcloud_nextcloud-app
+          - /var/lib/docker/volumes/vaultwarden_vaultwarden
+          - /var/lib/docker/volumes/wiki_images
+        borgmatic_hooks:
+          before_backup:
+            - echo "`date` - Starting backup."
+          mariadb_databases:
+            - name: nextcloud
+              hostname: 127.0.0.1
+              port: 5000
+              username: nextcloud
+              password: "{{ NEXTCLOUD_DATABASE_PASSWORD }}"
+            - name: my_wiki
+              hostname: 127.0.0.1
+              port: 5002
+              username: wikiuser
+              password: "{{ WIKI_DATABASE_PASSWORD }}"
+          postgresql_databases:
+            - name: mattermost
+              hostname: 127.0.0.1
+              port: 5001
+              username: mattermost
+              password: "{{ MATTERMOST_DATABASE_PASSWORD }}"
+        borg_retention_policy:
+          keep_daily: 3
+          keep_weekly: 4
+          keep_monthly: 6
