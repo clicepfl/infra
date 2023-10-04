@@ -7,9 +7,12 @@
         msg: "{{ item }} must be present and non-empty"
       loop:
         - MATTERMOST_DATABASE_PASSWORD
+        - MATTERMOST_DATABASE_INIT
         - NEXTCLOUD_DATABASE_PASSWORD
+        - NEXTCLOUD_DATABASE_INIT
         - VAULTWARDEN_ADMIN_TOKEN
         - WIKI_DATABASE_PASSWORD
+        - WIKI_DATABASE_INIT
         - WIKI_SECRET_KEY
         - BACKUP_DIR
         - BACKUP_DISK
