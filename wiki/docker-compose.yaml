@@ -9,6 +9,7 @@ services:
     volumes:
       - images:/var/www/html/mediawiki/images
       - ../wiki/LocalSettings.php:/var/www/html/LocalSettings.php
+      - ${WIKI_DATABASE_INIT}:/docker-entrypoint-initdb.d
     depends_on:
       - database
     networks:
