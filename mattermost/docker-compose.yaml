@@ -3,6 +3,7 @@ services:
       image: postgres:15.4-alpine3.18
       volumes:
         - database:/var/lib/postgresql/data
+        - ${MATTERMOST_DATABASE_INIT}:/docker-entrypoint-initdb.d
       environment:
         TZ: UTC
         POSTGRES_USER: mattermost

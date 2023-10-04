@@ -3,6 +3,7 @@ services:
     image: mariadb:10.5
     volumes:
       - nextcloud-db:/var/lib/mysql
+      - ${NEXTCLOUD_DATABASE_INIT}:/docker-entrypoint-initdb.d
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "yes" # Generate a random admin password
       MYSQL_DATABASE: nextcloud
