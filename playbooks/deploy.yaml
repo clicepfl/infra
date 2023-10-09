@@ -3,8 +3,8 @@
   connection: local
   tasks:
     - name: Check extra variables
-      ansible.builtin.debug:
-        msg: "{{ value }} must be present and non-empty"
+      ansible.builtin.fail:
+        msg: "{{ item }} must be present and non-empty"
       loop:
         - MATTERMOST_DATABASE_PASSWORD
         - MATTERMOST_DATABASE_INIT
@@ -16,6 +16,7 @@
         - WIKI_SECRET_KEY
         - BACKUP_DIR
         - BACKUP_DISK
+      when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
 
@@ -45,9 +46,12 @@
         - wiki
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
+        MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
         NEXTCLOUD_DATABASE_PASSWORD: "{{ NEXTCLOUD_DATABASE_PASSWORD }}"
+        NEXTCLOUD_DATABASE_INIT: "{{ NEXTCLOUD_DATABASE_INIT }}"
         VAULTWARDEN_ADMIN_TOKEN: "{{ VAULTWARDEN_ADMIN_TOKEN }}"
         WIKI_DATABASE_PASSWORD: "{{ WIKI_DATABASE_PASSWORD }}"
+        WIKI_DATABASE_INIT: "{{ WIKI_DATABASE_INIT }}"
         WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"
 
 - name: Setup automatic backups with Borg
