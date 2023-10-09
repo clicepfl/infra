@@ -1,7 +1,3 @@
-{
-	auto_https off
-}
-
 http://localhost {
 	handle_path /nextcloud* {
 		header {
