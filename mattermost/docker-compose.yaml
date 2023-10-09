@@ -15,7 +15,7 @@ services:
   mattermost:
     depends_on:
       - database
-    image: mattermost/mattermost-team-edition:release-8.1
+    image: mattermost/mattermost-team-edition:release-9.1
     hostname: mattermost
     volumes:
       - data:/mattermost
