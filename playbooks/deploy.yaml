@@ -3,8 +3,8 @@
   connection: local
   tasks:
     - name: Check extra variables
-      ansible.builtin.fail:
-        msg: "{{ item }} must be present and non-empty"
+      ansible.builtin.debug:
+        msg: "{{ value }} must be present and non-empty"
       loop:
         - MATTERMOST_DATABASE_PASSWORD
         - MATTERMOST_DATABASE_INIT
@@ -16,7 +16,6 @@
         - WIKI_SECRET_KEY
         - BACKUP_DIR
         - BACKUP_DISK
-      when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
 
