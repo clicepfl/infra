@@ -14,8 +14,8 @@ https://clic.epfl.ch {
 
 	reverse_proxy /mattermost* http://mattermost:8065
 
-	redir /amoire /armoire/ permanent
-	reverse_proxy /armoire* http://vaultwarden:80
+	redir /armoire /armoire/ permanent
+	reverse_proxy /armoire/* http://vaultwarden:80
 
 	reverse_proxy /* http://website:8000
 
