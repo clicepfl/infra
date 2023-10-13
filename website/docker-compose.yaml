@@ -1,0 +1,10 @@
+services:
+  v1:
+    hostname: website
+    image: ghcr.io/clicepfl/clic-website:main
+    networks:
+      caddy:
+
+networks:
+  caddy:
+    external: true

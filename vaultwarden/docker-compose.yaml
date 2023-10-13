@@ -1,0 +1,18 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:1.29.2-alpine
+    hostname: vaultwarden
+    volumes:
+      - vaultwarden:/data
+    environment:
+      DOMAIN: http://localhost/armoire
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
+    
+    networks:
+      caddy:
+
+networks:
+  caddy:
+    external: true
+volumes:
+  vaultwarden:

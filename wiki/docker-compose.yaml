@@ -1,0 +1,36 @@
+services:
+  mediawiki:
+    image: mediawiki:1.40.0
+    hostname: wiki
+    working_dir: /var/www/html/mediawiki
+    environment:
+      MYSQL_PASSWORD: ${WIKI_DATABASE_PASSWORD}
+      SECRET_KEY: ${WIKI_SECRET_KEY}
+    volumes:
+      - images:/var/www/html/mediawiki/images
+      - ../wiki/LocalSettings.php:/var/www/html/LocalSettings.php
+      - ${WIKI_DATABASE_INIT}:/docker-entrypoint-initdb.d
+    depends_on:
+      - database
+    networks:
+      default:
+      caddy:
+
+  database:
+    image: mariadb:10.5
+    environment:
+      MYSQL_DATABASE: my_wiki
+      MYSQL_USER: wikiuser
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_PASSWORD: ${WIKI_DATABASE_PASSWORD}
+    volumes:
+      - database:/var/lib/mysql
+    ports:
+      - 5002:3306
+
+volumes:
+  images:
+  database:
+networks:
+  caddy:
+    external: true

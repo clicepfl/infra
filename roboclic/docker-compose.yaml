@@ -1,0 +1,12 @@
+services:
+  roboclic:
+    image: ghcr.io/clicepfl/roboclic-v2:main
+    volumes:
+      - ./config.json:/config.json
+    environment:
+      BOT_TOKEN: ${ROBOCLIC_TOKEN}
+      CONFIG_FILE: /config.json
+
+configs:
+  keys:
+    file: ./.keys

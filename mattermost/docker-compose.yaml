@@ -1,0 +1,36 @@
+services:
+  database:
+      image: postgres:15.4-alpine3.18
+      volumes:
+        - database:/var/lib/postgresql/data
+        - ${MATTERMOST_DATABASE_INIT}:/docker-entrypoint-initdb.d
+      environment:
+        TZ: UTC
+        POSTGRES_USER: mattermost
+        POSTGRES_DB: mattermost
+        POSTGRES_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
+      ports:
+        - 5001:5432
+
+  mattermost:
+    depends_on:
+      - database
+    image: mattermost/mattermost-team-edition:release-8.1
+    hostname: mattermost
+    volumes:
+      - data:/mattermost
+    environment:
+      TZ: UTC
+      MM_SQLSETTINGS_DRIVERNAME: postgres
+      MM_SERVICESETTINGS_SITEURL: https://clic.epfl.ch/mattermost
+      MM_SQLSETTINGS_DATASOURCE: postgres://mattermost:${MATTERMOST_DATABASE_PASSWORD}@database:5432/mattermost?sslmode=disable&connect_timeout=10
+    networks:
+      default:
+      caddy:
+
+volumes:
+  database:
+  data:
+networks:
+  caddy:
+    external: true

@@ -1,0 +1,59 @@
+services:
+  database:
+    image: mariadb:10.5
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+      - ${NEXTCLOUD_DATABASE_INIT}:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes" # Generate a random admin password
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: ${NEXTCLOUD_DATABASE_PASSWORD}
+    ports:
+      - 5000:3306
+
+  nextcloud:
+    image: nextcloud:27-apache
+    hostname: nextcloud
+    volumes:
+      - nextcloud-app:/var/www/html
+    environment:
+      NC_overwriteprotocol: https
+      NC_overwritehost: clic.epfl.ch
+      NC_overwritewebroot: /nextcloud
+
+      NC_dbtype: mysql
+      NC_dbhost: database
+      NC_dbname: nextcloud
+      NC_dbuser: nextcloud
+      NC_dbpassword: ${NEXTCLOUD_DATABASE_PASSWORD}
+    networks:
+      caddy:
+      default:
+
+  # Nextcloud requires periodic tasks, usually scheduled with cron. 
+  # We can simply run a second container on the same volume, with the entrypoint /cron.sh
+  # See: https://help.nextcloud.com/t/clarification-regarding-cron-jobs-setup-config/134450/2
+  cron:
+    image: nextcloud:27-apache
+    volumes:
+      - nextcloud-app:/var/www/html
+    environment:
+      NC_overwriteprotocol: https
+      NC_overwritehost: clic.epfl.ch
+      NC_overwritewebroot: /nextcloud
+
+      NC_dbtype: mysql
+      NC_dbhost: database
+      NC_dbname: nextcloud
+      NC_dbuser: nextcloud
+      NC_dbpassword: ${NEXTCLOUD_DATABASE_PASSWORD}
+    entrypoint: /cron.sh
+
+networks:
+  caddy:
+    external: true
+
+volumes:
+  nextcloud-db:
+  nextcloud-app:

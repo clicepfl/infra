@@ -1,0 +1,12 @@
+- name: Initialize server
+  hosts: clic
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        update_cache: true
+        pkg:
+          - ansible # Required for ansible-pull
+          - borgbackup # Required since we need borg CLI to init repository
+          - docker.io # Required for docker
+          - python3-docker # Required for docker
+          - python3-jsondiff # Required for docker

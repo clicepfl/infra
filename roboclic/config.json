@@ -1,0 +1,25 @@
+{
+    "committee": [
+        "Christelle",
+        "Noé",
+        "Sarah",
+        "Ursula",
+        "Sidonie",
+        "Ludovic",
+        "Sara",
+        "Marwa",
+        "Hugo",
+        "Roman",
+        "Iris",
+        "Mallory"
+    ],
+    "access_control": {
+        "bureau": [
+            -1001600090930,
+            -1001423967275
+        ],
+        "poll": [
+            -1001600090930
+        ]
+    }
+}

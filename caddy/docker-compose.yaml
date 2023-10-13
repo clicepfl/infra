@@ -1,0 +1,24 @@
+services:
+  proxy:
+    image: caddy:2.7.4-alpine
+    ports:
+      - 80:80
+      - 443:443
+      - 8443:8443
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
+    networks:
+      caddy: 
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
+
+networks:
+  caddy:
+    external: true
