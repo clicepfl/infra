@@ -20,6 +20,8 @@ https://clic.epfl.ch {
 	reverse_proxy /* http://website:8000
 
 	redir /wiki* https://clic.epfl.ch:8443/
+
+	reverse_proxy /rallly* http://rallly:80
 }
 
 https://clic.epfl.ch:8443 {
