@@ -5,7 +5,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${RALLLY_DATABASE_PASSWORD}
       POSTGRES_DB: db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -19,6 +19,8 @@ services:
       rallly_db:
         condition: service_healthy
     environment:
+      SECRET_PASSWORD: ${RALLLY_SECRET_PASSWORD}
+
       DATABASE_URL: postgres://postgres:postgres@rallly_db:5432/db
       # REQUIRED CONFIG
       # The base url where this instance is accessible, including the scheme.
@@ -31,6 +33,10 @@ services:
       SUPPORT_EMAIL: it.clic@epfl.ch
       # The host address of your SMTP server
       SMTP_HOST: mail.epfl.ch
+      # The username (if auth is enabled on your SMTP server)
+      SMTP_USER: it.clic
+      # The password (if auth is enabled on your SMTP server)
+      SMTP_PWD: ${SMTP_PWD}
       # The port of your SMTP server
       SMTP_PORT: 587
       # Set to "true" if SSL is enabled for your SMTP connection
@@ -48,8 +54,6 @@ services:
       #- ALLOWED_EMAILS=
       # Whether or not to disable the landing page
       DISABLE_LANDING_PAGE: "true"
-    env_file:
-      - .env
     networks:
       default:
       caddy:
