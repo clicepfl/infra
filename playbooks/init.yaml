@@ -10,6 +10,17 @@
           - docker.io # Required for docker
           - python3-docker # Required for docker
           - python3-jsondiff # Required for docker
+
+    - name: Install required roles and collections
+      ansible.builtin.command:
+        argv:
+          - ansible-galaxy
+          - install
+          - roles
+          - hifis.unattended_upgrades
+          - borgbase.ansible_role_borgbackup
+      changed_when: true
+
     - name: Setup unattended-upgrades for automatic updates
       ansible.builtin.include_role:
         name: hifis.unattended_upgrades
