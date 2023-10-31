@@ -81,15 +81,6 @@
           - "{{ BACKUP_DIR }}"
       register: repo_content
 
-    - name: Verify backup repository validity
-      ansible.builtin.command:
-        argv:
-          - borg
-          - check
-          - "{{ BACKUP_DIR }}"
-      when: repo_content.matched > 0
-      changed_when: false
-
     - name: Init backup repository
       ansible.builtin.command:
         argv:
