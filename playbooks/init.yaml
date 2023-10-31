@@ -10,3 +10,18 @@
           - docker.io # Required for docker
           - python3-docker # Required for docker
           - python3-jsondiff # Required for docker
+    - name: Setup unattended-upgrades for automatic updates
+      ansible.builtin.include_role:
+        name: hifis.unattended_upgrades
+      vars:
+        unattended_systemd_timer_override: false # (default)
+        # apt-daily timer
+        unattended_apt_daily_oncalendar: "*-*-* 6,18:00" # (default)
+        unattended_apt_daily_randomizeddelaysec: "12h" # (default)
+        # apt-daily-upgrade timer
+        unattended_apt_daily_upgrade_oncalendar: "*-*-* 6:00" # (default)
+        unattended_apt_daily_upgrade_randomizeddelaysec: "60m" # (default)
+        unattended_origins_patterns:
+          - "origin=Debian,codename=${distro_codename},label=Debian-Security" # security updates
+          - "o=Debian,codename=${distro_codename},label=Debian" # updates including non-security updates
+          - "o=Debian,codename=${distro_codename},a=proposed-updates"
