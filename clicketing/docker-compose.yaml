@@ -21,20 +21,24 @@ services:
       ADMIN_TOKEN: ${CLICKETING_ADMIN_TOKEN}
       DATABASE_URL: postgres://clicketing:${CLICKETING_DATABASE_PASSWORD}@database:5432/clicketing?sslmode=disable&connect_timeout=10
       ENVIRONMENT: prod
+      ROCKET_ADDRESS: "0.0.0.0"
+      BASE_URI: /clicketing/api
       SMTP_USER: communication.clic
       SMTP_PASSWORD: ${SMTP_COMMUNICATION_PASSWORD}
       SMTP_MAIL: communication.clic@epfl.ch
       SMTP_SERVER: mail.epfl.ch
+    networks:
+      default:
+      caddy:
 
   frontend:
-    image: ghcr.io/clicepfl/clicketing-frontend:main
+    image: ghcr.io/clicepfl/clicketing-frontend
     hostname: clicketing-frontend
     environment:
       ADMIN_TOKEN: ${CLICKETING_ADMIN_TOKEN}
-      NEXT_PUBLIC_API_URL: http://backend:8000/
+      NEXT_PUBLIC_API_URL: https://clic.epfl.ch/clicketing/api
       NEXT_PUBLIC_SESSION_COOKIE_NAME: clicketing-session
     networks:
-      default:
       caddy:
 
 volumes:
