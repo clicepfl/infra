@@ -15,6 +15,9 @@
         - WIKI_DATABASE_INIT
         - WIKI_SECRET_KEY
         - ROBOCLIC_TOKEN
+        - CLICKETING_DATABASE_PASSWORD
+        - CLICKETING_DATABASE_INIT
+        - CLICKETING_ADMIN_TOKEN
         - BACKUP_DIR
         - BACKUP_DISK
       when: value == ""
@@ -45,6 +48,7 @@
         - vaultwarden
         - website
         - wiki
+        - clicketing
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
         MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
@@ -55,6 +59,9 @@
         WIKI_DATABASE_PASSWORD: "{{ WIKI_DATABASE_PASSWORD }}"
         WIKI_DATABASE_INIT: "{{ WIKI_DATABASE_INIT }}"
         WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"
+        CLICKETING_DATABASE_PASSWORD: "{{ CLICKETING_DATABASE_PASSWORD }}"
+        CLICKETING_DATABASE_INIT: "{{ CLICKETING_DATABASE_INIT }}"
+        CLICKETING_ADMIN_TOKEN: "{{ CLICKETING_ADMIN_TOKEN }}"
 
 - name: Setup automatic backups with Borg
   hosts: localhost
@@ -129,6 +136,11 @@
               port: 5001
               username: mattermost
               password: "{{ MATTERMOST_DATABASE_PASSWORD }}"
+            - name: clicketing
+              hostname: 127.0.0.1
+              port: 5003
+              username: clicketing
+              password: "{{ CLICKETING_DATABASE_PASSWORD }}"
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
