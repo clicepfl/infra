@@ -1,0 +1,43 @@
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    container_name: bookstack
+    environment:
+      PUID: 1000
+      PGID: 1000
+      APP_URL: https://clic.epfl.ch/bookstack
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_USER: bookstack
+      DB_PASS: ${MATTERMOST_DATABASE_PASSWORD}
+      DB_DATABASE: bookstackapp
+    volumes:
+      - app:/config
+    networks:
+      default:
+      caddy:
+    depends_on:
+      - database
+
+  database:
+    image: lscr.io/linuxserver/mariadb
+    container_name: database
+    environment:
+      PUID: 1000
+      PGID: 1000
+      MYSQL_ROOT_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
+      TZ: Europe/London
+      MYSQL_DATABASE: bookstackapp
+      MYSQL_USER: bookstack
+      MYSQL_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
+    volumes:
+      - database:/config
+    ports:
+      - 5004:3306
+
+volumes:
+  database:
+  app:
+networks:
+  caddy:
+    external: true
