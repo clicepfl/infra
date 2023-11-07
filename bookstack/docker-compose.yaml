@@ -1,7 +1,7 @@
 services:
   bookstack:
     image: lscr.io/linuxserver/bookstack
-    container_name: bookstack
+    host_name: bookstack
     environment:
       PUID: 1000
       PGID: 1000
@@ -9,7 +9,7 @@ services:
       DB_HOST: database
       DB_PORT: 3306
       DB_USER: bookstack
-      DB_PASS: ${MATTERMOST_DATABASE_PASSWORD}
+      DB_PASS: ${BOOKSTACK_DATABASE_PASSWORD}
       DB_DATABASE: bookstackapp
     volumes:
       - app:/config
@@ -21,17 +21,18 @@ services:
 
   database:
     image: lscr.io/linuxserver/mariadb
-    container_name: database
+    host_name: database
     environment:
       PUID: 1000
       PGID: 1000
-      MYSQL_ROOT_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${BOOKSTACK_DATABASE_PASSWORD}
       TZ: Europe/London
       MYSQL_DATABASE: bookstackapp
       MYSQL_USER: bookstack
-      MYSQL_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
+      MYSQL_PASSWORD: ${BOOKSTACK_DATABASE_PASSWORD}
     volumes:
       - database:/config
+      - ${BOOKSTACK_DATABASE_INIT}:/docker-entrypoint-initdb.d
     ports:
       - 5004:3306
 
