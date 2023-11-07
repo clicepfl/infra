@@ -6,7 +6,3 @@ services:
     environment:
       BOT_TOKEN: ${ROBOCLIC_TOKEN}
       CONFIG_FILE: /config.json
-
-configs:
-  keys:
-    file: ./.keys

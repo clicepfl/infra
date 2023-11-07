@@ -1,9 +1,10 @@
 version: "3"
 services:
-  rallly_db:
+  database:
     image: postgres:14.2
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/data
+      - ${RALLLY_DATABASE_INIT}:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_PASSWORD: ${RALLLY_DATABASE_PASSWORD}
       POSTGRES_DB: db
@@ -12,16 +13,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - 5005:5432
 
   rallly:
     image: lukevella/rallly:3
     depends_on:
-      rallly_db:
+      database:
         condition: service_healthy
     environment:
       SECRET_PASSWORD: ${RALLLY_SECRET_PASSWORD}
 
-      DATABASE_URL: postgres://postgres:${RALLLY_DATABASE_PASSWORD}@rallly_db:5432/db
+      DATABASE_URL: postgres://postgres:${RALLLY_DATABASE_PASSWORD}@database:5432/db
       # REQUIRED CONFIG
       # The base url where this instance is accessible, including the scheme.
       # Example: https://example.com
@@ -53,4 +56,4 @@ networks:
     external: true
 
 volumes:
-  db-data:
+  database:

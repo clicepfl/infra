@@ -15,6 +15,13 @@
         - WIKI_DATABASE_INIT
         - WIKI_SECRET_KEY
         - ROBOCLIC_TOKEN
+        - RALLLY_SECRET_PASSWORD
+        - RALLLY_DATABASE_PASSWORD
+        - RALLLY_DATABASE_INIT
+        - CLICKETING_DATABASE_PASSWORD
+        - CLICKETING_DATABASE_INIT
+        - CLICKETING_ADMIN_TOKEN
+        - SMTP_COMMUNICATION_PASSWORD
         - BACKUP_DIR
         - BACKUP_DISK
       when: value == ""
@@ -46,6 +53,7 @@
         - website
         - wiki
         - rallly
+        - clicketing
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
         MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
@@ -57,8 +65,13 @@
         WIKI_DATABASE_INIT: "{{ WIKI_DATABASE_INIT }}"
         WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"
         SMTP_PWD: "{{SMTP_PWD}}"
-        RALLLY_SECRET_PASSWORD: "{{RALLLY_SECRET_PASSWORD}}"
-        RALLLY_DATABASE_PASSWORD: "{{RALLLY_DATABASE_PASSWORD}}"
+        RALLLY_SECRET_PASSWORD: "{{ RALLLY_SECRET_PASSWORD }}"
+        RALLLY_DATABASE_PASSWORD: "{{ RALLLY_DATABASE_PASSWORD }}"
+        RALLLY_DATABASE_INIT: "{{ RALLLY_DATABASE_INIT }}"
+        CLICKETING_DATABASE_PASSWORD: "{{ CLICKETING_DATABASE_PASSWORD }}"
+        CLICKETING_DATABASE_INIT: "{{ CLICKETING_DATABASE_INIT }}"
+        CLICKETING_ADMIN_TOKEN: "{{ CLICKETING_ADMIN_TOKEN }}"
+        SMTP_COMMUNICATION_PASSWORD: "{{ SMTP_COMMUNICATION_PASSWORD }}"
 
 - name: Setup automatic backups with Borg
   hosts: localhost
@@ -84,15 +97,6 @@
         paths:
           - "{{ BACKUP_DIR }}"
       register: repo_content
-
-    - name: Verify backup repository validity
-      ansible.builtin.command:
-        argv:
-          - borg
-          - check
-          - "{{ BACKUP_DIR }}"
-      when: repo_content.matched > 0
-      changed_when: false
 
     - name: Init backup repository
       ansible.builtin.command:
@@ -122,6 +126,7 @@
           - /var/lib/docker/volumes/nextcloud_nextcloud-app
           - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/lib/docker/volumes/wiki_images
+          - /var/lib/docker/volumes/rallly
         borgmatic_hooks:
           before_backup:
             - echo "`date` - Starting backup."
@@ -142,6 +147,16 @@
               port: 5001
               username: mattermost
               password: "{{ MATTERMOST_DATABASE_PASSWORD }}"
+            - name: clicketing
+              hostname: 127.0.0.1
+              port: 5003
+              username: clicketing
+              password: "{{ CLICKETING_DATABASE_PASSWORD }}"
+            - name: rallly
+              hostname: 127.0.0.1
+              port: 5005
+              username: rallly
+              password: "{{ RALLLY_DATABASE_PASSWORD }}"
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
