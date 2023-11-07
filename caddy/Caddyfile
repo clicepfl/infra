@@ -12,6 +12,10 @@ https://clic.epfl.ch {
 		redir /.well-known/caldav /nextcloud/remote.php/dav/ permanent
 	}
 
+	handle_path /bookstack* {
+		reverse_proxy http://bookstack:80
+	}
+
 	reverse_proxy /clicketing/api* http://clicketing-backend:8000
 	reverse_proxy /clicketing* http://clicketing-frontend:3000
 
