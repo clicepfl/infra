@@ -1,0 +1,10 @@
+services:
+  icelan:
+    image: ghcr.io/clicgamestarprojects/icelan-website-v2:master
+    hostname: icelan
+    networks:
+      caddy:
+
+networks:
+  caddy:
+    external: true

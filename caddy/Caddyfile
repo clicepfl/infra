@@ -1,3 +1,7 @@
+{
+	email it.clic@epfl.ch
+}
+
 https://clic.epfl.ch {
 	handle_path /nextcloud* {
 		header {
@@ -12,10 +16,6 @@ https://clic.epfl.ch {
 		redir /.well-known/caldav /nextcloud/remote.php/dav/ permanent
 	}
 
-	handle_path /bookstack* {
-		reverse_proxy http://bookstack:80
-	}
-
 	reverse_proxy /clicketing/api* http://clicketing-backend:8000
 	reverse_proxy /clicketing* http://clicketing-frontend:3000
 
@@ -23,10 +23,19 @@ https://clic.epfl.ch {
 
 	redir /armoire /armoire/ permanent
 	reverse_proxy /armoire/* http://vaultwarden:80
+	
+	handle_path /bookstack* {
+		reverse_proxy http://bookstack:80
+	}
+
 
 	reverse_proxy /* http://website:8000
 
 	redir /wiki* https://clic.epfl.ch:8443/
+}
+
+https://www.icelan.ch {
+	reverse_proxy http://icelan:80
 }
 
 https://clic.epfl.ch:8443 {
