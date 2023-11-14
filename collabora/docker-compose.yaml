@@ -1,0 +1,17 @@
+services:
+  collabora:
+    image: collabora/code:latest
+    hostname: collabora
+    ports:
+      - 9980:9980
+    configs:
+      - source: config
+        target: /etc/coolwsd/coolwsd.xml
+    environment:
+      username: admin
+      password: ${COLLABORA_ADMIN_PASSWORD}
+      extra_params: --o:ssl.enable=false
+
+configs:
+  config:
+    file: ./coolwsd.xml
