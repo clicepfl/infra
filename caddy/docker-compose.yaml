@@ -5,6 +5,7 @@ services:
       - 80:80
       - 443:443
       - 8443:8443
+      - 9980:9980
     volumes:
       - caddy_data:/data
       - caddy_config:/config
