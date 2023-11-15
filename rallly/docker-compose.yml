@@ -7,7 +7,8 @@ services:
       - ${RALLLY_DATABASE_INIT}:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_PASSWORD: ${RALLLY_DATABASE_PASSWORD}
-      POSTGRES_DB: db
+      POSTGRES_DB: rallly
+      POSTGRES_USER: rallly
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
