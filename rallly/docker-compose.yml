@@ -45,7 +45,7 @@ services:
       # Set to "true" if SSL is enabled for your SMTP connection
       SMTP_SECURE: "false"
       # Set to "true" to enable TLS. Might be needed for some SMTP connections
-      SMTP_TLS_ENABLED: "true"
+      SMTP_TLS_ENABLED: "false"
       
     networks:
       default:
