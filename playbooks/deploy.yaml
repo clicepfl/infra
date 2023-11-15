@@ -25,6 +25,7 @@
         - BOOKSTACK_DATABASE_INIT
         - SMTP_COMMUNICATION_PASSWORD
         - SMTP_IT_PASSWORD
+        - COLLABORA_ADMIN_PASSWORD
         - BACKUP_DIR
         - BACKUP_DISK
       when: value == ""
@@ -58,6 +59,8 @@
         - rallly
         - clicketing
         - bookstack
+        - icelan
+        - collabora
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
         MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
@@ -77,6 +80,7 @@
         CLICKETING_ADMIN_TOKEN: "{{ CLICKETING_ADMIN_TOKEN }}"
         BOOKSTACK_DATABASE_PASSWORD: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
         BOOKSTACK_DATABASE_INIT: "{{ BOOKSTACK_DATABASE_INIT }}"
+        COLLABORA_ADMIN_PASSWORD: "{{ COLLABORA_ADMIN_PASSWORD }}"
         SMTP_COMMUNICATION_PASSWORD: "{{ SMTP_COMMUNICATION_PASSWORD }}"
         SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"
 
@@ -133,7 +137,6 @@
           - /var/lib/docker/volumes/nextcloud_nextcloud-app
           - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/lib/docker/volumes/wiki_images
-          - /var/lib/docker/volumes/rallly
           - /var/lib/docker/volumes/bookstack_app
         borgmatic_hooks:
           before_backup:
