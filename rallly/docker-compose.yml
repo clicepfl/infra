@@ -24,7 +24,7 @@ services:
     environment:
       SECRET_PASSWORD: ${RALLLY_SECRET_PASSWORD}
 
-      DATABASE_URL: postgres://postgres:${RALLLY_DATABASE_PASSWORD}@database:5432/db
+      DATABASE_URL: postgres://rallly:${RALLLY_DATABASE_PASSWORD}@database:5432/rallly
       # REQUIRED CONFIG
       # The base url where this instance is accessible, including the scheme.
       # Example: https://example.com
