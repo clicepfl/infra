@@ -19,9 +19,6 @@ services:
 
   rallly:
     image: lukevella/rallly:3
-    depends_on:
-      database:
-        condition: service_healthy
     environment:
       SECRET_PASSWORD: ${RALLLY_SECRET_PASSWORD}
 
