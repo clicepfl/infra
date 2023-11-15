@@ -39,7 +39,7 @@ services:
       # The username (if auth is enabled on your SMTP server)
       SMTP_USER: it.clic
       # The password (if auth is enabled on your SMTP server)
-      SMTP_PWD: ${SMTP_PWD}
+      SMTP_PWD: ${SMTP_IT_PASSWORD}
       # The port of your SMTP server
       SMTP_PORT: 587
       # Set to "true" if SSL is enabled for your SMTP connection
