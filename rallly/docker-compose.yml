@@ -43,7 +43,7 @@ services:
       # The port of your SMTP server
       SMTP_PORT: 587
       # Set to "true" if SSL is enabled for your SMTP connection
-      SMTP_SECURE: "false"
+      SMTP_SECURE: "true"
       # Set to "true" to enable TLS. Might be needed for some SMTP connections
       SMTP_TLS_ENABLED: "false"
       
