@@ -2,7 +2,10 @@ services:
   roboclic:
     image: ghcr.io/clicepfl/roboclic-v2:main
     volumes:
-      - ./config.json:/config.json
+      - roboclic:/data
     environment:
       BOT_TOKEN: ${ROBOCLIC_TOKEN}
-      CONFIG_FILE: /config.json
+      ADMIN_TOKEN: ${ROBOCLIC_ADMIN_TOKEN}
+      DATA_DIR: /data
+volumes:
+  roboclic:
