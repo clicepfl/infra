@@ -132,6 +132,12 @@
           - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/lib/docker/volumes/wiki_images
           - /var/lib/docker/volumes/bookstack_app
+          - /var/lib/docker/volumes/mattermost_config
+          - /var/lib/docker/volumes/mattermost_data
+          - /var/lib/docker/volumes/mattermost_logs
+          - /var/lib/docker/volumes/mattermost_plugins
+          - /var/lib/docker/volumes/mattermost_client-plugins
+          - /var/lib/docker/volumes/mattermost_bleve-indexes
         borgmatic_hooks:
           before_backup:
             - echo "`date` - Starting backup."

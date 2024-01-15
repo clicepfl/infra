@@ -1,16 +1,16 @@
 services:
   database:
-      image: postgres:15.4-alpine3.18
-      volumes:
-        - database:/var/lib/postgresql/data
-        - ${MATTERMOST_DATABASE_INIT}:/docker-entrypoint-initdb.d
-      environment:
-        TZ: UTC
-        POSTGRES_USER: mattermost
-        POSTGRES_DB: mattermost
-        POSTGRES_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
-      ports:
-        - 5001:5432
+    image: postgres:15.4-alpine3.18
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ${MATTERMOST_DATABASE_INIT}:/docker-entrypoint-initdb.d
+    environment:
+      TZ: UTC
+      POSTGRES_USER: mattermost
+      POSTGRES_DB: mattermost
+      POSTGRES_PASSWORD: ${MATTERMOST_DATABASE_PASSWORD}
+    ports:
+      - 5001:5432
 
   mattermost:
     depends_on:
@@ -18,7 +18,12 @@ services:
     image: mattermost/mattermost-team-edition:release-8.1
     hostname: mattermost
     volumes:
-      - data:/mattermost
+      - config:/mattermost/config
+      - data:/mattermost/data
+      - logs:/mattermost/logs
+      - plugins:/mattermost/plugins
+      - client-plugins:/mattermost/client/plugins
+      - bleve-indexes:/mattermost/bleve-indexes
     environment:
       TZ: UTC
       MM_SQLSETTINGS_DRIVERNAME: postgres
@@ -30,7 +35,12 @@ services:
 
 volumes:
   database:
+  config:
   data:
+  logs:
+  plugins:
+  client-plugins:
+  bleve-indexes:
 networks:
   caddy:
     external: true
