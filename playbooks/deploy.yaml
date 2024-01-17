@@ -121,7 +121,7 @@
       vars:
         borg_repository: "{{ BACKUP_DIR }}"
         borg_encryption_passphrase: none # The variable is required, but ignored since we do not encrypt the backups
-        borgmatic_timer: cron
+        borgmatic_timer: systemd
         borgmatic_timer_hour: 0
         borgmatic_timer_minute: 0
         borg_source_directories:
