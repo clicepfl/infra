@@ -28,6 +28,8 @@
         - BACKUP_DISK
         - DIRECTUS_DATABASE_INIT
         - DIRECTUS_DATABASE_PASSWORD
+        - DIRECTUS_KEY
+        - DIRECTUS_SECRET
       when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
