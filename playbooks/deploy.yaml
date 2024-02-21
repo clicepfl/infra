@@ -26,6 +26,8 @@
         - COLLABORA_ADMIN_PASSWORD
         - BACKUP_DIR
         - BACKUP_DISK
+        - DIRECTUS_DATABASE_INIT
+        - DIRECTUS_DATABASE_PASSWORD
       when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
@@ -58,6 +60,7 @@
         - bookstack
         - icelan
         - collabora
+        - directus
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
         MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
@@ -75,6 +78,10 @@
         BOOKSTACK_DATABASE_PASSWORD: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
         BOOKSTACK_DATABASE_INIT: "{{ BOOKSTACK_DATABASE_INIT }}"
         COLLABORA_ADMIN_PASSWORD: "{{ COLLABORA_ADMIN_PASSWORD }}"
+        DIRECTUS_SECRET: "{{ DIRECTUS_SECRET }}"
+        DIRECTUS_KEY: "{{ DIRECTUS_KEY }}"
+        DIRECTUS_DATABASE_PASSWORD: "{{ DIRECTUS_DATABASE_PASSWORD }}"
+        DIRECTUS_ADMIN_PASSWORD: "{{ DIRECTUS_ADMIN_PASSWORD }}"
         SMTP_COMMUNICATION_PASSWORD: "{{ SMTP_COMMUNICATION_PASSWORD }}"
         SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"
 
@@ -168,6 +175,11 @@
               port: 5003
               username: clicketing
               password: "{{ CLICKETING_DATABASE_PASSWORD }}"
+            - name: directus
+              hostname: 127.0.0.1
+              port: 5005
+              username: directus
+              password: "{{ DIRECTUS_DATABASE_PASSWORD }}"
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4

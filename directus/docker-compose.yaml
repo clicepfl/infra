@@ -1,0 +1,47 @@
+services:
+  directus:
+    image: directus/directus
+    container_name: clic-directus
+    environment:
+      SECRET: ${DIRECTUS_SECRET}
+      KEY: ${DIRECTUS_KEY}
+      DB_CLIENT: postgres
+      DB_HOST: directus-postgres
+      DB_PORT: 5432
+      DB_DATABASE: directus_data
+      DB_USER: directus_user
+      DB_PASSWORD: ${DIRECTUS_DATABASE_PASSWORD}
+      PUBLIC_URL: http://localhost/directus
+      ROOT_REDIRECT: /directus/admin
+      ADMIN_EMAIL: clic@epfl.ch
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+    depends_on:
+      - directus-postgres
+    volumes:
+      - ../directus:/share
+      - directus-uploads:/directus/uploads
+      - directus-extensions:/directus-extensions
+    ports:
+      - 5005:5432
+
+  # Database for directus
+  directus-postgres:
+    container_name: clic-postgres
+    image: postgres
+    environment:
+      POSTGRES_DB: directus_data
+      POSTGRES_USER: directus_user
+      POSTGRES_PASSWORD: ${DIRECTUS_POSTGRES_PASSWORD}
+    volumes:
+      - "directus-data:/var/lib/postgresql/data"
+      - ${DIRECTUS_DATABASE_INIT}:/docker-entrypoint-initdb.d
+    
+volumes:
+  # Persist directus database
+  directus-data:
+  directus-uploads:
+  directus-extensions:
+
+networks:
+  caddy:
+    external: true
