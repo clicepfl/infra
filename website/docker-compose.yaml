@@ -4,6 +4,11 @@ services:
     image: ghcr.io/clicepfl/clic-website:main
     networks:
       caddy:
+  v2:
+    hostname: website-v2
+    image: ghcr.io/clicepfl/clic-website-v2-app:main
+    networks:
+      caddy:
 
 networks:
   caddy:
