@@ -1,7 +1,6 @@
 services:
   directus:
     image: directus/directus
-    container_name: clic-directus
     environment:
       SECRET: ${DIRECTUS_SECRET}
       KEY: ${DIRECTUS_KEY}
@@ -21,12 +20,12 @@ services:
       - ../directus:/share
       - directus-uploads:/directus/uploads
       - directus-extensions:/directus-extensions
-    ports:
-      - 5005:5432
+    hostname: directus
+    networks:
+      caddy:
 
   # Database for directus
   directus-postgres:
-    container_name: clic-postgres
     image: postgres
     environment:
       POSTGRES_DB: directus_data
@@ -35,6 +34,8 @@ services:
     volumes:
       - "directus-data:/var/lib/postgresql/data"
       - ${DIRECTUS_DATABASE_INIT}:/docker-entrypoint-initdb.d
+    ports:
+      - 5005:5432
     
 volumes:
   # Persist directus database
