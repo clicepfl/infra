@@ -5,7 +5,7 @@ services:
       SECRET: ${DIRECTUS_SECRET}
       KEY: ${DIRECTUS_KEY}
       DB_CLIENT: postgres
-      DB_HOST: directus-postgres
+      DB_HOST: database
       DB_PORT: 5432
       DB_DATABASE: directus_data
       DB_USER: directus_user
@@ -15,17 +15,18 @@ services:
       ADMIN_EMAIL: clic@epfl.ch
       ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
     depends_on:
-      - directus-postgres
+      - database
     volumes:
       - ../directus:/share
       - directus-uploads:/directus/uploads
       - directus-extensions:/directus-extensions
     hostname: directus
     networks:
+      default:
       caddy:
 
   # Database for directus
-  directus-postgres:
+  database:
     image: postgres
     environment:
       POSTGRES_DB: directus_data
