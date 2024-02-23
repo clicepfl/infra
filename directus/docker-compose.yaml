@@ -10,7 +10,7 @@ services:
       DB_DATABASE: directus_data
       DB_USER: directus_user
       DB_PASSWORD: ${DIRECTUS_DATABASE_PASSWORD}
-      PUBLIC_URL: http://localhost/directus
+      PUBLIC_URL: http://clic.epfl.ch/directus
       ROOT_REDIRECT: /directus/admin
       ADMIN_EMAIL: clic@epfl.ch
       ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
