@@ -28,6 +28,10 @@ https://clic.epfl.ch {
 		reverse_proxy http://bookstack:80
 	}
 
+	handle_path /directus* {
+		reverse_proxy http://directus:8055
+	}
+
 	reverse_proxy /* http://website:8000
 
 	redir /wiki* https://clic.epfl.ch:8443/
