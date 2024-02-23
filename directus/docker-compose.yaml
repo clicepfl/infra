@@ -14,6 +14,18 @@ services:
       ROOT_REDIRECT: /directus/admin
       ADMIN_EMAIL: clic@epfl.ch
       ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+
+      EMAIL_VERIFY_SETUP: "true"
+      EMAIL_FROM: it.clic@epfl.ch
+      EMAIL_TRANSPORT: smtp
+
+      EMAIL_SMTP_HOST: mail.epfl.ch
+      EMAIL_SMTP_PORT: "587"
+      EMAIL_SMTP_USER: it.clic
+      EMAIL_SMTP_PASSWORD: ${SMTP_IT_PASSWORD}
+      EMAIL_SMTP_SECURE: "false"
+      EMAIL_SMTP_NAME: Directus
+
     depends_on:
       - database
     volumes:
