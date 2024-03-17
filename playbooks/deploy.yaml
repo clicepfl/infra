@@ -1,6 +1,7 @@
 - name: Deploy all services
   hosts: localhost
   connection: local
+  become: true
   tasks:
     - name: Check extra variables
       ansible.builtin.fail:
