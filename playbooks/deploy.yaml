@@ -150,41 +150,17 @@
           - /var/lib/docker/volumes/mattermost_plugins
           - /var/lib/docker/volumes/mattermost_client-plugins
           - /var/lib/docker/volumes/mattermost_bleve-indexes
+          - /var/db-dumps
         borgmatic_hooks:
           before_backup:
             - echo "`date` - Starting backup."
-          mariadb_databases:
-            - name: nextcloud
-              hostname: 127.0.0.1
-              port: 5000
-              username: nextcloud
-              password: "{{ NEXTCLOUD_DATABASE_PASSWORD }}"
-            - name: my_wiki
-              hostname: 127.0.0.1
-              port: 5002
-              username: wikiuser
-              password: "{{ WIKI_DATABASE_PASSWORD }}"
-            - name: bookstack
-              hostname: 127.0.0.1
-              port: 5004
-              username: bookstack
-              password: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
-          postgresql_databases:
-            - name: mattermost
-              hostname: 127.0.0.1
-              port: 5001
-              username: mattermost
-              password: "{{ MATTERMOST_DATABASE_PASSWORD }}"
-            - name: clicketing
-              hostname: 127.0.0.1
-              port: 5003
-              username: clicketing
-              password: "{{ CLICKETING_DATABASE_PASSWORD }}"
-            - name: directus
-              hostname: 127.0.0.1
-              port: 5005
-              username: directus
-              password: "{{ DIRECTUS_DATABASE_PASSWORD }}"
+            - mkdir -p /var/db-dumps
+            - MYSQL_PWD={{ NEXTCLOUD_DATABASE_PASSWORD }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5000 --protocol tcp --user nextcloud --databases nextcloud --result-file /var/db-dumps/nextcloud.sql
+            - MYSQL_PWD={{ WIKI_DATABASE_PASSWORD }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5002 --protocol tcp --user wikiuser --databases my_wiki --result-file /var/db-dumps/my_wiki.sql
+            - MYSQL_PWD={{ BOOKSTACK_DATABASE_PASSWORD }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004 --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
+            - PGPASSWORD={{ MATTERMOST_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5001 --username mattermost --format plain mattermost -f /var/db-dumps/mattermost.sql
+            - PGPASSWORD={{ CLICKETING_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003 --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
+            - PGPASSWORD={{ DIRECTUS_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005 --username directus --format plain directus -f /var/db-dumps/directus.sql
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
