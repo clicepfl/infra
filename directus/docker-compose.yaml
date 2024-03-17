@@ -39,7 +39,7 @@ services:
 
   # Database for directus
   database:
-    image: postgres
+    image: postgres:postgres:15.4-alpine3.18
     environment:
       POSTGRES_DB: directus_data
       POSTGRES_USER: directus_user
