@@ -2,6 +2,10 @@ services:
   dev:
     hostname: website-dev
     image: ghcr.io/clicepfl/clic-website-v2:main
+    environment:
+      DIRECTUS_URL: https://clic.epfl.ch/directus
+      DIRECTUS_TOKEN: ${WEBSITE_DIRECTUS_TOKEN}
+      NEXT_PUBLIC_DIRECTUS_URL: https://clic.epfl.ch/directus
     networks:
       caddy:
 

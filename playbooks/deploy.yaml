@@ -32,6 +32,7 @@
         - DIRECTUS_DATABASE_PASSWORD
         - DIRECTUS_KEY
         - DIRECTUS_SECRET
+        - WEBSITE_DIRECTUS_TOKEN
       when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
@@ -90,6 +91,7 @@
         DIRECTUS_DATABASE_INIT: "{{ DIRECTUS_DATABASE_INIT }}"
         SMTP_COMMUNICATION_PASSWORD: "{{ SMTP_COMMUNICATION_PASSWORD }}"
         SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"
+        WEBSITE_DIRECTUS_TOKEN: "{{ WEBSITE_DIRECTUS_TOKEN }}"
 
 - name: Setup automatic backups with Borg
   hosts: localhost
