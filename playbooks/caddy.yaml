@@ -13,11 +13,11 @@
           - curl
 
     - name: Update keyring
-      ansible.builtin.command: curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+      ansible.builtin.shell: curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
       changed_when: true
 
     - name: Update mirror list
-      ansible.builtin.command: curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
+      ansible.builtin.shell: curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
       changed_when: true
 
     - name: Install caddy
@@ -31,19 +31,6 @@
         src: ../caddy/Caddyfile
         dest: /etc/caddy/Caddyfile
         mode: "740"
-
-    - name: Setup systemd service
-      ansible.builtin.copy:
-        src: ../caddy/caddy.service
-        dest: /lib/systemd/system/
-        mode: "740"
-
-    - name: Start systemd service
-      ansible.builtin.systemd:
-        name: caddy
-        daemon_reload: true
-        state: started
-        enabled: true
 
     - name: Reload Caddyfile
       ansible.builtin.command: caddy reload --config /etc/caddy/Caddyfile
