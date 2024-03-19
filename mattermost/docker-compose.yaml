@@ -29,9 +29,8 @@ services:
       MM_SQLSETTINGS_DRIVERNAME: postgres
       MM_SERVICESETTINGS_SITEURL: https://clic.epfl.ch/mattermost
       MM_SQLSETTINGS_DATASOURCE: postgres://mattermost:${MATTERMOST_DATABASE_PASSWORD}@database:5432/mattermost?sslmode=disable&connect_timeout=10
-    networks:
-      default:
-      caddy:
+    ports:
+      - 8004:8065
 
 volumes:
   database:
@@ -41,6 +40,3 @@ volumes:
   plugins:
   client-plugins:
   bleve-indexes:
-networks:
-  caddy:
-    external: true

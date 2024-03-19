@@ -6,9 +6,5 @@ services:
       DIRECTUS_URL: https://clic.epfl.ch/directus
       DIRECTUS_TOKEN: ${WEBSITE_DIRECTUS_TOKEN}
       NEXT_PUBLIC_DIRECTUS_URL: https://clic.epfl.ch/directus
-    networks:
-      caddy:
-
-networks:
-  caddy:
-    external: true
+    ports:
+      - 8008:3000

@@ -7,12 +7,8 @@ services:
     environment:
       DOMAIN: http://localhost/armoire
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
-    
-    networks:
-      caddy:
+    ports:
+      - 8003:80
 
-networks:
-  caddy:
-    external: true
 volumes:
   vaultwarden:

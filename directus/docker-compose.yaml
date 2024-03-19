@@ -33,9 +33,8 @@ services:
       - directus-uploads:/directus/uploads
       - directus-extensions:/directus-extensions
     hostname: directus
-    networks:
-      default:
-      caddy:
+    ports:
+      - 8001:8055
 
   # Database for directus
   database:
@@ -55,7 +54,3 @@ volumes:
   directus-data:
   directus-uploads:
   directus-extensions:
-
-networks:
-  caddy:
-    external: true

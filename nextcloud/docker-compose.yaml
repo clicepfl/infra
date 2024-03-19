@@ -27,9 +27,8 @@ services:
       NC_dbname: nextcloud
       NC_dbuser: nextcloud
       NC_dbpassword: ${NEXTCLOUD_DATABASE_PASSWORD}
-    networks:
-      caddy:
-      default:
+    ports:
+      - 8005:80
 
   # Nextcloud requires periodic tasks, usually scheduled with cron. 
   # We can simply run a second container on the same volume, with the entrypoint /cron.sh
@@ -49,10 +48,6 @@ services:
       NC_dbuser: nextcloud
       NC_dbpassword: ${NEXTCLOUD_DATABASE_PASSWORD}
     entrypoint: /cron.sh
-
-networks:
-  caddy:
-    external: true
 
 volumes:
   nextcloud-db:

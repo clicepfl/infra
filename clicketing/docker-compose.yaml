@@ -27,9 +27,8 @@ services:
       SMTP_PASSWORD: ${SMTP_COMMUNICATION_PASSWORD}
       SMTP_MAIL: communication.clic@epfl.ch
       SMTP_SERVER: mail.epfl.ch
-    networks:
-      default:
-      caddy:
+    ports:
+      - 8006:8000
 
   frontend:
     image: ghcr.io/clicepfl/clicketing-frontend:main
@@ -38,12 +37,9 @@ services:
       ADMIN_TOKEN: ${CLICKETING_ADMIN_TOKEN}
       NEXT_PUBLIC_API_URL: https://clic.epfl.ch/clicketing/api
       NEXT_PUBLIC_SESSION_COOKIE_NAME: clicketing-session
-    networks:
-      caddy:
+    ports:
+      - 8007:3000
 
 volumes:
   database:
   data:
-networks:
-  caddy:
-    external: true

@@ -2,9 +2,6 @@ services:
   v1:
     hostname: website
     image: ghcr.io/clicepfl/clic-website:main
-    networks:
-      caddy:
+    ports:
+      - 8000:8000
 
-networks:
-  caddy:
-    external: true
