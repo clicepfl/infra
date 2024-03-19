@@ -8,7 +8,7 @@ https://clic.epfl.ch {
 			Strict-Transport-Security max-age=31536000;
 		}
 
-		reverse_proxy http://localhost:8005
+		reverse_proxy http://0.0.0.0:8005
 	}
 
 	handle /.well-known {
@@ -16,25 +16,25 @@ https://clic.epfl.ch {
 		redir /.well-known/caldav /nextcloud/remote.php/dav/ permanent
 	}
 
-	reverse_proxy /clicketing/api* http://localhost:8006
-	reverse_proxy /clicketing* http://localhost:8007
+	reverse_proxy /clicketing/api* http://0.0.0.0:8006
+	reverse_proxy /clicketing* http://0.0.0.0:8007
 
-	reverse_proxy /mattermost* http://localhost:8004
+	reverse_proxy /mattermost* http://0.0.0.0:8004
 
 	redir /armoire /armoire/ permanent
-	reverse_proxy /armoire/* http://localhost:8003
+	reverse_proxy /armoire/* http://0.0.0.0:8003
 
 	handle_path /bookstack* {
-		reverse_proxy http://localhost:8002
+		reverse_proxy http://0.0.0.0:8002
 	}
 
 	handle_path /directus* {
-		reverse_proxy http://localhost:8001
+		reverse_proxy http://0.0.0.0:8001
 	}
 
-	reverse_proxy /dev* http://localhost:8008
+	reverse_proxy /dev* http://0.0.0.0:8008
 
-	reverse_proxy /* http://localhost:8000
+	reverse_proxy /* http://0.0.0.0:8000
 
 	redir /wiki* https://clic.epfl.ch:8443/
 }
@@ -44,9 +44,9 @@ https://clic.epfl.ch:9980 {
 }
 
 https://www.icelan.ch {
-	reverse_proxy http://localhost:8009
+	reverse_proxy http://0.0.0.0:8009
 }
 
 https://clic.epfl.ch:8443 {
-	reverse_proxy /* http://localhost:8010
+	reverse_proxy /* http://0.0.0.0:8010
 }
