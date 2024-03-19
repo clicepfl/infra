@@ -41,11 +41,6 @@
       community.docker.docker_swarm:
         state: present
 
-    - name: Create docker network
-      community.docker.docker_network:
-        name: caddy
-        scope: swarm
-
     - name: Deploy
       community.docker.docker_stack:
         state: present
@@ -54,7 +49,6 @@
         compose:
           - "../{{ item }}/docker-compose.yaml"
       loop:
-        - caddy
         - mattermost
         - nextcloud
         - roboclic
