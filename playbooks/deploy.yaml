@@ -1,6 +1,8 @@
 - name: Deploy all services
   hosts: localhost
   connection: local
+  become_user: root
+  become_method: sudo
   become: true
   tasks:
     - name: Check extra variables
@@ -26,7 +28,6 @@
         - SMTP_IT_PASSWORD
         - COLLABORA_ADMIN_PASSWORD
         - BACKUP_DIR
-        - BACKUP_DISK
         - DIRECTUS_ADMIN_PASSWORD
         - DIRECTUS_DATABASE_INIT
         - DIRECTUS_DATABASE_PASSWORD
@@ -90,6 +91,9 @@
 - name: Setup automatic backups with Borg
   hosts: localhost
   connection: local
+  become_user: root
+  become_method: sudo
+  become: true
   tasks:
     - name: Install required packages
       ansible.builtin.apt:
@@ -99,18 +103,11 @@
           - postgresql-client
           - mariadb-client
 
-    - name: Mount secondary disk onto backup directory
-      ansible.posix.mount:
-        state: mounted
+    - name: Create backup dir
+      ansible.builtin.file:
         path: "{{ BACKUP_DIR }}"
-        src: "{{ BACKUP_DISK }}"
-        fstype: ext4
-
-    - name: Verify backup repository existence
-      ansible.builtin.find:
-        paths:
-          - "{{ BACKUP_DIR }}"
-      register: repo_content
+        state: directory
+        mode: "0755"
 
     - name: Init backup repository
       ansible.builtin.command:
@@ -121,8 +118,10 @@
           - none
           - "{{ BACKUP_DIR }}"
       register: repo_init
-      when: repo_content.matched == 0
       changed_when: repo_init.rc == 0
+      failed_when:
+        - repo_init.rc != 0
+        - repo_init.rc != 2
 
     - name: Launch borgmatic
       ansible.builtin.include_role:
