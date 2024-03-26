@@ -102,6 +102,7 @@
           - borgbackup
           - postgresql-client
           - mariadb-client
+          - cron
 
     - name: Create backup dir
       ansible.builtin.file:
