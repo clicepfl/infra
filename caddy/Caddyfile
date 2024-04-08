@@ -40,7 +40,7 @@ https://clic.epfl.ch {
 }
 
 https://clic.epfl.ch:9980 {
-	reverse_proxy http://collabora:9980
+	reverse_proxy http://0.0.0.0:9980
 }
 
 https://www.icelan.ch {

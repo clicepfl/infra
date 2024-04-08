@@ -12,14 +12,8 @@ services:
       - type: bind
         source: ./Caddyfile
         target: /etc/caddy/Caddyfile
-    networks:
-      caddy: 
 
 volumes:
   caddy_data:
     external: true
   caddy_config:
-
-networks:
-  caddy:
-    external: true

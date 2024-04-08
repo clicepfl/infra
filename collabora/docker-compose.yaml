@@ -11,12 +11,9 @@ services:
       extra_params: --o:ssl.enable=false --o:ssl.termination=true
       DONT_GEN_SSL_CERT: 1
       server_name: clic.epfl.ch:9980
-    networks:
-      - caddy
+    ports:
+      - 9980:9980
 
 configs:
   config:
     file: ./coolwsd.xml
-networks:
-  caddy:
-    external: true
