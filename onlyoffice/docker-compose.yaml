@@ -1,0 +1,15 @@
+services:
+   onlyoffice-document-server:
+    hostname: onlyoffice-document-server
+    image: onlyoffice/documentserver:latest
+    environment:
+      - JWT_SECRET=${ONLYOFFICE_JWT_SECRET}
+    ports:
+      - 9000:80
+    volumes:
+      - data:/var/www/onlyoffice/Data
+      - log:/var/log/onlyoffice
+
+volumes:
+  data:
+  log:

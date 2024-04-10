@@ -26,7 +26,7 @@
         - BOOKSTACK_DATABASE_INIT
         - SMTP_COMMUNICATION_PASSWORD
         - SMTP_IT_PASSWORD
-        - COLLABORA_ADMIN_PASSWORD
+        - ONLYOFFICE_JWT_SECRET
         - BACKUP_DIR
         - DIRECTUS_ADMIN_PASSWORD
         - DIRECTUS_DATABASE_INIT
@@ -59,7 +59,7 @@
         - clicketing
         - bookstack
         - icelan
-        - collabora
+        - onlyoffice
         - directus
         - website-dev
       environment:
@@ -78,7 +78,7 @@
         CLICKETING_ADMIN_TOKEN: "{{ CLICKETING_ADMIN_TOKEN }}"
         BOOKSTACK_DATABASE_PASSWORD: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
         BOOKSTACK_DATABASE_INIT: "{{ BOOKSTACK_DATABASE_INIT }}"
-        COLLABORA_ADMIN_PASSWORD: "{{ COLLABORA_ADMIN_PASSWORD }}"
+        ONLYOFFICE_JWT_SECRET: "{{ ONLYOFFICE_JWT_SECRET }}"
         DIRECTUS_SECRET: "{{ DIRECTUS_SECRET }}"
         DIRECTUS_KEY: "{{ DIRECTUS_KEY }}"
         DIRECTUS_DATABASE_PASSWORD: "{{ DIRECTUS_DATABASE_PASSWORD }}"
