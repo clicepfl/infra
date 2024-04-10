@@ -2,7 +2,7 @@
   hosts: localhost
   connection: local
   become_user: root
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   become: true
   tasks:
     - name: Check extra variables
@@ -92,7 +92,7 @@
   hosts: localhost
   connection: local
   become_user: root
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   become: true
   tasks:
     - name: Install required packages
