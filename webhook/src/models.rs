@@ -3,22 +3,22 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct User {
-    date: String,
-    email: Option<String>,
-    name: String,
-    username: String,
+    pub date: String,
+    pub email: Option<String>,
+    pub name: String,
+    pub username: String,
 }
 
 #[derive(Deserialize)]
 pub struct PushPayload {
-    after: String,
-    base_ref: Option<String>,
-    before: String,
-    compare: String,
-    created: bool,
-    deleted: bool,
-    force: bool,
-    pusher: User,
+    pub after: String,
+    pub base_ref: Option<String>,
+    pub before: String,
+    pub compare: String,
+    pub created: bool,
+    pub deleted: bool,
+    pub force: bool,
+    pub pusher: User,
     #[serde(rename = "ref")]
-    ref_: String,
+    pub ref_: String,
 }
