@@ -1,18 +1,25 @@
-use actix_web::{get, http::StatusCode, web, App, Error, HttpMessage, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{
+    http::StatusCode,
+    post,
+    web::{self, Payload},
+    App, HttpRequest, HttpResponse, HttpServer,
+};
 
+use crate::{error::Error, validation::validate_call};
+
+mod error;
 mod models;
+mod validation;
 
-fn validate_signature(req: &HttpRequest) -> bool {
-    req.headers()
-        .get("X-Hub-Signature")
-        .is_some_and(|v| v == "1234")
-}
+#[post("/hello/{name}")]
+async fn greet(
+    name: web::Path<String>,
+    req: HttpRequest,
+    payload: Payload,
+) -> Result<HttpResponse<String>, Error> {
+    let payload = payload.to_bytes().await?;
 
-#[get("/hello/{name}")]
-async fn greet(name: web::Path<String>, req: HttpRequest) -> Result<HttpResponse<String>, Error> {
-    if !validate_signature(&req) {
-        return HttpResponse::Forbidden().message_body("Forbidden".to_owned());
-    }
+    validate_call(req.headers(), &payload)?;
 
     Ok(HttpResponse::with_body(
         StatusCode::OK,
