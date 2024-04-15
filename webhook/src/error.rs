@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use actix_web::{http::StatusCode, HttpResponse, Responder, ResponseError};
+use actix_web::{http::StatusCode, ResponseError};
 
 #[derive(Debug)]
 pub enum Error {
