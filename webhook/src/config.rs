@@ -4,8 +4,8 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Service {
-    pub start_command: String,
-    pub stop_command: String,
+    pub start_command: Option<String>,
+    pub stop_command: Option<String>,
 }
 
 #[derive(Deserialize)]

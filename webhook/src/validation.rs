@@ -9,12 +9,10 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
         .get("X-Hub-Signature-256")
         .map(|h| h.to_str().map(|s| s.strip_prefix("sha256=")))
     else {
-        println!("Unable to get the signature");
         return Err(Error::InvalidSignature);
     };
 
     let Ok(signature) = hex::decode(signature) else {
-        println!("Unable to decode the signature");
         return Err(Error::InvalidSignature);
     };
 

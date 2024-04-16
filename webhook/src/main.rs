@@ -1,40 +1,19 @@
-use actix_web::{
-    http::StatusCode,
-    post,
-    web::{self, Payload},
-    App, HttpRequest, HttpResponse, HttpServer,
-};
+use actix_web::{App, HttpServer};
 use config::config;
-
-use crate::{error::Error, validation::validate_call};
+use routes::{generic, targeted};
 
 mod config;
 mod error;
 mod models;
+mod routes;
 mod validation;
 
-#[post("/hello/{name}")]
-async fn greet(
-    name: web::Path<String>,
-    req: HttpRequest,
-    payload: Payload,
-) -> Result<HttpResponse<String>, Error> {
-    let payload = payload.to_bytes().await?;
-
-    validate_call(req.headers(), &payload)?;
-
-    Ok(HttpResponse::with_body(
-        StatusCode::OK,
-        format!("Hello {name}!"),
-    ))
-}
-
-#[actix_web::main] // or #[tokio::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
     // Load the config
     config();
 
-    HttpServer::new(|| App::new().service(greet))
+    HttpServer::new(|| App::new().service(generic).service(targeted))
         .bind(("127.0.0.1", 8080))?
         .run()
         .await
