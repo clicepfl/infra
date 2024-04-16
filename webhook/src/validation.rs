@@ -2,7 +2,7 @@ use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
-use crate::{error::Error, models::PushPayload};
+use crate::{config::config, error::Error, models::PushPayload};
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     let Some(Ok(Some(signature))) = headers
@@ -18,7 +18,7 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
         return Err(Error::InvalidSignature);
     };
 
-    let mut hmac = Hmac::<Sha256>::new_from_slice(b"It's a Secret to Everybody").unwrap();
+    let mut hmac = Hmac::<Sha256>::new_from_slice(config().secret.as_bytes()).unwrap();
     hmac.update(payload);
 
     if hmac.verify_slice(&signature).is_ok() {
@@ -35,7 +35,7 @@ fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
 
     let payload: PushPayload = serde_json::from_slice(payload)?;
 
-    if payload.ref_ == "refs/heads/main" {
+    if payload.ref_ == config().ref_ {
         Ok(())
     } else {
         Err(Error::InvalidRef)

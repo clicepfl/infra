@@ -4,9 +4,11 @@ use actix_web::{
     web::{self, Payload},
     App, HttpRequest, HttpResponse, HttpServer,
 };
+use config::config;
 
 use crate::{error::Error, validation::validate_call};
 
+mod config;
 mod error;
 mod models;
 mod validation;
@@ -29,6 +31,9 @@ async fn greet(
 
 #[actix_web::main] // or #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    // Load the config
+    config();
+
     HttpServer::new(|| App::new().service(greet))
         .bind(("127.0.0.1", 8080))?
         .run()

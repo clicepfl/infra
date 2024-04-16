@@ -1,0 +1,11 @@
+{
+    "secret": "hmac-secret",
+    "ref": "refs/heads/main",
+    "generic_start_command": "echo generic >> out",
+    "services": {
+        "specific": {
+            "start_command": "echo start >> out",
+            "stop_command": "echo  stop >> out"
+        }
+    }
+}
