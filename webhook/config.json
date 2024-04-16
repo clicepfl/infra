@@ -4,7 +4,7 @@
     "generic_start_command": "echo generic >> out",
     "services": {
         "specific": {
-            "start_command": "echo start >> out",
+            "start_command": "echo start && false",
             "stop_command": "echo  stop >> out"
         }
     }

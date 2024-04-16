@@ -7,11 +7,19 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 
-use crate::{config::config, error::Error, validation::validate_call};
+use crate::{config::config, error::Error, models::PushPayload, validation::validate_call};
 
 fn try_run(command: &str) {
-    if let Err(e) = Command::new("sh").args(["-c", &command]).output() {
-        println!("Error while running '{command}':\n{e:?}",)
+    match Command::new("sh").args(["-c", &command]).output() {
+        Ok(r) if !r.status.success() => log::error!(
+            "Command '{}' failed with {}\nSTDOUT:\n{}STDERR:\n{}",
+            command,
+            r.status,
+            String::from_utf8(r.stdout).unwrap_or("<Unable to parse to utf-8 string>".to_owned()),
+            String::from_utf8(r.stderr).unwrap_or("<Unable to parse to utf-8 string>".to_owned())
+        ),
+        Err(e) => log::error!("Unable to start command '{command}': {e:?}",),
+        _ => {}
     }
 }
 
@@ -19,8 +27,16 @@ fn try_run(command: &str) {
 pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
     validate_call(req.headers(), &payload)?;
+    let payload = serde_json::from_slice::<PushPayload>(&payload)?;
+
+    log::info!(
+        "Triggering global restart from commit [{}] (pushed by @{})",
+        payload.after,
+        payload.pusher.username
+    );
 
     for service in config().services.iter() {
+        log::info!("Restarting service {}", service.0);
         if let Some(cmd) = service.1.stop_command.as_ref() {
             try_run(cmd)
         }
@@ -30,6 +46,8 @@ pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<
     }
 
     try_run(&config().generic_start_command);
+
+    log::info!("Full restart complete");
 
     Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
 }
@@ -42,6 +60,14 @@ pub async fn targeted(
 ) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
     validate_call(req.headers(), &payload)?;
+    let payload = serde_json::from_slice::<PushPayload>(&payload)?;
+
+    log::info!(
+        "Triggering restart for service {} from commit [{}] (pushed by @{})",
+        service,
+        payload.after,
+        payload.pusher.username
+    );
 
     if let Some(service) = config().services.get(service.as_str()) {
         if let Some(cmd) = service.stop_command.as_ref() {
@@ -51,9 +77,10 @@ pub async fn targeted(
             try_run(cmd)
         }
 
+        log::info!("Partial restart complete");
         Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
     } else {
+        log::warn!("Service {} not found", service);
         Err(Error::ServiceNotFound)
     }
-
 }

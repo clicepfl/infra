@@ -9,10 +9,18 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
         .get("X-Hub-Signature-256")
         .map(|h| h.to_str().map(|s| s.strip_prefix("sha256=")))
     else {
+        log::warn!(
+            "Received request with badly formatted signature (origin: {:?})",
+            headers.get("X-Forwarded-For")
+        );
         return Err(Error::InvalidSignature);
     };
 
     let Ok(signature) = hex::decode(signature) else {
+        log::warn!(
+            "Received request with badly formatted signature (origin: {:?})",
+            headers.get("X-Forwarded-For")
+        );
         return Err(Error::InvalidSignature);
     };
 
@@ -22,12 +30,20 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     if hmac.verify_slice(&signature).is_ok() {
         Ok(())
     } else {
+        log::warn!(
+            "Received request with invalid signature (origin: {:?})",
+            headers.get("X-Forwarded-For")
+        );
         Err(Error::InvalidSignature)
     }
 }
 
 fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     if !headers.get("X-GitHub-Event").is_some_and(|h| h == "push") {
+        log::trace!(
+            "Received request for incorrect event ({:?})",
+            headers.get("X-GitHub-Event")
+        );
         return Err(Error::InvalidEvent);
     }
 
@@ -36,6 +52,7 @@ fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     if payload.ref_ == config().ref_ {
         Ok(())
     } else {
+        log::trace!("Received request for incorrect ref ({:?})", payload.ref_);
         Err(Error::InvalidRef)
     }
 }
