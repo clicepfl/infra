@@ -43,6 +43,7 @@ services:
       POSTGRES_DB: directus_data
       POSTGRES_USER: directus_user
       POSTGRES_PASSWORD: ${DIRECTUS_DATABASE_PASSWORD}
+      DB_POOL_MIN: 0
     volumes:
       - "directus-data:/var/lib/postgresql/data"
       - ${DIRECTUS_DATABASE_INIT}:/docker-entrypoint-initdb.d
