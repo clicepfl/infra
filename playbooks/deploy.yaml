@@ -46,7 +46,7 @@
       community.docker.docker_stack:
         state: present
         name: "{{ item }}"
-        resolve_image: changed
+        resolve_image: always
         compose:
           - "../{{ item }}/docker-compose.yaml"
       loop:
