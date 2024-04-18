@@ -1,6 +1,7 @@
 services:
   directus:
     image: directus/directus
+    hostname: directus
     environment:
       SECRET: ${DIRECTUS_SECRET}
       KEY: ${DIRECTUS_KEY}
@@ -32,7 +33,6 @@ services:
       - ../directus:/share
       - directus-uploads:/directus/uploads
       - directus-extensions:/directus-extensions
-    hostname: directus
     ports:
       - 8001:8055
 
@@ -43,12 +43,16 @@ services:
       POSTGRES_DB: directus_data
       POSTGRES_USER: directus_user
       POSTGRES_PASSWORD: ${DIRECTUS_DATABASE_PASSWORD}
-      DB_POOL_MIN: 0
     volumes:
       - "directus-data:/var/lib/postgresql/data"
       - ${DIRECTUS_DATABASE_INIT}:/docker-entrypoint-initdb.d
     ports:
       - 5005:5432
+
+  # Query directus every 5 minutes to prevent Docker swarm from dropping the database connection.
+  connection-refresh:
+    image: alpine/curl:latest
+    entrypoint: ["sh", "-c", "while true; do curl http://directus:8055/items/association; sleep 5m; done"]
     
 volumes:
   # Persist directus database
