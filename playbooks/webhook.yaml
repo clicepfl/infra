@@ -69,4 +69,4 @@
       ansible.builtin.systemd:
         service: webhook
         enabled: true
-        state: started
+        state: restarted

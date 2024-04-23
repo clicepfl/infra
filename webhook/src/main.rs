@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
     config();
 
     HttpServer::new(|| App::new().service(generic).service(targeted))
-        .bind(("127.0.0.1", 4000))?
+        .bind(("127.0.0.1", 4001))?
         .run()
         .await
 }
