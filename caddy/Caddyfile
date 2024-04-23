@@ -11,6 +11,10 @@ https://clic.epfl.ch {
 		reverse_proxy http://0.0.0.0:8005
 	}
 
+	handle_path /webhook* {
+		reverse_proxy http://0.0.0.0:4000
+	}
+
 	handle /.well-known {
 		redir /.well-known/carddav /nextcloud/remote.php/dav/ permanent
 		redir /.well-known/caldav /nextcloud/remote.php/dav/ permanent
