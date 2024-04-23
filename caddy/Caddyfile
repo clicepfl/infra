@@ -43,7 +43,7 @@ https://clic.epfl.ch {
 	redir /wiki* https://clic.epfl.ch:8443/
 }
 
-https://clic.epfl.ch:9000 {
+https://clic.epfl.ch:7000 {
 	reverse_proxy http://0.0.0.0:9000
 }
 
