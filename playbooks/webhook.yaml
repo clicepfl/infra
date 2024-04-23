@@ -1,6 +1,6 @@
 - name: Build webhook
   hosts: localhost
-  become: false
+  become: true
   tasks:
     - name: Copy webhook source to build directory
       ansible.builtin.copy:
