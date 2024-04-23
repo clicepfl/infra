@@ -2,7 +2,7 @@ use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
-use crate::{config::config, error::Error, models::PushPayload};
+use crate::{config::config, error::Error};
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     let Some(Ok(Some(signature))) = headers

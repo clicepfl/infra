@@ -7,7 +7,7 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 
-use crate::{config::config, error::Error, models::PushPayload, validation::validate_call};
+use crate::{config::config, error::Error, validation::validate_call};
 
 fn try_run(command: &str) {
     match Command::new("sh").args(["-c", &command]).output() {
@@ -30,13 +30,7 @@ pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
-    let payload = serde_json::from_slice::<PushPayload>(&payload)?;
-
-    log::info!(
-        "Triggering global restart from commit [{}] (pushed by @{:?})",
-        payload.after,
-        payload.pusher.email
-    );
+    log::info!("Triggering global restart",);
 
     for service in config().services.iter() {
         log::info!("Restarting service {}", service.0);
@@ -66,14 +60,7 @@ pub async fn targeted(
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
-    let payload = serde_json::from_slice::<PushPayload>(&payload)?;
-
-    log::info!(
-        "Triggering restart for service {} from commit [{}] (pushed by @{:?})",
-        service,
-        payload.after,
-        payload.pusher.email
-    );
+    log::info!("Triggering restart for service {}", service,);
 
     if let Some(service) = config().services.get(service.as_str()) {
         if let Some(cmd) = service.stop_command.as_ref() {
