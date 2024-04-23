@@ -11,8 +11,6 @@ pub struct Service {
 #[derive(Deserialize)]
 pub struct Config {
     pub secret: String,
-    #[serde(rename = "ref")]
-    pub ref_: String,
     pub generic_start_command: String,
     pub services: BTreeMap<String, Service>,
 }

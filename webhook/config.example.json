@@ -1,6 +1,5 @@
 {
     "secret": "hmac-secret",
-    "ref": "refs/heads/main",
     "generic_start_command": "echo generic >> /tmp/webhook.out",
     "services": {
         "specific": {

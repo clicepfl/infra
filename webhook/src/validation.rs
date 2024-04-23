@@ -2,7 +2,7 @@ use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
-use crate::{config::config, error::Error, models::PushPayload};
+use crate::{config::config, error::Error};
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     let Some(Ok(Some(signature))) = headers
@@ -38,27 +38,7 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     }
 }
 
-fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
-    if !headers.get("X-GitHub-Event").is_some_and(|h| h == "push") {
-        log::trace!(
-            "Received request for incorrect event ({:?})",
-            headers.get("X-GitHub-Event")
-        );
-        return Err(Error::InvalidEvent);
-    }
-
-    let payload: PushPayload = serde_json::from_slice(payload)?;
-
-    if payload.ref_ == config().ref_ {
-        Ok(())
-    } else {
-        log::trace!("Received request for incorrect ref ({:?})", payload.ref_);
-        Err(Error::InvalidRef)
-    }
-}
-
 pub fn validate_call(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     validate_signature(headers, payload)?;
-    validate_event(headers, payload)?;
     Ok(())
 }

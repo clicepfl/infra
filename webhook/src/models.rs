@@ -11,6 +11,4 @@ pub struct User {
 pub struct PushPayload {
     pub after: String,
     pub pusher: User,
-    #[serde(rename = "ref")]
-    pub ref_: String,
 }
