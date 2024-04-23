@@ -17,7 +17,7 @@
           - cargo
           - build
           - --release
-        output_logs: true
+        auto_remove: true
         detach: false
         mounts:
           - type: bind
