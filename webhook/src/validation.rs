@@ -2,7 +2,7 @@ use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
-use crate::{config::config, error::Error};
+use crate::{config::config, error::Error, models::PushPayload};
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     let Some(Ok(Some(signature))) = headers
@@ -38,7 +38,11 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     }
 }
 
-pub fn validate_call(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
+fn validate_event(headers: &HeaderMap) -> Result<bool, Error> {
+    Ok(headers.get("X-GitHub-Event").is_some_and(|h| h != "ping"))
+}
+
+pub fn validate_call(headers: &HeaderMap, payload: &[u8]) -> Result<bool, Error> {
     validate_signature(headers, payload)?;
-    Ok(())
+    validate_event(headers)
 }

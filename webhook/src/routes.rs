@@ -26,7 +26,10 @@ fn try_run(command: &str) {
 #[post("/")]
 pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
-    validate_call(req.headers(), &payload)?;
+    if !validate_call(req.headers(), &payload)? {
+        return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
+    }
+
     let payload = serde_json::from_slice::<PushPayload>(&payload)?;
 
     log::info!(
@@ -59,7 +62,10 @@ pub async fn targeted(
     service: web::Path<String>,
 ) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
-    validate_call(req.headers(), &payload)?;
+    if !validate_call(req.headers(), &payload)? {
+        return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
+    }
+
     let payload = serde_json::from_slice::<PushPayload>(&payload)?;
 
     log::info!(
