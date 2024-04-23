@@ -30,9 +30,9 @@ pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<
     let payload = serde_json::from_slice::<PushPayload>(&payload)?;
 
     log::info!(
-        "Triggering global restart from commit [{}] (pushed by @{})",
+        "Triggering global restart from commit [{}] (pushed by @{:?})",
         payload.after,
-        payload.pusher.username
+        payload.pusher.email
     );
 
     for service in config().services.iter() {
@@ -63,10 +63,10 @@ pub async fn targeted(
     let payload = serde_json::from_slice::<PushPayload>(&payload)?;
 
     log::info!(
-        "Triggering restart for service {} from commit [{}] (pushed by @{})",
+        "Triggering restart for service {} from commit [{}] (pushed by @{:?})",
         service,
         payload.after,
-        payload.pusher.username
+        payload.pusher.email
     );
 
     if let Some(service) = config().services.get(service.as_str()) {
