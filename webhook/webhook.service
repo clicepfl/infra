@@ -1,0 +1,12 @@
+[Unit]
+Description=Webhook for deployment
+After=network.target
+
+[Service]
+Type=Simple
+Restart=always
+ExecStart=/usr/local/bin/webhook
+Environment=CONFIG_PATH=/etc/webhook/config.json
+
+[Install]
+WantedBy=multi-user.target
