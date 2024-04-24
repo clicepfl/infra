@@ -3,6 +3,7 @@ use std::process::Command;
 use actix_web::{
     http::StatusCode,
     post,
+    rt::spawn,
     web::{self, Payload},
     HttpRequest, HttpResponse,
 };
@@ -39,21 +40,23 @@ pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
-    log::info!("Triggering global restart",);
+    spawn(async {
+        log::info!("Triggering global restart");
 
-    for service in config().services.iter() {
-        log::info!("Restarting service {}", service.0);
-        if let Some(cmd) = service.1.stop_command.as_ref() {
-            try_run(cmd)
+        for service in config().services.iter() {
+            log::info!("Restarting service {}", service.0);
+            if let Some(cmd) = service.1.stop_command.as_ref() {
+                try_run(cmd)
+            }
+            if let Some(cmd) = service.1.start_command.as_ref() {
+                try_run(cmd)
+            }
         }
-        if let Some(cmd) = service.1.start_command.as_ref() {
-            try_run(cmd)
-        }
-    }
 
-    try_run(&config().generic_start_command);
+        try_run(&config().generic_start_command);
 
-    log::info!("Full restart complete");
+        log::info!("Full restart complete");
+    });
 
     Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
 }
@@ -69,19 +72,22 @@ pub async fn targeted(
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
-    log::info!("Triggering restart for service {}", service,);
+    log::info!("Triggering restart for service {}", service);
 
     if let Some(service) = config().services.get(service.as_str()) {
-        if let Some(cmd) = service.stop_command.as_ref() {
-            try_run(cmd);
-        }
-        if let Some(cmd) = service.start_command.as_ref() {
-            try_run(cmd);
-        } else {
-            try_run(&config().generic_start_command);
-        }
+        spawn(async {
+            if let Some(cmd) = service.stop_command.as_ref() {
+                try_run(cmd);
+            }
+            if let Some(cmd) = service.start_command.as_ref() {
+                try_run(cmd);
+            } else {
+                try_run(&config().generic_start_command);
+            }
 
-        log::info!("Partial restart complete");
+            log::info!("Partial restart complete");
+        });
+
         Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
     } else {
         log::warn!("Service {} not found", service);
