@@ -30,7 +30,7 @@
       ansible.builtin.copy:
         src: /tmp/webhook/target/release/webhook
         dest: /usr/local/bin/webhook
-        mode: "0770"
+        mode: "0755"
         owner: root
       when: (build | default('true')) == 'true'
 
@@ -48,21 +48,21 @@
       ansible.builtin.file:
         path: /etc/webhook
         state: directory
-        mode: "0770"
+        mode: "0755"
         owner: root
 
     - name: Setup config
       ansible.builtin.copy:
         src: "{{ config }}"
         dest: /etc/webhook/config.json
-        mode: "0770"
+        mode: "0755"
         owner: root
 
     - name: Setup systemd service file
       ansible.builtin.copy:
         src: ../webhook/webhook.service
         dest: /etc/systemd/system/webhook.service
-        mode: "0770"
+        mode: "0755"
         owner: root
 
     - name: Enable and start service
