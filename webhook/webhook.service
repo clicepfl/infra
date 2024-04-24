@@ -3,7 +3,7 @@ Description=Webhook for deployment
 After=network.target
 
 [Service]
-Type=Simple
+Type=simple
 Restart=always
 ExecStart=/usr/local/bin/webhook
 Environment=CONFIG_PATH=/etc/webhook/config.json
