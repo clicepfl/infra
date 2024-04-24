@@ -11,7 +11,6 @@ mod validation;
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     log::info!("Starting webhook on 127.0.0.1:4000");
-    log::trace!("test");
 
     // Load the config
     config();

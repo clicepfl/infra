@@ -10,6 +10,8 @@ use actix_web::{
 use crate::{config::config, error::Error, validation::validate_call};
 
 fn try_run(command: &str) {
+    log::trace!("Running \"{}\"", command);
+
     match Command::new("sh").args(["-c", &command]).output() {
         Ok(r) if !r.status.success() => log::error!(
             "Command '{}' failed with {}\nSTDOUT:\n{}STDERR:\n{}",
@@ -18,7 +20,7 @@ fn try_run(command: &str) {
             String::from_utf8(r.stdout).unwrap_or("<Unable to parse to utf-8 string>".to_owned()),
             String::from_utf8(r.stderr).unwrap_or("<Unable to parse to utf-8 string>".to_owned())
         ),
-        Ok(r) if !r.status.success() => log::trace!(
+        Ok(r) if !r.status.success() => log::debug!(
             "Command '{}' failed with {}\nSTDOUT:\n{}STDERR:\n{}",
             command,
             r.status,
@@ -71,10 +73,12 @@ pub async fn targeted(
 
     if let Some(service) = config().services.get(service.as_str()) {
         if let Some(cmd) = service.stop_command.as_ref() {
-            try_run(cmd)
+            try_run(cmd);
         }
         if let Some(cmd) = service.start_command.as_ref() {
-            try_run(cmd)
+            try_run(cmd);
+        } else {
+            try_run(&config().generic_start_command);
         }
 
         log::info!("Partial restart complete");
