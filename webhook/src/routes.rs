@@ -18,6 +18,13 @@ fn try_run(command: &str) {
             String::from_utf8(r.stdout).unwrap_or("<Unable to parse to utf-8 string>".to_owned()),
             String::from_utf8(r.stderr).unwrap_or("<Unable to parse to utf-8 string>".to_owned())
         ),
+        Ok(r) if !r.status.success() => log::trace!(
+            "Command '{}' failed with {}\nSTDOUT:\n{}STDERR:\n{}",
+            command,
+            r.status,
+            String::from_utf8(r.stdout).unwrap_or("<Unable to parse to utf-8 string>".to_owned()),
+            String::from_utf8(r.stderr).unwrap_or("<Unable to parse to utf-8 string>".to_owned())
+        ),
         Err(e) => log::error!("Unable to start command '{command}': {e:?}",),
         _ => {}
     }
