@@ -1,7 +1,0 @@
-services:
-  v1:
-    hostname: website
-    image: ghcr.io/clicepfl/clic-website:main
-    ports:
-      - 8000:8000
-
