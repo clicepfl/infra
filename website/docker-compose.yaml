@@ -1,5 +1,5 @@
 services:
-  dev:
+  website:
     hostname: website
     image: ghcr.io/clicepfl/clic-website-v2:main
     environment:
