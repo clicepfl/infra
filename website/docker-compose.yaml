@@ -1,10 +1,10 @@
 services:
   dev:
-    hostname: website-dev
+    hostname: website
     image: ghcr.io/clicepfl/clic-website-v2:main
     environment:
       DIRECTUS_URL: https://clic.epfl.ch/directus
       DIRECTUS_TOKEN: ${WEBSITE_DIRECTUS_TOKEN}
       NEXT_PUBLIC_DIRECTUS_URL: https://clic.epfl.ch/directus
     ports:
-      - 8008:3000
+      - 8000:3000
