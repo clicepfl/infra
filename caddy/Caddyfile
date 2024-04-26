@@ -32,8 +32,6 @@ https://clic.epfl.ch {
 		reverse_proxy http://0.0.0.0:8001
 	}
 
-	reverse_proxy /dev* http://0.0.0.0:8008
-
 	reverse_proxy /* http://0.0.0.0:8000
 
 	redir /wiki* https://clic.epfl.ch:8443/
