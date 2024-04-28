@@ -8,12 +8,25 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 
-use crate::{config::config, error::Error, validation::validate_call, State};
+use crate::{
+    config::{config, Service},
+    error::Error,
+    validation::validate_call,
+    State,
+};
 
-fn try_run(command: &str) {
+fn try_run(command: Option<&String>, service: &str) {
+    let Some(command) = command else {
+        return;
+    };
+
     log::trace!("Running \"{}\"", command);
 
-    match Command::new("sh").args(["-c", &command]).output() {
+    match Command::new("sh")
+        .args(["-c", &command])
+        .env("SERVICE", service)
+        .output()
+    {
         Ok(r) if !r.status.success() => log::error!(
             "Command '{}' failed with {}\nSTDOUT:\n{}STDERR:\n{}",
             command,
@@ -33,14 +46,43 @@ fn try_run(command: &str) {
     }
 }
 
-fn try_run_opt(command: &Option<String>) {
-    if let Some(cmd) = command {
-        try_run(cmd);
-    }
+fn restart(name: &str, service: &Service, default: &Service) {
+    log::info!("Restarting service {name}");
+
+    try_run(
+        service
+            .stop_command
+            .as_ref()
+            .or(default.stop_command.as_ref()),
+        name,
+    );
+    try_run(
+        service
+            .pre_start_command
+            .as_ref()
+            .or(default.pre_start_command.as_ref()),
+        name,
+    );
+    try_run(
+        service
+            .start_command
+            .as_ref()
+            .or(default.start_command.as_ref()),
+        name,
+    );
+    try_run(
+        service
+            .post_start_command
+            .as_ref()
+            .or(default.post_start_command.as_ref()),
+        name,
+    );
+
+    log::info!("Service {name} restarted");
 }
 
 #[post("/")]
-pub async fn generic(
+pub async fn all(
     req: HttpRequest,
     payload: Payload,
     state: web::Data<State>,
@@ -53,18 +95,10 @@ pub async fn generic(
     spawn(async {
         log::info!("Triggering global restart");
 
-        for (name, service) in config().services.iter() {
-            log::info!("Restarting service {}", name);
-            try_run_opt(&service.stop_command);
-            try_run_opt(&service.pre_start_command);
-            try_run_opt(&service.start_command);
-        }
-
-        try_run(&config().generic_start_command);
-
-        for (_, service) in config().services.iter() {
-            try_run_opt(&service.post_start_command);
-        }
+        config()
+            .services
+            .iter()
+            .for_each(|(n, s)| restart(n, s, &config().default));
 
         log::info!("Full restart complete");
     });
@@ -86,18 +120,8 @@ pub async fn targeted(
 
     log::info!("Triggering restart for service {}", service);
 
-    if let Some(service) = config().services.get(service.as_str()) {
-        spawn(async {
-            try_run_opt(&service.stop_command);
-            try_run_opt(&service.start_command);
-
-            if service.start_command.is_none() {
-                try_run(&config().generic_start_command);
-            }
-
-            log::info!("Partial restart complete");
-        });
-
+    if let Some(s) = config().services.get(service.as_str()) {
+        restart(&service, s, &config().default);
         Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
     } else {
         log::warn!("Service {} not found", service);

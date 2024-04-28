@@ -13,7 +13,7 @@ pub struct Service {
 #[derive(Deserialize)]
 pub struct Config {
     pub secret: String,
-    pub generic_start_command: String,
+    pub default: Service,
     pub services: BTreeMap<String, Service>,
 }
 

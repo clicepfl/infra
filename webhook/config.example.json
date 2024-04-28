@@ -1,12 +1,14 @@
-
 {
-    "secret": "hmac-secret",
-    "generic_start_command": "echo generic >> /tmp/webhook.out",
-    "services": {
-        "service1": {
-            "pre_start_command": "echo pre_start >> /tmp/webhook.out",
-            "start_command": "echo start >> /tmp/webhook.out",
-            "stop_command": "echo  stop >> /tmp/webhook.out"
-        }
-    }
+  "secret": "hmac-secret",
+  "default": {
+    "start_command": "echo $SERVICE >> /tmp/webhook.out"
+  },
+  "services": {
+    "service1": {
+      "pre_start_command": "echo pre_start >> /tmp/webhook.out",
+      "start_command": "echo start >> /tmp/webhook.out",
+      "stop_command": "echo  stop >> /tmp/webhook.out"
+    },
+    "service2": {}
+  }
 }

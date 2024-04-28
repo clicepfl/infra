@@ -2,7 +2,7 @@ use std::sync::Mutex;
 
 use actix_web::{web, App, HttpServer};
 use config::config;
-use routes::{generic, targeted};
+use routes::{all, targeted};
 
 mod config;
 mod error;
@@ -27,7 +27,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .service(generic)
+            .service(all)
             .service(targeted)
             .app_data(data.clone())
     })

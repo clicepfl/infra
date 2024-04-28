@@ -3,6 +3,7 @@
 This folder contains a webhook to automatically redeploy the infrastructure - either entierly of partially - upon reception of a valid payload from GitHub. It is a simple webserver, communicating over HTTP.
 
 There are two routes:
+
 - `/`: redeploy the whole infrastructure.
 - `/<service>`: redeploy a single service.
 
@@ -14,26 +15,34 @@ The schema is as follow:
 
 ```jsonc
 {
-    /// Secret used to sign the payload of the request. Also set on GitHub, to prevent malicious calls.
-    "secret": "hmac-secret",
+  /// Secret used to sign the payload of the request. Also set on GitHub, to prevent malicious calls.
+  "secret": "hmac-secret",
 
-    /// Default command used to restart a service. Currently does not support any parameters.
-    "generic_start_command": "echo generic >> /tmp/webhook.out",
+  /// Default command used to restart a service. The name of the service is provided in the environment variable `SERVICE`.
+  "default": {
+    "start_command": "echo $SERVICE >> /tmp/webhook.out"
+  },
 
-    /// Map describing commands for each service.
-    "services": {
-        "service1": {
-            "pre_start_command": "echo pre_start >> /tmp/webhook.out",
-            "start_command": "echo start >> /tmp/webhook.out",
-            "stop_command": "echo  stop >> /tmp/webhook.out"
-        }
-    }
+  /// Map describing commands for each service.
+  "services": {
+    "service1": {
+      "pre_start_command": "echo pre_start >> /tmp/webhook.out",
+      "start_command": "echo start >> /tmp/webhook.out",
+      "stop_command": "echo  stop >> /tmp/webhook.out"
+    },
+    "service2": {}
+  }
 }
 ```
 
 The commands specified per services follow this order:
-- `stop_command`
-- `pre_start_command`
-- `start_command`
-- `generic_start_command`, only for global restart of if no `start_command` is set for the service.
-- `post_start_command`
+
+1. `stop_command`
+1. `pre_start_command`
+1. `start_command`
+1. `post_start_command`
+
+Note that:
+
+- Each service must be present in the `services` map, even if it only uses the default commands.
+- If a command is specified neither in the service's object nor in the `default` one, nothing is ran.
