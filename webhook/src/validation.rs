@@ -2,7 +2,25 @@ use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
-use crate::{config::config, error::Error};
+use crate::{config::config, error::Error, WebhookState};
+
+fn validate_delivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<bool, Error> {
+    let Some(delivery_id) = headers
+        .get("X-GitHub-Delivery")
+        .map(|h| h.to_str().ok())
+        .flatten()
+    else {
+        return Err(Error::InvalidDelivery);
+    };
+
+    if state.processed_deliveries.contains(&delivery_id.to_owned()) {
+        Ok(false)
+    } else {
+        state.processed_deliveries.insert(0, delivery_id.to_owned());
+        state.processed_deliveries.truncate(10);
+        Ok(true)
+    }
+}
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
     let Some(Ok(Some(signature))) = headers
@@ -42,7 +60,11 @@ fn validate_event(headers: &HeaderMap) -> Result<bool, Error> {
     Ok(headers.get("X-GitHub-Event").is_some_and(|h| h != "ping"))
 }
 
-pub fn validate_call(headers: &HeaderMap, payload: &[u8]) -> Result<bool, Error> {
+pub fn validate_call(
+    headers: &HeaderMap,
+    payload: &[u8],
+    state: &mut WebhookState,
+) -> Result<bool, Error> {
     validate_signature(headers, payload)?;
-    validate_event(headers)
+    Ok(validate_event(headers)? && validate_delivery(headers, state)?)
 }

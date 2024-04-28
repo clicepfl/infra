@@ -8,7 +8,7 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 
-use crate::{config::config, error::Error, validation::validate_call};
+use crate::{config::config, error::Error, validation::validate_call, State};
 
 fn try_run(command: &str) {
     log::trace!("Running \"{}\"", command);
@@ -40,9 +40,13 @@ fn try_run_opt(command: &Option<String>) {
 }
 
 #[post("/")]
-pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<String>, Error> {
+pub async fn generic(
+    req: HttpRequest,
+    payload: Payload,
+    state: web::Data<State>,
+) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
-    if !validate_call(req.headers(), &payload)? {
+    if !validate_call(req.headers(), &payload, &mut state.lock().unwrap())? {
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
@@ -73,9 +77,10 @@ pub async fn targeted(
     req: HttpRequest,
     payload: Payload,
     service: web::Path<String>,
+    state: web::Data<State>,
 ) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
-    if !validate_call(req.headers(), &payload)? {
+    if !validate_call(req.headers(), &payload, &mut state.lock().unwrap())? {
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
