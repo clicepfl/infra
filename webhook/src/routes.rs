@@ -33,6 +33,12 @@ fn try_run(command: &str) {
     }
 }
 
+fn try_run_opt(command: &Option<String>) {
+    if let Some(cmd) = command {
+        try_run(cmd);
+    }
+}
+
 #[post("/")]
 pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
@@ -43,17 +49,18 @@ pub async fn generic(req: HttpRequest, payload: Payload) -> Result<HttpResponse<
     spawn(async {
         log::info!("Triggering global restart");
 
-        for service in config().services.iter() {
-            log::info!("Restarting service {}", service.0);
-            if let Some(cmd) = service.1.stop_command.as_ref() {
-                try_run(cmd)
-            }
-            if let Some(cmd) = service.1.start_command.as_ref() {
-                try_run(cmd)
-            }
+        for (name, service) in config().services.iter() {
+            log::info!("Restarting service {}", name);
+            try_run_opt(&service.stop_command);
+            try_run_opt(&service.pre_start_command);
+            try_run_opt(&service.start_command);
         }
 
         try_run(&config().generic_start_command);
+
+        for (_, service) in config().services.iter() {
+            try_run_opt(&service.post_start_command);
+        }
 
         log::info!("Full restart complete");
     });
@@ -76,12 +83,10 @@ pub async fn targeted(
 
     if let Some(service) = config().services.get(service.as_str()) {
         spawn(async {
-            if let Some(cmd) = service.stop_command.as_ref() {
-                try_run(cmd);
-            }
-            if let Some(cmd) = service.start_command.as_ref() {
-                try_run(cmd);
-            } else {
+            try_run_opt(&service.stop_command);
+            try_run_opt(&service.start_command);
+
+            if service.start_command.is_none() {
                 try_run(&config().generic_start_command);
             }
 

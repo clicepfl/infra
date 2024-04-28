@@ -3,6 +3,7 @@
     "generic_start_command": "echo generic >> /tmp/webhook.out",
     "services": {
         "specific": {
+            "pre_start_command": "echo pre_start >> /tmp/webhook.out && false",
             "start_command": "echo start >> /tmp/webhook.out && false",
             "stop_command": "echo  stop >> /tmp/webhook.out"
         }
