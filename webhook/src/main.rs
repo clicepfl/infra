@@ -21,14 +21,15 @@ async fn main() -> std::io::Result<()> {
 
     // Load the config
     config();
+    let data = web::Data::new(Mutex::new(WebhookState {
+        processed_deliveries: vec![],
+    }));
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
             .service(generic)
             .service(targeted)
-            .app_data(web::Data::new(WebhookState {
-                processed_deliveries: vec![],
-            }))
+            .app_data(data.clone())
     })
     .bind(("127.0.0.1", 4001))?
     .run()

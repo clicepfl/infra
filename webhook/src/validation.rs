@@ -14,6 +14,7 @@ fn validate_delivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<bo
     };
 
     if state.processed_deliveries.contains(&delivery_id.to_owned()) {
+        log::info!("Ignoring re-delivery for {delivery_id}");
         Ok(false)
     } else {
         state.processed_deliveries.insert(0, delivery_id.to_owned());
