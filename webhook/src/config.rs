@@ -22,9 +22,7 @@ pub fn config() -> &'static Config {
         let path = var("CONFIG_PATH").unwrap_or("/etc/webhook/config.json".to_owned());
         log::info!("Loading config from {path}");
 
-        let mut file =
-            File::open(path)
-                .expect("Unable to open config file");
+        let mut file = File::open(path).expect("Unable to open config file");
         let mut str: String = String::new();
         file.read_to_string(&mut str)
             .expect("Unable to read from config file");
