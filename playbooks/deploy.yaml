@@ -49,18 +49,7 @@
         resolve_image: always
         compose:
           - "../{{ item }}/docker-compose.yaml"
-      loop:
-        - mattermost
-        - nextcloud
-        - roboclic
-        - vaultwarden
-        - website
-        - wiki
-        - clicketing
-        - bookstack
-        - icelan
-        - onlyoffice
-        - directus
+      loop: "{{ lookup('ansible.builtin.env', 'SERVICE', default='mattermost,nextcloud,roboclic,vaultwarden,website,wiki,clicketing,bookstack,icelan,onlyoffice,directus') | split(',') }}"
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
         MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
