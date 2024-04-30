@@ -35,7 +35,7 @@
       ansible.builtin.copy:
         src: ../caddy/Caddyfile
         dest: /etc/caddy/Caddyfile
-        mode: "740"
+        mode: "755"
 
     - name: Reload Caddyfile
       ansible.builtin.command: caddy reload --config /etc/caddy/Caddyfile
