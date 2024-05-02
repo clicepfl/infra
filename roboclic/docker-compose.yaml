@@ -7,5 +7,7 @@ services:
       BOT_TOKEN: ${ROBOCLIC_TOKEN}
       ADMIN_TOKEN: ${ROBOCLIC_ADMIN_TOKEN}
       DATA_DIR: /data
+      DIRECTUS_URL: https://clic.epfl.ch/directus
+      DIRECTUS_TOKEN: ${ROBOCLIC_DIRECTUS_TOKEN}
 volumes:
   roboclic:
