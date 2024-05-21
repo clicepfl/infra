@@ -3,6 +3,7 @@
 }
 
 https://clic.epfl.ch {
+	redir /nextclic* /nextcloud
 	handle_path /nextcloud* {
 		header {
 			Strict-Transport-Security max-age=31536000;
@@ -21,9 +22,12 @@ https://clic.epfl.ch {
 
 	reverse_proxy /mattermost* http://0.0.0.0:8004
 
+	redir /vaultwarden* /armoire/
+	redir /bitwarden* /armoire/
 	redir /armoire /armoire/ permanent
 	reverse_proxy /armoire/* http://0.0.0.0:8003
 
+	redir /bookclic* /bookstack
 	handle_path /bookstack* {
 		reverse_proxy http://0.0.0.0:8002
 	}
