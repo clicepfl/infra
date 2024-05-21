@@ -1,3 +1,4 @@
+version: "3.8"
 services:
   icelan:
     image: ghcr.io/clicgamestarprojects/icelan-website-v2:master
