@@ -139,6 +139,7 @@
           - /var/lib/docker/volumes/mattermost_client-plugins
           - /var/lib/docker/volumes/mattermost_bleve-indexes
           - /var/db-dumps
+          - /var/secrets.yaml
         borgmatic_hooks:
           before_backup:
             - echo "`date` - Starting backup."
