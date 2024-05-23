@@ -23,7 +23,7 @@ fn try_run(command: Option<&String>, service: &str) {
     log::trace!("Running \"{}\"", command);
 
     match Command::new("sh")
-        .args(["-c", &command])
+        .args(["-c", command])
         .env("SERVICE", service)
         .output()
     {

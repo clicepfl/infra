@@ -7,8 +7,7 @@ use crate::{config::config, error::Error, WebhookState};
 fn validate_delivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<bool, Error> {
     let Some(delivery_id) = headers
         .get("X-GitHub-Delivery")
-        .map(|h| h.to_str().ok())
-        .flatten()
+        .and_then(|h| h.to_str().ok())
     else {
         return Err(Error::InvalidDelivery);
     };
