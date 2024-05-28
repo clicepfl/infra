@@ -29,6 +29,8 @@
         - SMTP_IT_PASSWORD
         - ONLYOFFICE_JWT_SECRET
         - BACKUP_DIR
+        - BACKUP_ENCRYPTION_PASSPHRASE
+        - BACKUP_REPO
         - DIRECTUS_ADMIN_PASSWORD
         - DIRECTUS_DATABASE_INIT
         - DIRECTUS_DATABASE_PASSWORD
@@ -118,8 +120,10 @@
       ansible.builtin.include_role:
         name: borgbase.ansible_role_borgbackup
       vars:
-        borg_repository: "{{ BACKUP_DIR }}"
-        borg_encryption_passphrase: none # The variable is required, but ignored since we do not encrypt the backups
+        borg_repository:
+          - "{{ BACKUP_DIR }}"
+          - "{{ BACKUP_REPO }}"
+        borg_encryption_passphrase: "{{ BACKUP_ENCRYPTION_PASSPHRASE }}"
         borgmatic_timer: systemd
         borgmatic_timer_hour: 0
         borgmatic_timer_minute: 0
