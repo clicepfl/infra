@@ -8,6 +8,7 @@ services:
     ports:
       - 9000:80
     volumes:
+      - config:/etc/onlyoffice/documentserver
       - data:/var/www/onlyoffice/Data
       - log:/var/log/onlyoffice
       - fonts:/usr/share/fonts/truetype/custom
@@ -17,6 +18,7 @@ services:
       - redis:/var/lib/redis
 
 volumes:
+  config:
   data:
   log:
   fonts:
