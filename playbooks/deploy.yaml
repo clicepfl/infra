@@ -140,6 +140,13 @@
           - /var/lib/docker/volumes/mattermost_plugins
           - /var/lib/docker/volumes/mattermost_client-plugins
           - /var/lib/docker/volumes/mattermost_bleve-indexes
+          - /var/lib/docker/volumes/onlyoffice_data
+          - /var/lib/docker/volumes/onlyoffice_fonts
+          - /var/lib/docker/volumes/onlyoffice_lib
+          - /var/lib/docker/volumes/onlyoffice_log
+          - /var/lib/docker/volumes/onlyoffice_psql
+          - /var/lib/docker/volumes/onlyoffice_rabbit
+          - /var/lib/docker/volumes/onlyoffice_redis
           - /var/db-dumps
           - /var/secrets.yaml
           - /etc/webhook
