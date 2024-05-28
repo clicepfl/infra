@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-   onlyoffice-document-server:
+  onlyoffice-document-server:
     hostname: onlyoffice-document-server
     image: onlyoffice/documentserver:latest
     environment:
@@ -10,7 +10,17 @@ services:
     volumes:
       - data:/var/www/onlyoffice/Data
       - log:/var/log/onlyoffice
+      - fonts:/usr/share/fonts/truetype/custom
+      - lib:/var/lib/onlyoffice
+      - psql:/var/lib/postgresql
+      - rabbit:/var/lib/rabbitmq
+      - redis:/var/lib/redis
 
 volumes:
   data:
   log:
+  fonts:
+  lib:
+  psql:
+  rabbit:
+  redis:
