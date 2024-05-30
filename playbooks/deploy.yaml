@@ -28,7 +28,6 @@
         - SMTP_COMMUNICATION_PASSWORD
         - SMTP_IT_PASSWORD
         - ONLYOFFICE_JWT_SECRET
-        - BACKUP_DIR
         - BACKUP_ENCRYPTION_PASSPHRASE
         - BACKUP_REPO
         - DIRECTUS_ADMIN_PASSWORD
@@ -96,12 +95,6 @@
           - mariadb-client
           - cron
 
-    - name: Create backup dir
-      ansible.builtin.file:
-        path: "{{ BACKUP_DIR }}"
-        state: directory
-        mode: "0755"
-
     - name: Init backup repository
       ansible.builtin.command:
         argv:
@@ -121,7 +114,6 @@
         name: borgbase.ansible_role_borgbackup
       vars:
         borg_repository:
-          - "{{ BACKUP_DIR }}"
           - "{{ BACKUP_REPO }}"
         borg_encryption_passphrase: "{{ BACKUP_ENCRYPTION_PASSPHRASE }}"
         borgmatic_timer: systemd
