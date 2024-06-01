@@ -31,7 +31,13 @@ services:
     ports:
       - 8005:80
 
-  # Nextcloud requires periodic tasks, usually scheduled with cron. 
+  redis:
+    image: redis:7.0-alpine
+    hostname: redis
+    volumes:
+      - nextcloud-redis:/data
+
+  # Nextcloud requires periodic tasks, usually scheduled with cron.
   # We can simply run a second container on the same volume, with the entrypoint /cron.sh
   # See: https://help.nextcloud.com/t/clarification-regarding-cron-jobs-setup-config/134450/2
   cron:
