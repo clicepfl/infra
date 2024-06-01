@@ -35,7 +35,7 @@ services:
     image: redis:7.0-alpine
     hostname: redis
     volumes:
-      - nextcloud-redis:/data
+      - redis:/data
 
   # Nextcloud requires periodic tasks, usually scheduled with cron.
   # We can simply run a second container on the same volume, with the entrypoint /cron.sh
@@ -59,3 +59,4 @@ services:
 volumes:
   nextcloud-db:
   nextcloud-app:
+  redis:
