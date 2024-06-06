@@ -36,6 +36,8 @@
         - DIRECTUS_KEY
         - DIRECTUS_SECRET
         - WEBSITE_DIRECTUS_TOKEN
+        - KEYCLOAK_DB_PASSWORD
+        - KEYCLOAK_ADMIN_PASSWORD
       when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
@@ -78,6 +80,8 @@
         SMTP_COMMUNICATION_PASSWORD: "{{ SMTP_COMMUNICATION_PASSWORD }}"
         SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"
         WEBSITE_DIRECTUS_TOKEN: "{{ WEBSITE_DIRECTUS_TOKEN }}"
+        KEYCLOAK_DB_PASSWORD: KEYCLOAK_DB_PASSWORD
+        KEYCLOAK_ADMIN_PASSWORD: KEYCLOAK_ADMIN_PASSWORD
 
 - name: Setup automatic backups with Borg
   hosts: localhost
@@ -153,6 +157,7 @@
             - PGPASSWORD={{ MATTERMOST_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5001 --username mattermost --format plain mattermost -f /var/db-dumps/mattermost.sql
             - PGPASSWORD={{ CLICKETING_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003 --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
             - PGPASSWORD={{ DIRECTUS_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005 --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
+            - PGPASSWORD={{ KEYCLOAK_DB_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5006 --username keycloak --format plain keycloak -f /var/db-dumps/keycloak.sql
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
