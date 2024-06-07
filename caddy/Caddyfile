@@ -3,6 +3,8 @@
 }
 
 https://clic.epfl.ch {
+	tls internal
+
 	redir /nextclic* /nextcloud
 	handle_path /nextcloud* {
 		header {
