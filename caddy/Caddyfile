@@ -22,7 +22,7 @@ https://clic.epfl.ch {
 	reverse_proxy /clicketing/api* http://0.0.0.0:8006
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
-	reverse_proxy /keycloak* http://0.0.0.0:8008
+	reverse_proxy /keyclic* http://0.0.0.0:8008
 
 	reverse_proxy /mattermost* http://0.0.0.0:8004
 
