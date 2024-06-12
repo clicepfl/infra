@@ -13,7 +13,7 @@ services:
       KC_HOSTNAME_STRICT: "false"
 
       KC_HTTP_ENABLED: "true"
-      KC_HTTP_RELATIVE_PATH: /keyclick
+      KC_HTTP_RELATIVE_PATH: /keyclic
       KC_HTTPS_PORT: 443
       KC_PROXY: edge
 
