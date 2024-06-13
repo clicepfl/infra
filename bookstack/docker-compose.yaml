@@ -20,6 +20,21 @@ services:
       MAIL_PASSWORD: ${SMTP_IT_PASSWORD}
       MAIL_FROM: it.clic@epfl.ch
       MAIL_FROM_NAME: CLIC - Bookstack
+
+      # AUTH_METHOD: oidc
+      OIDC_NAME: KeyCLIC
+      OIDC_DISPLAY_NAME_CLAIMS: full name
+      OIDC_CLIENT_ID: bookstack
+      OIDC_CLIENT_SECRET: ${BOOKSTACK_KEYCLOAK_SECRET}
+      OIDC_ISSUER: https://clic.epfl.ch/keyclic/realms/master
+      OIDC_ISSUER_DISCOVER: "true"
+
+      # OIDC_USER_TO_GROUPS: "true"
+      # OIDC_ADDITIONAL_SCOPES: roles
+      # OIDC_GROUPS_CLAIM: realm_access.roles
+      # OIDC_REMOVE_FROM_GROUPS: "true"
+      # OIDC_DUMP_USER_DETAILS: "true"
+
     ports:
       - 8002:80
     volumes:
