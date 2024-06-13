@@ -29,11 +29,11 @@ services:
       OIDC_ISSUER: https://clic.epfl.ch/keyclic/realms/master
       OIDC_ISSUER_DISCOVER: "true"
 
-      # OIDC_USER_TO_GROUPS: "true"
-      # OIDC_ADDITIONAL_SCOPES: roles
-      # OIDC_GROUPS_CLAIM: realm_access.roles
-      # OIDC_REMOVE_FROM_GROUPS: "true"
-      # OIDC_DUMP_USER_DETAILS: "true"
+      OIDC_USER_TO_GROUPS: "true"
+      OIDC_ADDITIONAL_SCOPES: roles
+      OIDC_GROUPS_CLAIM: groups
+      OIDC_REMOVE_FROM_GROUPS: "true"
+      OIDC_DUMP_USER_DETAILS: "true"
 
     ports:
       - 8002:80
