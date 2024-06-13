@@ -12,7 +12,7 @@ services:
       DB_DATABASE: directus_data
       DB_USER: directus_user
       DB_PASSWORD: ${DIRECTUS_DATABASE_PASSWORD}
-      PUBLIC_URL: http://clic.epfl.ch/directus
+      PUBLIC_URL: https://clic.epfl.ch/directus
       ROOT_REDIRECT: /directus/admin
       ADMIN_EMAIL: clic@epfl.ch
       ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
@@ -28,6 +28,16 @@ services:
       EMAIL_SMTP_SECURE: "false"
       EMAIL_SMTP_NAME: Directus
 
+      AUTH_PROVIDERS: keycloak
+      # AUTH_DISABLE_DEFAULT: "true"
+
+      AUTH_KEYCLOAK_DRIVER: openid
+      AUTH_KEYCLOAK_CLIENT_ID: directus
+      AUTH_KEYCLOAK_CLIENT_SECRET: ${DIRECTUS_KEYCLOAK_SECRET}
+      AUTH_KEYCLOAK_ISSUER_URL: https://clic.epfl.ch/keyclic/realms/master/.well-known/openid-configuration
+      AUTH_KEYCLOAK_IDENTIFIER_KEY: email
+      AUTH_KEYCLOAK_LABEL: KeyCLIC
+      AUTH_KEYCLOAK_ICON: key
     depends_on:
       - database
     volumes:
