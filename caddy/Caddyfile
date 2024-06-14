@@ -24,6 +24,9 @@ https://clic.epfl.ch {
 
 	reverse_proxy /mattermost* http://0.0.0.0:8004
 
+	reverse_proxy /_matrix/* localhost:8009
+	reverse_proxy /_synapse/client/* localhost:8009
+
 	redir /vaultwarden* /armoire/
 	redir /bitwarden* /armoire/
 	redir /armoire /armoire/ permanent

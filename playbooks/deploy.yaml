@@ -39,6 +39,8 @@
         - WEBSITE_DIRECTUS_TOKEN
         - KEYCLOAK_DB_PASSWORD
         - KEYCLOAK_ADMIN_PASSWORD
+        - SYNAPSE_DATABASE_PASSWORD
+        - SYNAPSE_CONFIG_PATH
       when: value == ""
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
@@ -54,7 +56,7 @@
         resolve_image: always
         compose:
           - "../{{ item }}/docker-compose.yaml"
-      loop: "{{ lookup('ansible.builtin.env', 'SERVICE', default='keycloak,mattermost,nextcloud,roboclic,vaultwarden,website,wiki,clicketing,bookstack,icelan,onlyoffice,directus') | split(',') }}"
+      loop: "{{ lookup('ansible.builtin.env', 'SERVICE', default='keycloak,mattermost,nextcloud,roboclic,vaultwarden,website,wiki,clicketing,bookstack,icelan,onlyoffice,directus,synapse') | split(',') }}"
       environment:
         MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
         MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
@@ -84,6 +86,8 @@
         WEBSITE_DIRECTUS_TOKEN: "{{ WEBSITE_DIRECTUS_TOKEN }}"
         KEYCLOAK_DB_PASSWORD: "{{ KEYCLOAK_DB_PASSWORD }}"
         KEYCLOAK_ADMIN_PASSWORD: "{{ KEYCLOAK_ADMIN_PASSWORD }}"
+        SYNAPSE_DATABASE_PASSWORD: "{{ SYNAPSE_DATABASE_PASSWORD }}"
+        SYNAPSE_CONFIG_PATH: "{{ SYNAPSE_CONFIG_PATH }}"
 
 - name: Setup automatic backups with Borg
   hosts: localhost
@@ -160,6 +164,7 @@
             - PGPASSWORD={{ CLICKETING_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003 --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
             - PGPASSWORD={{ DIRECTUS_DATABASE_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005 --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
             - PGPASSWORD={{ KEYCLOAK_DB_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5006 --username keycloak --format plain keycloak -f /var/db-dumps/keycloak.sql
+            - PGPASSWORD={{ SYNAPSE_DB_PASSWORD }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007 --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
