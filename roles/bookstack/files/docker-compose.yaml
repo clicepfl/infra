@@ -33,7 +33,6 @@ services:
       OIDC_ADDITIONAL_SCOPES: roles
       OIDC_GROUPS_CLAIM: groups
       OIDC_REMOVE_FROM_GROUPS: "true"
-      OIDC_DUMP_USER_DETAILS: "true"
 
     ports:
       - 8002:80
