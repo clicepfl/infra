@@ -12,5 +12,14 @@
     group: "991"
     mode: "0755"
 
-- name: end
-  ansible.builtin.fail:
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: synapse
+    resolve_image: always
+    compose:
+      - docker-compose.yaml
+  environment:
+    SYNAPSE_CONFIG_PATH: "{{ CONFIG_DIR }}/synapse/homeserver.yaml"
+    SYNAPSE_DATABASE_INIT: "{{ SYNAPSE_DATABASE_INIT }}"
+    SYNAPSE_DATABASE_PASSWORD: "{{ SYNAPSE_DATABASE_PASSWORD }}"
