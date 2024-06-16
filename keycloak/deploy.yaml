@@ -1,10 +1,10 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: "{{ SERVICE }}"
+    name: keycloak
     resolve_image: always
     compose:
-      - docker-compose.yaml
+      - ../keycloak/docker-compose.yaml
   environment:
     KEYCLOAK_ADMIN_PASSWORD: "{{ KEYCLOAK_ADMIN_PASSWORD }}"
     KEYCLOAK_DB_PASSWORD: "{{ KEYCLOAK_DB_PASSWORD }}"

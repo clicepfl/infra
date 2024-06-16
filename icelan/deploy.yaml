@@ -1,8 +1,8 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: "{{ SERVICE }}"
+    name: icelan
     resolve_image: always
     compose:
-      - docker-compose.yaml
+      - ../icelan/docker-compose.yaml
   environment:

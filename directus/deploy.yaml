@@ -1,10 +1,10 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: "{{ SERVICE }}"
+    name: directus
     resolve_image: always
     compose:
-      - docker-compose.yaml
+      - ../directus/docker-compose.yaml
   environment:
     DIRECTUS_ADMIN_PASSWORD: "{{ DIRECTUS_ADMIN_PASSWORD }}"
     DIRECTUS_KEYCLOAK_SECRET: "{{ DIRECTUS_KEYCLOAK_SECRET }}"

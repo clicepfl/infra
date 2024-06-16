@@ -1,10 +1,10 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: "{{ SERVICE }}"
+    name: bookstack
     resolve_image: always
     compose:
-      - docker-compose.yaml
+      - ../bookstack/docker-compose.yaml
   environment:
     BOOKSTACK_DATABASE_PASSWORD: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
     BOOKSTACK_DATABASE_INIT: "{{ BOOKSTACK_DATABASE_INIT }}"

@@ -1,10 +1,10 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: "{{ SERVICE }}"
+    name: nextcloud
     resolve_image: always
     compose:
-      - docker-compose.yaml
+      - ../nextcloud/docker-compose.yaml
   environment:
     NEXTCLOUD_DATABASE_INIT: "{{ NEXTCLOUD_DATABASE_INIT }}"
     NEXTCLOUD_DATABASE_PASSWORD: "{{ NEXTCLOUD_DATABASE_PASSWORD }}"

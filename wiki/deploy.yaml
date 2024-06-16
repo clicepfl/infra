@@ -1,0 +1,11 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: wiki
+    resolve_image: always
+    compose:
+      - ../wiki/docker-compose.yaml
+  environment:
+    WIKI_DATABASE_INIT: "{{ WIKI_DATABASE_INIT }}"
+    WIKI_DATABASE_PASSWORD: "{{ WIKI_DATABASE_PASSWORD }}"
+    WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"

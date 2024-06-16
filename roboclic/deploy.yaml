@@ -1,10 +1,10 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: "{{ SERVICE }}"
+    name: roboclic
     resolve_image: always
     compose:
-      - docker-compose.yaml
+      - roboclic/docker-compose.yaml
   environment:
     ROBOCLIC_TOKEN: "{{ ROBOCLIC_TOKEN }}"
     ROBOCLIC_ADMIN_TOKEN: "{{ ROBOCLIC_ADMIN_TOKEN }}"
