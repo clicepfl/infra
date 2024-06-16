@@ -22,6 +22,8 @@ services:
       KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    volumes:
+      - ./clic_theme:/opt/keycloak/themes/clic_theme
     command: start
     depends_on:
       - database
@@ -42,3 +44,4 @@ services:
 
 volumes:
   data:
+  clic_theme:
