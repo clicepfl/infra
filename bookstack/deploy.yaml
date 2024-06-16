@@ -1,0 +1,11 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: "{{ SERVICE }}"
+    resolve_image: always
+    compose:
+      - docker-compose.yaml
+  environment:
+    BOOKSTACK_DATABASE_PASSWORD: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
+    BOOKSTACK_DATABASE_INIT: "{{ BOOKSTACK_DATABASE_INIT }}"
+    SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"

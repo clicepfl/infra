@@ -45,49 +45,11 @@
       vars:
         value: "{{ lookup('ansible.builtin.vars', item) }}"
 
-    - name: Init Docker swarm
-      community.docker.docker_swarm:
-        state: present
 
     - name: Deploy
-      community.docker.docker_stack:
-        state: present
-        name: "{{ item }}"
-        resolve_image: always
-        compose:
-          - "../{{ item }}/docker-compose.yaml"
-      loop: "{{ lookup('ansible.builtin.env', 'SERVICE', default='keycloak,mattermost,nextcloud,roboclic,vaultwarden,website,wiki,clicketing,bookstack,icelan,onlyoffice,directus,synapse') | split(',') }}"
-      environment:
-        MATTERMOST_DATABASE_PASSWORD: "{{ MATTERMOST_DATABASE_PASSWORD }}"
-        MATTERMOST_DATABASE_INIT: "{{ MATTERMOST_DATABASE_INIT }}"
-        NEXTCLOUD_DATABASE_PASSWORD: "{{ NEXTCLOUD_DATABASE_PASSWORD }}"
-        NEXTCLOUD_DATABASE_INIT: "{{ NEXTCLOUD_DATABASE_INIT }}"
-        VAULTWARDEN_ADMIN_TOKEN: "{{ VAULTWARDEN_ADMIN_TOKEN }}"
-        ROBOCLIC_TOKEN: "{{ ROBOCLIC_TOKEN }}"
-        ROBOCLIC_ADMIN_TOKEN: "{{ ROBOCLIC_ADMIN_TOKEN }}"
-        ROBOCLIC_DIRECTUS_TOKEN: "{{ ROBOCLIC_DIRECTUS_TOKEN }}"
-        WIKI_DATABASE_PASSWORD: "{{ WIKI_DATABASE_PASSWORD }}"
-        WIKI_DATABASE_INIT: "{{ WIKI_DATABASE_INIT }}"
-        WIKI_SECRET_KEY: "{{ WIKI_SECRET_KEY }}"
-        CLICKETING_DATABASE_PASSWORD: "{{ CLICKETING_DATABASE_PASSWORD }}"
-        CLICKETING_DATABASE_INIT: "{{ CLICKETING_DATABASE_INIT }}"
-        CLICKETING_ADMIN_TOKEN: "{{ CLICKETING_ADMIN_TOKEN }}"
-        BOOKSTACK_DATABASE_PASSWORD: "{{ BOOKSTACK_DATABASE_PASSWORD }}"
-        BOOKSTACK_DATABASE_INIT: "{{ BOOKSTACK_DATABASE_INIT }}"
-        ONLYOFFICE_JWT_SECRET: "{{ ONLYOFFICE_JWT_SECRET }}"
-        DIRECTUS_SECRET: "{{ DIRECTUS_SECRET }}"
-        DIRECTUS_KEY: "{{ DIRECTUS_KEY }}"
-        DIRECTUS_DATABASE_PASSWORD: "{{ DIRECTUS_DATABASE_PASSWORD }}"
-        DIRECTUS_ADMIN_PASSWORD: "{{ DIRECTUS_ADMIN_PASSWORD }}"
-        DIRECTUS_DATABASE_INIT: "{{ DIRECTUS_DATABASE_INIT }}"
-        DIRECTUS_KEYCLOAK_SECRET: "{{ DIRECTUS_KEYCLOAK_SECRET }}"
-        SMTP_COMMUNICATION_PASSWORD: "{{ SMTP_COMMUNICATION_PASSWORD }}"
-        SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"
-        WEBSITE_DIRECTUS_TOKEN: "{{ WEBSITE_DIRECTUS_TOKEN }}"
-        KEYCLOAK_DB_PASSWORD: "{{ KEYCLOAK_DB_PASSWORD }}"
-        KEYCLOAK_ADMIN_PASSWORD: "{{ KEYCLOAK_ADMIN_PASSWORD }}"
-        SYNAPSE_DATABASE_PASSWORD: "{{ SYNAPSE_DATABASE_PASSWORD }}"
-        SYNAPSE_CONFIG_PATH: "{{ SYNAPSE_CONFIG_PATH }}"
+      ansible.builtin.include_tasks:
+        file: ../{{ item }}/deploy.yaml
+      loop: "{{ (SERVICE | default('keycloak,mattermost,nextcloud,roboclic,vaultwarden,website,wiki,clicketing,bookstack,icelan,onlyoffice,directus,synapse')) | split(',') }}"
 
 - name: Setup automatic backups with Borg
   hosts: localhost

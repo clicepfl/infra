@@ -1,0 +1,14 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: "{{ SERVICE }}"
+    resolve_image: always
+    compose:
+      - docker-compose.yaml
+  environment:
+    DIRECTUS_ADMIN_PASSWORD: "{{ DIRECTUS_ADMIN_PASSWORD }}"
+    DIRECTUS_KEYCLOAK_SECRET: "{{ DIRECTUS_KEYCLOAK_SECRET }}"
+    DIRECTUS_SECRET: "{{ DIRECTUS_SECRET }}"
+    DIRECTUS_KEY: "{{ DIRECTUS_KEY }}"
+    DIRECTUS_DATABASE_INIT: "{{ DIRECTUS_DATABASE_INIT }}"
+    SMTP_IT_PASSWORD: "{{ SMTP_IT_PASSWORD }}"

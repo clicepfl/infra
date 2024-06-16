@@ -1,0 +1,33 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+      - curl
+
+- name: Update keyring & mirrorlist
+  ansible.builtin.shell: |
+    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | \
+      gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | \
+      sudo tee /etc/apt/sources.list.d/caddy-stable.list
+  changed_when: true
+  when: "not ('caddy.service' in services or 'caddy' in services)"
+
+- name: Install caddy
+  ansible.builtin.apt:
+    update_cache: true
+    pkg:
+      - caddy
+
+- name: Setup Caddyfile
+  ansible.builtin.copy:
+    src: ../caddy/Caddyfile
+    dest: /etc/caddy/Caddyfile
+    mode: "755"
+
+- name: Reload Caddyfile
+  ansible.builtin.command: caddy reload --config /etc/caddy/Caddyfile
+  changed_when: true

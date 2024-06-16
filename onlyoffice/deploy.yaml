@@ -1,0 +1,9 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: "{{ SERVICE }}"
+    resolve_image: always
+    compose:
+      - docker-compose.yaml
+  environment:
+    ONLYOFFICE_JWT_SECRET: "{{ ONLYOFFICE_JWT_SECRET }}"
