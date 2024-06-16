@@ -27,17 +27,17 @@ database:
   name: psycopg2
   args:
     user: synapse
-    password: <DB_PASSWORD>
+    password: "{{ SYNAPSE_DATABASE_PASSWORD }}"
     dbname: synapse
     host: database
     cp_min: 5
     cp_max: 10
 log_config: "/data/clic.epfl.ch.log.config"
 media_store_path: /data/media_store
-registration_shared_secret: <GENERATED>
+registration_shared_secret: "{{ SYNAPSE_REGISTRATION_SECRET }}"
 report_stats: true
-macaroon_secret_key: <GENERATED>
-form_secret: <GENERATED>
+macaroon_secret_key: "{{ SYNAPSE_MACAROON_SECRET }}"
+form_secret: "{{ SYNAPSE_FORM_SECRET }}"
 signing_key_path: "/data/clic.epfl.ch.signing.key"
 trusted_key_servers:
   - server_name: "matrix.org"
@@ -46,12 +46,12 @@ oidc_providers:
     idp_name: "KeyCLIC"
     issuer: "https://clic.epfl.ch/keyclic/realms/master"
     client_id: "synapse"
-    client_secret: <KEYCLOAK_CLIENT_SECRET>
+    client_secret: "{{ SYNAPSE_KEYCLOAK_SECRET }}"
     scopes: ["openid", "profile"]
     user_mapping_provider:
       config:
-        localpart_template: "{{ user.preferred_username }}"
-        display_name_template: "{{ user.full_name }}"
+        localpart_template: "{% raw %}{{ user.preferred_username }}{% endraw %}"
+        display_name_template: "{% raw %}{{ user.full_name }}{% endraw %}"
     backchannel_logout_enabled: true
 password_config:
   enabled: false

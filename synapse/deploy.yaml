@@ -1,0 +1,16 @@
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ CONFIG_DIR }}/synapse"
+    state: directory
+    mode: "0755"
+
+- name: Create config from template
+  ansible.builtin.template:
+    src: ./homeserver.yaml.j2
+    dest: "{{ CONFIG_DIR }}/synapse/homeserver.yaml"
+    owner: "991"
+    group: "991"
+    mode: "0755"
+
+- name: end
+  ansible.builtin.fail:
