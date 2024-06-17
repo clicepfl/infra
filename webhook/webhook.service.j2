@@ -5,11 +5,11 @@ After=network.target
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/local/bin/webhook
-Environment=CONFIG_PATH=/etc/webhook/config.json
+ExecStart={{ EXE }}
+Environment=CONFIG_PATH={{ CONFIG }}
 Environment=RUST_LOG=trace
-User=debian
-Group=debian
+User={{ USER }}
+Group={{ USER }}
 
 [Install]
 WantedBy=multi-user.target

@@ -1,73 +1,68 @@
+- name: Copy webhook source to build directory
+  ansible.builtin.copy:
+    src: ../webhook/
+    dest: /tmp/webhook
+    mode: "0777"
+  when: (build | default('true')) == 'true'
+
 - name: Build webhook
-  hosts: localhost
-  become: true
-  tasks:
-    - name: Copy webhook source to build directory
-      ansible.builtin.copy:
-        src: ../webhook/
-        dest: /tmp/webhook
-        mode: "0777"
-      when: (build | default('true')) == 'true'
+  community.docker.docker_container:
+    name: webhook-build
+    image: rust:slim-bullseye
+    entrypoint:
+      - cargo
+      - build
+      - --release
+    auto_remove: true
+    detach: false
+    mounts:
+      - type: bind
+        source: /tmp/webhook
+        target: /webhook
+    working_dir: /webhook
+  when: (build | default('true')) == 'true'
 
-    - name: Build webhook
-      community.docker.docker_container:
-        name: webhook-build
-        image: rust:slim-bullseye
-        entrypoint:
-          - cargo
-          - build
-          - --release
-        auto_remove: true
-        detach: false
-        mounts:
-          - type: bind
-            source: /tmp/webhook
-            target: /webhook
-        working_dir: /webhook
-      when: (build | default('true')) == 'true'
+- name: Install webhook
+  ansible.builtin.copy:
+    src: /tmp/webhook/target/release/webhook
+    dest: /usr/local/bin/webhook
+    mode: "0755"
+    owner: root
+  when: (build | default('true')) == 'true'
 
-    - name: Install webhook
-      ansible.builtin.copy:
-        src: /tmp/webhook/target/release/webhook
-        dest: /usr/local/bin/webhook
-        mode: "0755"
-        owner: root
-      when: (build | default('true')) == 'true'
+- name: Remove build directory
+  ansible.builtin.file:
+    path: /tmp/webhook
+    state: absent
+  when: (build | default('true')) == 'true'
 
-    - name: Remove build directory
-      ansible.builtin.file:
-        path: /tmp/webhook
-        state: absent
-      when: (build | default('true')) == 'true'
+- name: Create webhook directory
+  ansible.builtin.file:
+    path: /etc/webhook
+    state: directory
+    mode: "0755"
+    owner: root
 
-- name: Setup webhook
-  hosts: localhost
-  become: true
-  tasks:
-    - name: Create webhook directory
-      ansible.builtin.file:
-        path: /etc/webhook
-        state: directory
-        mode: "0755"
-        owner: root
+- name: Setup config
+  ansible.builtin.template:
+    src: ../webhook/config.json.j2
+    dest: /etc/webhook/config.json
+    mode: "0755"
+    owner: root
 
-    - name: Setup config
-      ansible.builtin.copy:
-        src: "{{ config }}"
-        dest: /etc/webhook/config.json
-        mode: "0755"
-        owner: root
+- name: Setup systemd service file
+  ansible.builtin.template:
+    src: ../webhook/webhook.service.j2
+    dest: /etc/systemd/system/webhook.service
+    mode: "0755"
+    owner: root
+  vars:
+    EXE: /usr/local/bin/webhook
+    CONFIG: /etc/webhook/config.json
 
-    - name: Setup systemd service file
-      ansible.builtin.copy:
-        src: ../webhook/webhook.service
-        dest: /etc/systemd/system/webhook.service
-        mode: "0755"
-        owner: root
-
-    - name: Enable and start service
-      ansible.builtin.systemd:
-        service: webhook
-        enabled: true
-        state: restarted
-        daemon-reload: true
+- name: Enable and start service
+  ansible.builtin.systemd:
+    service: webhook
+    enabled: true
+    state: restarted
+    daemon-reload: true
