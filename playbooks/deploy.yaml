@@ -7,44 +7,11 @@
   tasks:
     - name: Check extra variables
       ansible.builtin.fail:
-        msg: "{{ item }} must be present and non-empty"
-      loop:
-        - MATTERMOST_DATABASE_PASSWORD
-        - MATTERMOST_DATABASE_INIT
-        - NEXTCLOUD_DATABASE_PASSWORD
-        - NEXTCLOUD_DATABASE_INIT
-        - VAULTWARDEN_ADMIN_TOKEN
-        - WIKI_DATABASE_PASSWORD
-        - WIKI_DATABASE_INIT
-        - WIKI_SECRET_KEY
-        - ROBOCLIC_TOKEN
-        - ROBOCLIC_ADMIN_TOKEN
-        - ROBOCLIC_DIRECTUS_TOKEN
-        - CLICKETING_DATABASE_PASSWORD
-        - CLICKETING_DATABASE_INIT
-        - CLICKETING_ADMIN_TOKEN
-        - BOOKSTACK_DATABASE_PASSWORD
-        - BOOKSTACK_DATABASE_INIT
-        - SMTP_COMMUNICATION_PASSWORD
-        - SMTP_IT_PASSWORD
-        - ONLYOFFICE_JWT_SECRET
-        - BACKUP_ENCRYPTION_PASSPHRASE
-        - BACKUP_REPO
-        - DIRECTUS_ADMIN_PASSWORD
-        - DIRECTUS_DATABASE_INIT
-        - DIRECTUS_DATABASE_PASSWORD
-        - DIRECTUS_KEY
-        - DIRECTUS_SECRET
-        - DIRECTUS_KEYCLOAK_SECRET
-        - WEBSITE_DIRECTUS_TOKEN
-        - KEYCLOAK_DB_PASSWORD
-        - KEYCLOAK_ADMIN_PASSWORD
-        - SYNAPSE_DATABASE_PASSWORD
-        - SYNAPSE_CONFIG_PATH
+        msg: "{{ item.key }} must be present and non-empty"
+      loop: "{{ lookup('file', '../secrets.yaml.example') | from_yaml | dict2items }}"
       when: value == ""
       vars:
-        value: "{{ lookup('ansible.builtin.vars', item) }}"
-
+        value: "{{ lookup('ansible.builtin.vars', item.key, default='') }}"
 
     - name: Deploy
       ansible.builtin.include_tasks:
