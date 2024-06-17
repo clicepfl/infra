@@ -13,10 +13,33 @@
       vars:
         value: "{{ lookup('ansible.builtin.vars', item.key, default='') }}"
 
+    - name: Set full service list
+      ansible.builtin.set_fact:
+        services:
+          - bookstack
+          - caddy
+          - clicketing
+          - directus
+          - icelan
+          - keycloak
+          - mattermost
+          - nextcloud
+          - onlyoffice
+          - roboclic
+          - synapse
+          - vaultwarden
+          - website
+          - webhook
+          - wiki
+
+    - name: Compute list of services to deploy
+      ansible.builtin.set_fact:
+        to_deploy: "{{ ((SERVICE | default('')) == '') | ternary(services, SERVICE | default('') | split(',')) }}"
+
     - name: Deploy
       ansible.builtin.include_tasks:
         file: ../{{ item }}/deploy.yaml
-      loop: "{{ (SERVICE | default('keycloak,mattermost,nextcloud,roboclic,vaultwarden,website,wiki,clicketing,bookstack,icelan,onlyoffice,directus,synapse')) | split(',') }}"
+      loop: "{{ to_deploy }}"
 
 - name: Setup automatic backups with Borg
   hosts: localhost

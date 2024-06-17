@@ -4,20 +4,6 @@
     "start_command": "ansible-pull -U {{ REPOSITORY_SSH_URL }} -e @{{ SECRETS_PATH }} playbooks/deploy.yaml -e SERVICE=$SERVICE"
   },
   "services": {
-    "bookstack": {},
-    "caddy": {},
-    "clicketing": {},
-    "directus": {},
-    "icelan": {},
-    "keycloak": {},
-    "mattermost": {},
-    "nextcloud": {},
-    "onlyoffice": {},
-    "roboclic": {},
-    "synapse": {},
-    "vaultwarden": {},
-    "website": {},
-    "webhook": {},
-    "wiki": {}
+    {{ webhook_services }}
   }
 }

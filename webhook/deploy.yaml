@@ -43,6 +43,10 @@
     mode: "0755"
     owner: root
 
+- name: Compute services dictionary
+  ansible.builtin.set_fact:
+    webhook_services: "{{ ['\"'] | product(services) | map('join') | product(['\": {}']) | map('join') | join(',\n    ')}}"
+
 - name: Setup config
   ansible.builtin.template:
     src: ../webhook/config.json.j2
