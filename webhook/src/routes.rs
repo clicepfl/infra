@@ -11,7 +11,7 @@ use actix_web::{
 use crate::{
     config::{config, Service},
     error::Error,
-    validation::validate_call,
+    validation::{validate_call, validate_service_list},
     State,
 };
 
@@ -117,6 +117,7 @@ pub async fn targeted(
     if !validate_call(req.headers(), &payload, &mut state.lock().unwrap())? {
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
+    validate_service_list(&service)?;
 
     log::info!("Triggering restart for service {}", service);
 

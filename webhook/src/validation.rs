@@ -68,3 +68,14 @@ pub fn validate_call(
     validate_signature(headers, payload)?;
     Ok(validate_event(headers)? && validate_delivery(headers, state)?)
 }
+
+pub fn validate_service_list(str: &str) -> Result<(), Error> {
+    let mut services = str.split(",");
+    let allowed: Vec<&str> = config().services.keys().map(|s| s.as_ref()).collect();
+
+    if services.all(|s| allowed.contains(&s)) {
+        Ok(())
+    } else {
+        Err(Error::InvalidServiceList)
+    }
+}
