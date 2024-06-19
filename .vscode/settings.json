@@ -1,5 +1,7 @@
 {
   "files.associations": {
-    "secrets.yaml.example": "yaml"
+    "secrets.yaml.example": "yaml",
+    "docker-compose.yaml": "dockercompose",
+    "*.yaml": "ansible",
   }
 }
