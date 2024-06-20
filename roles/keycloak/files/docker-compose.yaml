@@ -1,4 +1,4 @@
-version: '3.6'
+version: "3.6"
 
 services:
   keycloak:
@@ -7,7 +7,7 @@ services:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://database:5432/keycloak
       KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_DB_PASSWORD: ${DB_PASSWORD}
 
       KC_HOSTNAME_URL: https://clic.epfl.ch/keyclic
       KC_HOSTNAME_STRICT: "false"
@@ -21,9 +21,9 @@ services:
       KC_METRICS_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KEYCLOAK_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     volumes:
-      - ./clic_theme:/opt/keycloak/themes/clic_theme
+      - ../files/clic_theme:/opt/keycloak/themes/clic_theme
     command: start
     depends_on:
       - database
@@ -35,10 +35,11 @@ services:
     hostname: database
     volumes:
       - data:/var/lib/postgresql/data
+      - ${DB_INIT}:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - 5006:5432
 

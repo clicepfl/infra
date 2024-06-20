@@ -5,14 +5,6 @@
   become_method: ansible.builtin.sudo
   become: true
   tasks:
-    - name: Check extra variables
-      ansible.builtin.fail:
-        msg: "{{ item.key }} must be present and non-empty"
-      loop: "{{ lookup('file', '../secrets.yaml.example') | from_yaml | dict2items }}"
-      when: value == ""
-      vars:
-        value: "{{ lookup('ansible.builtin.vars', item.key, default='') }}"
-
     - name: Set full service list
       ansible.builtin.set_fact:
         services:
@@ -37,8 +29,10 @@
         to_deploy: "{{ ((SERVICE | default('')) == '') | ternary(services, SERVICE | default('') | split(',')) }}"
 
     - name: Deploy
-      ansible.builtin.include_tasks:
-        file: ../{{ item }}/deploy.yaml
+      ansible.builtin.include_role:
+        name: "{{ item }}"
+      vars:
+        service: "{{ services[item] }}"
       loop: "{{ to_deploy }}"
 
 - name: Setup automatic backups with Borg
