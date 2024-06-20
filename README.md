@@ -27,6 +27,8 @@ The `playbooks` directory contains two ansible playbooks:
 Each service has a dedicated directory for its `docker-compose.yaml` and a `deploy.yaml` file containing the Ansible task(s) to run in order to deploy the service. Those tasks will take care of installing dependencies, generating configuration files, and deploying the service. See the `webhook` and `caddy` and `nextcloud` services for a few examples. \
 **Important:** the tasks will be ran from the `playbooks` directory, so the paths need to take that into account.
 
+If a service's `deploy.yaml` needs to generate a configuration file, it needs to be stored in the directory `{{ CONFIG_DIR }}/{{ SERVICE }}` (`CONFIG_DIR` is specified in the `secrets.yaml` file). It then must be mounted into the container using a [bind mount](https://docs.docker.com/storage/bind-mounts/). Since bind mounts do not allow to change the permissions/ownership of the file, the `deploy.yaml` tasks must take care of setting those properly.
+
 ### Caddy
 
 Caddy is the reverse-proxy used to dispatch incoming HTTP requests to the different services. It also handles HTTPS with the client. It communicates with the services through HTTP, to avoid having to manage local certificates. Since it needs to handle connections on both IPv4 and IPv6, it needs to run on bare-metal, as docker swarm does not yet allow to bind to an IPv6 address.
