@@ -5,6 +5,13 @@
   become_method: ansible.builtin.sudo
   become: true
   tasks:
+    - name: Test
+      ansible.builtin.debug:
+        msg: >-
+          asdf
+          asdf
+          asdf
+
     - name: Set full service list
       ansible.builtin.set_fact:
         service_names:
@@ -107,14 +114,30 @@
           before_backup:
             - echo "`date` - Starting backup."
             - mkdir -p /var/db-dumps
-            - MYSQL_PWD={{ services.nextcloud.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5000 --protocol tcp --user nextcloud --databases nextcloud --result-file /var/db-dumps/nextcloud.sql
-            - MYSQL_PWD={{ services.wiki.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5002 --protocol tcp --user wikiuser --databases my_wiki --result-file /var/db-dumps/my_wiki.sql
-            - MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004 --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
-            - PGPASSWORD={{ services.mattermost.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5001 --username mattermost --format plain mattermost -f /var/db-dumps/mattermost.sql
-            - PGPASSWORD={{ services.clicketing.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003 --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
-            - PGPASSWORD={{ services.directus.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005 --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
-            - PGPASSWORD={{ services.keycloak.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5006 --username keycloak --format plain keycloak -f /var/db-dumps/keycloak.sql
-            - PGPASSWORD={{ services.synapse.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007 --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
+            - >-
+              MYSQL_PWD={{ services.nextcloud.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5000
+              --protocol tcp --user nextcloud --databases nextcloud --result-file /var/db-dumps/nextcloud.sql
+            - >-
+              MYSQL_PWD={{ services.wiki.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5002
+              --protocol tcp --user wikiuser --databases my_wiki --result-file /var/db-dumps/my_wiki.sql
+            - >-
+              MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004
+              --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
+            - >-
+              PGPASSWORD={{ services.mattermost.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5001
+              --username mattermost --format plain mattermost -f /var/db-dumps/mattermost.sql
+            - >-
+              PGPASSWORD={{ services.clicketing.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003
+              --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
+            - >-
+              PGPASSWORD={{ services.directus.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005
+              --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
+            - >-
+              PGPASSWORD={{ services.keycloak.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5006
+              --username keycloak --format plain keycloak -f /var/db-dumps/keycloak.sql
+            - >-
+              PGPASSWORD={{ services.synapse.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007
+              --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
         ansible_role_borgbackup_borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
