@@ -1,5 +1,5 @@
 version: 1
-directus: 10.10.2
+directus: 10.12.1
 vendor: postgres
 collections:
   - collection: association
@@ -945,6 +945,45 @@ fields:
       generation_expression: null
       has_auto_increment: false
       foreign_key_table: association_public_files
+      foreign_key_column: id
+  - collection: association
+    field: preview_image
+    type: uuid
+    meta:
+      collection: association
+      conditions: null
+      display: null
+      display_options: null
+      field: preview_image
+      group: null
+      hidden: false
+      interface: file-image
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 11
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: preview_image
+      table: association
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
       foreign_key_column: id
   - collection: association_memberships
     field: id
@@ -5392,6 +5431,27 @@ relations:
       foreign_key_table: association_public_files
       foreign_key_column: id
       constraint_name: association_public_files_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: association
+    field: preview_image
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: association
+      many_field: preview_image
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: association
+      column: preview_image
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: association_preview_image_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: association_memberships
