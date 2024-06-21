@@ -1,7 +1,7 @@
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
-    name: mattermost
+    name: clicketing
     resolve_image: always
     compose:
       - "{{ role_path }}/files/docker-compose.yaml"
