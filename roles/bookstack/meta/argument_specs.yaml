@@ -13,8 +13,8 @@ argument_specs:
                 required: true
               init:
                 required: true
-        keycloak_secret:
-          required: true
+          keycloak_secret:
+            required: true
 
       general:
         type: "dict"
