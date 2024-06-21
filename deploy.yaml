@@ -28,10 +28,6 @@
       ansible.builtin.set_fact:
         to_deploy: "{{ ((SERVICE | default('')) == '') | ternary(service_names, SERVICE | default('') | split(',')) }}"
 
-    - name: Test
-      ansible.builtin.debug:
-        msg: "{{ to_deploy }}"
-
     - name: Deploy
       ansible.builtin.include_role:
         name: "{{ item }}"
