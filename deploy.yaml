@@ -55,13 +55,13 @@
       ansible.builtin.include_role:
         name: borgbase.ansible_role_borgbackup
       vars:
-        ansible_role_borgbackup_borg_repository:
+        borg_repository:
           - "{{ services.backup.repository }}"
-        ansible_role_borgbackup_borg_encryption_passphrase: "{{ service.backup.encryption_passphrase }}"
-        ansible_role_borgbackup_borgmatic_timer: systemd
-        ansible_role_borgbackup_borgmatic_timer_hour: 0
-        ansible_role_borgbackup_borgmatic_timer_minute: 0
-        ansible_role_borgbackup_borg_source_directories:
+        borg_encryption_passphrase: "{{ service.backup.encryption_passphrase }}"
+        borgmatic_timer: systemd
+        borgmatic_timer_hour: 0
+        borgmatic_timer_minute: 0
+        borg_source_directories:
           - /var/lib/docker/volumes/roboclic
           - /var/lib/docker/volumes/mattermost_data
           - /var/lib/docker/volumes/nextcloud_nextcloud-app
@@ -85,7 +85,7 @@
           - /var/db-dumps
           - /var/secrets.yaml
           - /etc/webhook
-        ansible_role_borgbackup_borgmatic_hooks:
+        borgmatic_hooks:
           before_backup:
             - echo "`date` - Starting backup."
             - mkdir -p /var/db-dumps
@@ -113,7 +113,7 @@
             - >-
               PGPASSWORD={{ services.synapse.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007
               --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
-        ansible_role_borgbackup_borg_retention_policy:
+        borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
           keep_monthly: 6
