@@ -9,7 +9,7 @@
       ansible.builtin.set_fact:
         service_names:
           - bookstack
-          #- caddy
+          - caddy
           - clicketing
           - directus
           - icelan
@@ -21,7 +21,7 @@
           - synapse
           - vaultwarden
           - website
-          #- webhook
+          - webhook
           - wiki
 
     - name: Compute list of services to deploy
