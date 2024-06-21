@@ -51,20 +51,6 @@
           - mariadb-client
           - cron
 
-    - name: Init backup repository
-      ansible.builtin.command:
-        argv:
-          - borg
-          - init
-          - -e
-          - none
-          - "{{ BACKUP_DIR }}"
-      register: repo_init
-      changed_when: repo_init.rc == 0
-      failed_when:
-        - repo_init.rc != 0
-        - repo_init.rc != 2
-
     - name: Launch borgmatic
       ansible.builtin.include_role:
         name: borgbase.ansible_role_borgbackup
