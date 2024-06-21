@@ -5,13 +5,6 @@
   become_method: ansible.builtin.sudo
   become: true
   tasks:
-    - name: Test
-      ansible.builtin.debug:
-        msg: >-
-          asdf
-          asdf
-          asdf
-
     - name: Set full service list
       ansible.builtin.set_fact:
         service_names:
