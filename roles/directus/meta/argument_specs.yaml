@@ -1,0 +1,39 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          database:
+            type: "dict"
+            required: true
+            options:
+              password:
+                required: true
+              init:
+                required: true
+          
+          admin_password:
+            required: true
+          keycloak_secret:
+            required: true
+          secret:
+            required: true
+          key:
+            required: true
+
+      general:
+        type: "dict"
+        required: true
+        options:
+          mail:
+            type: "dict"
+            required: true
+            options:
+              it_password:
+                required: true
+              comm_password:
+                required: true
+          config_dir:
+            required: true

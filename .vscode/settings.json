@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "secrets.yaml.example": "yaml",
+    "docker-compose.yaml": "dockercompose",
+    "main.yaml": "ansible",
+    "deploy.yaml": "ansible",
+    "init.yaml": "ansible"
+  },
+  "editor.rulers": [160]
+}

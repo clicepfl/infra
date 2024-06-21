@@ -1,0 +1,13 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          telegram_token:
+            required: true
+          admin_token:
+            required: true
+          directus_token:
+            required: true

@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  synapse:
+    image: matrixdotorg/synapse:latest
+    volumes:
+      - data:/data
+      - ${CONFIG_PATH}:/data/homeserver.yaml
+    healthcheck:
+      test: ["CMD", "curl", "-fSs", "http://localhost:8009/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      - generate
+      - database
+    ports:
+      - 8011:8008
+
+  database:
+    image: postgres:15.4-alpine3.18
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ${DATABASE_INIT}:/docker-entrypoint-initdb.d
+    environment:
+      TZ: UTC
+      POSTGRES_USER: synapse
+      POSTGRES_DB: synapse
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C' # Because python
+    ports:
+      - 5007:5432
+
+  generate:
+    image: matrixdotorg/synapse:latest
+    volumes:
+      - data:/data
+    command: generate
+    environment:
+      SYNAPSE_SERVER_NAME: clic.epfl.ch
+      SYNAPSE_REPORT_STATS: "yes"
+
+volumes:
+  data:
+  database:

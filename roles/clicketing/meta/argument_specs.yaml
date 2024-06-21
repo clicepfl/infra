@@ -1,0 +1,17 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          database:
+            type: "dict"
+            required: true
+            options:
+              password:
+                required: true
+              init:
+                required: true
+          admin_token:
+            required: true

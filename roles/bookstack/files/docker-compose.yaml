@@ -1,0 +1,66 @@
+version: "3.8"
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    hostname: bookstack
+    environment:
+      PUID: 1000
+      PGID: 1000
+      APP_URL: https://clic.epfl.ch/bookstack
+      DB_HOST: database
+      DB_PORT: 3306
+      DB_USER: bookstack
+      DB_PASS: ${DATABASE_PASSWORD}
+      DB_DATABASE: bookstackapp
+      MAIL_DRIVER: smtp
+      MAIL_HOST: mail.epfl.ch
+      MAIL_PORT: 587
+      MAIL_ENCRYPTION: starttls
+      MAIL_USERNAME: it.clic
+      MAIL_PASSWORD: ${SMTP_IT_PASSWORD}
+      MAIL_FROM: it.clic@epfl.ch
+      MAIL_FROM_NAME: CLIC - Bookstack
+
+      # AUTH_METHOD: oidc
+      OIDC_NAME: KeyCLIC
+      OIDC_DISPLAY_NAME_CLAIMS: full name
+      OIDC_CLIENT_ID: bookstack
+      OIDC_CLIENT_SECRET: ${KEYCLOAK_SECRET}
+      OIDC_ISSUER: https://clic.epfl.ch/keyclic/realms/master
+      OIDC_ISSUER_DISCOVER: "true"
+
+      # OIDC_USER_TO_GROUPS: "true"
+      # OIDC_ADDITIONAL_SCOPES: roles
+      # OIDC_GROUPS_CLAIM: realm_access.roles
+      # OIDC_REMOVE_FROM_GROUPS: "true"
+      # OIDC_DUMP_USER_DETAILS: "true"
+
+    ports:
+      - 8002:80
+    volumes:
+      - app:/config
+    networks:
+      default:
+    depends_on:
+      - database
+
+  database:
+    image: lscr.io/linuxserver/mariadb
+    hostname: database
+    environment:
+      PUID: 1000
+      PGID: 1000
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      TZ: Europe/London
+      MYSQL_DATABASE: bookstackapp
+      MYSQL_USER: bookstack
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - database:/config
+      - ${DATABASE_INIT}:/docker-entrypoint-initdb.d
+    ports:
+      - 5004:3306
+
+volumes:
+  database:
+  app:

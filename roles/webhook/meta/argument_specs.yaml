@@ -1,0 +1,15 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          secrets_file:
+            required: true
+          user:
+            required: true
+          repository:
+            required: true
+          github_secret:
+            required: true

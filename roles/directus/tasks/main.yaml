@@ -1,0 +1,40 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: directus
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    ADMIN_PASSWORD: "{{ service.admin_password }}"
+    KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
+    SECRET: "{{ service.secret }}"
+    KEY: "{{ service.key }}"
+    DATABASE_INIT: "{{ service.database.init }}"
+    DATABASE_PASSWORD: "{{ service.database.password }}"
+    SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
+
+- name: Wait for directus to be available
+  ansible.builtin.wait_for:
+    port: 8001
+
+- name: Get container id
+  ansible.builtin.command:
+    cmd: docker service ps directus_directus --filter desired-state=running -q
+  changed_when: false
+  register: ps
+
+- name: Compute container name
+  ansible.builtin.set_fact:
+    container_name: directus_directus.1.{{ ps.stdout }}
+
+- name: Copy schema into container
+  community.docker.docker_container_copy_into:
+    container: "{{ container_name }}"
+    container_path: /snapshot.yaml
+    path: "{{ role_path }}/files/snapshot.yaml"
+
+- name: Apply schema
+  community.docker.docker_container_exec:
+    container: "{{ container_name }}"
+    command: npx directus schema apply /snapshot.yaml -y

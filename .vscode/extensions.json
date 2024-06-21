@@ -1,0 +1,8 @@
+{
+    "recommendations":[
+        "samuelcolvin.jinjahtml",
+        "matthewpi.caddyfile-support",
+        "redhat.ansible",
+        "ms-azuretools.vscode-docker"
+    ]
+}
