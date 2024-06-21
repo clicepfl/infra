@@ -1,0 +1,25 @@
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ general.config_dir }}/synapse"
+    state: directory
+    mode: "0755"
+
+- name: Create config from template
+  ansible.builtin.template:
+    src: homeserver.yaml.j2
+    dest: "{{ general.config_dir }}/synapse/homeserver.yaml"
+    owner: "991"
+    group: "991"
+    mode: "0755"
+
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: synapse
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    CONFIG_PATH: "{{ general.config_dir }}/synapse/homeserver.yaml"
+    DATABASE_PASSWORD: "{{ service.database.password }}"
+    DATABASE_INIT: "{{ service.database.init }}"

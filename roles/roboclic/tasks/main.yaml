@@ -1,0 +1,11 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: roboclic
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    TELEGRAM_TOKEN: "{{ service.telegram_token }}"
+    ADMIN_TOKEN: "{{ service.admin_token }}"
+    DIRECTUS_TOKEN: "{{ service.directus_token }}"

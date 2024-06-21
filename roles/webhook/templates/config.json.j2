@@ -1,0 +1,9 @@
+{
+  "secret": "{{ service.github_secret }}",
+  "default": {
+    "start_command": "ansible-pull -U {{ service.repository }} -e @{{ service.secrets_file }} playbooks/deploy.yaml -e SERVICE=$SERVICE"
+  },
+  "services": {
+    {{ webhook_services }}
+  }
+}

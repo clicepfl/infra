@@ -1,0 +1,9 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: website
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    DIRECTUS_TOKEN: "{{ service.directus_token }}"

@@ -23,7 +23,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     volumes:
-      - ../files/clic_theme:/opt/keycloak/themes/clic_theme
+      - ${BASE_PATH}/files/clic_theme:/opt/keycloak/themes/clic_theme
     command: start
     depends_on:
       - database

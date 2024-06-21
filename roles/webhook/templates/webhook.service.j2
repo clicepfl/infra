@@ -1,0 +1,15 @@
+[Unit]
+Description=Webhook for deployment
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/local/bin/webhook
+Environment=CONFIG_PATH=/etc/webhook/config.json
+Environment=RUST_LOG=trace
+User={{ service.user }}
+Group={{ service.user }}
+
+[Install]
+WantedBy=multi-user.target

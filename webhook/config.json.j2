@@ -1,9 +1,0 @@
-{
-  "secret": "{{ WEBHOOK_SECRET }}",
-  "default": {
-    "start_command": "ansible-pull -U {{ REPOSITORY_SSH_URL }} -e @{{ SECRETS_PATH }} playbooks/deploy.yaml -e SERVICE=$SERVICE"
-  },
-  "services": {
-    {{ webhook_services }}
-  }
-}

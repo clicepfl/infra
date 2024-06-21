@@ -4,8 +4,9 @@
     name: keycloak
     resolve_image: always
     compose:
-      - ../files/docker-compose.yaml
+      - "{{ role_path }}/files/docker-compose.yaml"
   environment:
     ADMIN_PASSWORD: "{{ service.admin_password }}"
     DB_PASSWORD: "{{ service.database.password }}"
     DB_INIT: "{{ service.database.init }}"
+    BASE_PATH: "{{ role_path }}"

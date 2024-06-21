@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  roboclic:
+    image: ghcr.io/clicepfl/roboclic-v2:main
+    volumes:
+      - roboclic:/data
+    environment:
+      BOT_TOKEN: ${TELEGRAM_TOKEN}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      DATA_DIR: /data
+      DIRECTUS_URL: https://clic.epfl.ch/directus
+      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN}
+volumes:
+  roboclic:

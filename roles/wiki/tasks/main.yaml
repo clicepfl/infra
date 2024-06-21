@@ -1,0 +1,11 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: wiki
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    DATABASE_PASSWORD: "{{ service.database.password }}"
+    DATABASE_INIT: "{{ service.database.init }}"
+    SECRET_KEY: "{{ service.secret_key }}"

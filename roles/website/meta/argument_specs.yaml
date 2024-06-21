@@ -1,0 +1,9 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          directus_token:
+            required: true

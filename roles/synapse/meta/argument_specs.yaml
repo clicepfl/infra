@@ -1,0 +1,24 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          database:
+            type: "dict"
+            required: true
+            options:
+              password:
+                required: true
+              init:
+                required: true
+
+          registration_secret:
+            required: true
+          macaroon_secret:
+            required: true
+          form_secret:
+            required: true
+          keycloak_secret:
+            required: true

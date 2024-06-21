@@ -1,0 +1,71 @@
+version: "3.8"
+services:
+  directus:
+    image: directus/directus
+    hostname: directus
+    environment:
+      SECRET: ${SECRET}
+      KEY: ${KEY}
+      DB_CLIENT: postgres
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_DATABASE: directus_data
+      DB_USER: directus_user
+      DB_PASSWORD: ${DATABASE_PASSWORD}
+      PUBLIC_URL: https://clic.epfl.ch/directus
+      ROOT_REDIRECT: /directus/admin
+      ADMIN_EMAIL: clic@epfl.ch
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+      EMAIL_VERIFY_SETUP: "true"
+      EMAIL_FROM: it.clic@epfl.ch
+      EMAIL_TRANSPORT: smtp
+
+      EMAIL_SMTP_HOST: mail.epfl.ch
+      EMAIL_SMTP_PORT: "587"
+      EMAIL_SMTP_USER: it.clic
+      EMAIL_SMTP_PASSWORD: ${SMTP_IT_PASSWORD}
+      EMAIL_SMTP_SECURE: "false"
+      EMAIL_SMTP_NAME: Directus
+
+      AUTH_PROVIDERS: keycloak
+      # AUTH_DISABLE_DEFAULT: "true"
+
+      AUTH_KEYCLOAK_DRIVER: openid
+      AUTH_KEYCLOAK_CLIENT_ID: directus
+      AUTH_KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_SECRET}
+      AUTH_KEYCLOAK_ISSUER_URL: https://clic.epfl.ch/keyclic/realms/master/.well-known/openid-configuration
+      AUTH_KEYCLOAK_IDENTIFIER_KEY: email
+      AUTH_KEYCLOAK_LABEL: KeyCLIC
+      AUTH_KEYCLOAK_ICON: key
+    depends_on:
+      - database
+    volumes:
+      - directus-uploads:/directus/uploads
+      - directus-extensions:/directus-extensions
+    ports:
+      - 8001:8055
+
+  # Database for directus
+  database:
+    image: postgres:15.4-alpine3.18
+    environment:
+      POSTGRES_DB: directus_data
+      POSTGRES_USER: directus_user
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - "directus-data:/var/lib/postgresql/data"
+      - ${DATABASE_INIT}:/docker-entrypoint-initdb.d
+    ports:
+      - 5005:5432
+
+  # Query directus every 5 minutes to prevent Docker swarm from dropping the database connection.
+  connection-refresh:
+    image: alpine/curl:latest
+    entrypoint: ["sh", "-c", "while true; do curl http://directus:8055/items/association; sleep 5m; done"]
+    
+volumes:
+  # Persist directus database
+  directus-data:
+  directus-uploads:
+  directus-extensions:

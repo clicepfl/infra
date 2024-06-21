@@ -1,9 +1,0 @@
-- name: Using default deploy method
-  community.docker.docker_stack:
-    state: present
-    name: website
-    resolve_image: always
-    compose:
-      - ../website/docker-compose.yaml
-  environment:
-    WEBSITE_DIRECTUS_TOKEN: "{{ WEBSITE_DIRECTUS_TOKEN }}"

@@ -1,0 +1,9 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: vaultwarden
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    ADMIN_TOKEN: "{{ service.admin_token }}"
