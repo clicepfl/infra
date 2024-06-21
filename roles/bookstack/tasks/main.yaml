@@ -9,3 +9,4 @@
     DATABASE_PASSWORD: "{{ service.database.password }}"
     DATABASE_INIT: "{{ service.database.init }}"
     SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
+    KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
