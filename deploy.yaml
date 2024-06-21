@@ -57,7 +57,7 @@
       vars:
         borg_repository:
           - "{{ services.backup.repository }}"
-        borg_encryption_passphrase: "{{ service.backup.encryption_passphrase }}"
+        borg_encryption_passphrase: "{{ services.backup.encryption_passphrase }}"
         borgmatic_timer: systemd
         borgmatic_timer_hour: 0
         borgmatic_timer_minute: 0
