@@ -13,7 +13,7 @@ services:
       SSO_FRONTEND: override
       # SSO_ONLY: "true"
       SSO_CLIENT_ID: vaultwarden
-      SSO_CLIENT_SECRET: ${VAULTWARDEN_KEYCLOAK_SECRET}
+      SSO_CLIENT_SECRET: ${KEYCLOAK_SECRET}
       SSO_AUTHORITY: https://clic.epfl.ch/keyclic/realms/master
     ports:
       - 8003:80

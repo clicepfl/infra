@@ -7,6 +7,8 @@ argument_specs:
         options:
           admin_token:
             required: true
+          keycloak_secret:
+            required: true
 
       general:
         type: "dict"

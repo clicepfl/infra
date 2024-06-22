@@ -7,3 +7,4 @@
       - "{{ role_path }}/files/docker-compose.yaml"
   environment:
     ADMIN_TOKEN: "{{ service.admin_token }}"
+    KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
