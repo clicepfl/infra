@@ -1,20 +1,13 @@
 version: "3.8"
 services:
   vaultwarden:
-    image: ghcr.io/timshel/vaultwarden:testing
+    image: vaultwarden/server:1.29.2-alpine
     hostname: vaultwarden
     volumes:
       - vaultwarden:/data
     environment:
       DOMAIN: http://localhost/armoire
       ADMIN_TOKEN: ${ADMIN_TOKEN}
-
-      SSO_ENABLED: "true"
-      SSO_FRONTEND: override
-      # SSO_ONLY: "true"
-      SSO_CLIENT_ID: vaultwarden
-      SSO_CLIENT_SECRET: ${KEYCLOAK_SECRET}
-      SSO_AUTHORITY: https://clic.epfl.ch/keyclic/realms/master
     ports:
       - 8003:80
 
