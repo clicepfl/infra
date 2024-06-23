@@ -3480,7 +3480,7 @@ fields:
       name: quantity
       table: inventory
       data_type: integer
-      default_value: null
+      default_value: 1
       max_length: null
       numeric_precision: 32
       numeric_scale: 0
@@ -3531,64 +3531,6 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: inventory
-    field: location
-    type: json
-    meta:
-      collection: inventory
-      conditions: null
-      display: labels
-      display_options: null
-      field: location
-      group: null
-      hidden: false
-      interface: select-multiple-dropdown
-      note: null
-      options:
-        allowOther: true
-        choices:
-          - text: Colonne 0
-            value: col-0
-          - text: Colonne 1
-            value: col-1
-          - text: Colonne 2
-            value: col-2
-          - text: Colonne 3
-            value: col-3
-          - text: Rangée 0
-            value: row-0
-          - text: Rangée 1
-            value: row-1
-          - text: Rangée 2
-            value: row-2
-          - text: Rangée 3
-            value: row-3
-        icon: shelves
-      readonly: false
-      required: false
-      sort: 5
-      special:
-        - cast-json
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      name: location
-      table: inventory
-      data_type: json
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: inventory
     field: tags
     type: json
     meta:
@@ -3597,25 +3539,21 @@ fields:
       display: labels
       display_options: null
       field: tags
-      group: null
+      group: description
       hidden: false
       interface: tags
       note: null
       options:
         presets:
-          - Game*
-          - ICT
-          - OGJ
-          - appareil électrique
-          - boisson
-          - consommable
-          - cuisine
-          - nourriture
-          - outil
-          - ustentil
+          - Clothing - Goodies
+          - Consumable
+          - Drink
+          - Food
+          - Tools
+          - Utensil
       readonly: false
       required: false
-      sort: 7
+      sort: 3
       special:
         - cast-json
       translations: null
@@ -3647,14 +3585,14 @@ fields:
       display: null
       display_options: null
       field: details
-      group: null
+      group: description
       hidden: false
       interface: input-multiline
-      note: null
+      note: Why it is usefull ? Where can we find it ?
       options: null
       readonly: false
       required: false
-      sort: 8
+      sort: 2
       special: null
       translations: null
       validation: null
@@ -3695,7 +3633,7 @@ fields:
         title: Besoin de recommander ?
       readonly: false
       required: false
-      sort: 9
+      sort: 11
       special:
         - alias
         - no-data
@@ -3733,7 +3671,7 @@ fields:
             url: https://www.digitec.ch/fr
       readonly: false
       required: false
-      sort: 10
+      sort: 12
       special:
         - alias
         - no-data
@@ -3742,22 +3680,263 @@ fields:
       validation_message: null
       width: full
   - collection: inventory
-    field: icon
+    field: description
+    type: alias
+    meta:
+      collection: inventory
+      conditions: null
+      display: null
+      display_options: null
+      field: description
+      group: null
+      hidden: false
+      interface: group-detail
+      note: null
+      options:
+        headerColor: null
+        headerIcon: data_info_alert
+        start: closed
+      readonly: false
+      required: false
+      sort: 10
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: inventory
+    field: picture
+    type: uuid
+    meta:
+      collection: inventory
+      conditions: null
+      display: image
+      display_options: null
+      field: picture
+      group: description
+      hidden: false
+      interface: file-image
+      note: null
+      options:
+        folder: null
+      readonly: false
+      required: false
+      sort: 1
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: picture
+      table: inventory
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
+  - collection: inventory
+    field: commission
+    type: integer
+    meta:
+      collection: inventory
+      conditions: null
+      display: related-values
+      display_options:
+        template: "{{name}}"
+      field: commission
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        enableCreate: false
+        template: "{{name}}"
+      readonly: false
+      required: false
+      sort: 5
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: commission
+      table: inventory
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: commissions
+      foreign_key_column: id
+  - collection: inventory
+    field: row
+    type: integer
+    meta:
+      collection: inventory
+      conditions:
+        - name: If in shelve
+          rule:
+            _and:
+              - place:
+                  _contains: shelve
+          hidden: false
+          required: true
+          options:
+            font: sans-serif
+            trim: false
+            masked: false
+            clear: false
+            slug: false
+      display: formatted-value
+      display_options:
+        icon: table_rows
+      field: row
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options:
+        iconLeft: table_rows
+        max: 10
+        min: 0
+      readonly: false
+      required: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: row
+      table: inventory
+      data_type: integer
+      default_value: 0
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inventory
+    field: column
+    type: integer
+    meta:
+      collection: inventory
+      conditions:
+        - name: If in shelve
+          rule:
+            _and:
+              - place:
+                  _contains: shelve
+          hidden: false
+          required: true
+          options:
+            font: sans-serif
+            trim: false
+            masked: false
+            clear: false
+            slug: false
+      display: formatted-value
+      display_options:
+        icon: view_column
+      field: column
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options:
+        iconLeft: view_column
+        max: 10
+        min: 0
+      readonly: false
+      required: true
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: column
+      table: inventory
+      data_type: integer
+      default_value: 0
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inventory
+    field: place
     type: string
     meta:
       collection: inventory
       conditions: null
-      display: icon
+      display: formatted-value
       display_options:
-        color: "#A2B5CD"
-      field: icon
+        background: "#3399FF"
+        color: "#FFFFFF"
+        format: true
+      field: place
       group: null
       hidden: false
-      interface: select-icon
+      interface: select-dropdown
       note: null
-      options: null
+      options:
+        allowOther: true
+        choices:
+          - text: Shelve 1
+            value: shelve-1
+            icon: shelves
+            color: "#6644FF"
+          - text: Shelve 2
+            value: shelve-2
+            icon: shelves
+            color: "#3399FF"
+          - text: Office
+            value: office
+            icon: scene
+            color: "#2ECDA7"
+          - text: Admin
+            value: admin
+            icon: tv_with_assistant
+            color: "#FFC23B"
+        icon: location_on
       readonly: false
-      required: false
+      required: true
       sort: 6
       special: null
       translations: null
@@ -3765,7 +3944,7 @@ fields:
       validation_message: null
       width: full
     schema:
-      name: icon
+      name: place
       table: inventory
       data_type: character varying
       default_value: null
@@ -6457,6 +6636,48 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: commissions_translations_banner_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: inventory
+    field: picture
+    related_collection: directus_files
+    meta:
+      junction_field: null
+      many_collection: inventory
+      many_field: picture
+      one_allowed_collections: null
+      one_collection: directus_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: inventory
+      column: picture
+      foreign_key_table: directus_files
+      foreign_key_column: id
+      constraint_name: inventory_picture_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: inventory
+    field: commission
+    related_collection: commissions
+    meta:
+      junction_field: null
+      many_collection: inventory
+      many_field: commission
+      one_allowed_collections: null
+      one_collection: commissions
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: inventory
+      column: commission
+      foreign_key_table: commissions
+      foreign_key_column: id
+      constraint_name: inventory_commission_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: members
