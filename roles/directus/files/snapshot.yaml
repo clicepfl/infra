@@ -3630,7 +3630,7 @@ fields:
       options:
         color: "#2ECDA7"
         icon: local_shipping
-        title: Besoin de recommander ?
+        title: $t:need-to-order
       readonly: false
       required: false
       sort: 11
@@ -3656,7 +3656,7 @@ fields:
       note: null
       options:
         links:
-          - label: Cassettes Bob
+          - label: $t:bob-cassettes
             icon: dishwasher_gen
             type: normal
             url: >-
