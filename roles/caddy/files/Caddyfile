@@ -21,6 +21,7 @@ https://clic.epfl.ch {
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
 	reverse_proxy /keyclic* http://0.0.0.0:8008
+	redir /me https://clic.epfl.ch/keyclic/realms/master/account/
 
 	reverse_proxy /mattermost* http://0.0.0.0:8004
 
