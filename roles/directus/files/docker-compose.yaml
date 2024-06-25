@@ -38,6 +38,7 @@ services:
       AUTH_KEYCLOAK_IDENTIFIER_KEY: email
       AUTH_KEYCLOAK_LABEL: KeyCLIC
       AUTH_KEYCLOAK_ICON: key
+      AUTH_KEYCLOAK_ALLOW_PUBLIC_REGISTRATION: "true"
     depends_on:
       - database
     volumes:
