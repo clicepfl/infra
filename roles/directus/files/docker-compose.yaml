@@ -29,7 +29,7 @@ services:
       EMAIL_SMTP_NAME: Directus
 
       AUTH_PROVIDERS: keycloak
-      # AUTH_DISABLE_DEFAULT: "true"
+      AUTH_DISABLE_DEFAULT: "true"
 
       AUTH_KEYCLOAK_DRIVER: openid
       AUTH_KEYCLOAK_CLIENT_ID: directus

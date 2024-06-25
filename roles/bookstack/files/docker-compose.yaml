@@ -21,7 +21,7 @@ services:
       MAIL_FROM: it.clic@epfl.ch
       MAIL_FROM_NAME: CLIC - Bookstack
 
-      # AUTH_METHOD: oidc
+      AUTH_METHOD: oidc
       OIDC_NAME: KeyCLIC
       OIDC_DISPLAY_NAME_CLAIMS: full name
       OIDC_CLIENT_ID: bookstack

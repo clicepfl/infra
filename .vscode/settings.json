@@ -6,5 +6,8 @@
     "deploy.yaml": "ansible",
     "init.yaml": "ansible"
   },
-  "editor.rulers": [160]
+  "editor.rulers": [
+    160
+  ],
+  "ansible.python.interpreterPath": "/bin/python"
 }
