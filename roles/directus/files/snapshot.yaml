@@ -3665,7 +3665,7 @@ fields:
             icon: coffee_maker
             type: normal
             url: https://shopjura.com/jura-care-products.html
-          - label: Digitec
+          - label: $t:digitec
             icon: electrical_services
             type: normal
             url: https://www.digitec.ch/fr
@@ -3721,7 +3721,7 @@ fields:
       interface: file-image
       note: null
       options:
-        folder: null
+        folder: f656eb54-a2c2-4c19-8e4c-1543031d5703
       readonly: false
       required: false
       sort: 1
