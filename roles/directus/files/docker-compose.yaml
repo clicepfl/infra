@@ -29,7 +29,7 @@ services:
       EMAIL_SMTP_NAME: Directus
 
       AUTH_PROVIDERS: keycloak
-      # AUTH_DISABLE_DEFAULT: "true"
+      AUTH_DISABLE_DEFAULT: "true"
 
       AUTH_KEYCLOAK_DRIVER: openid
       AUTH_KEYCLOAK_CLIENT_ID: directus
@@ -38,6 +38,7 @@ services:
       AUTH_KEYCLOAK_IDENTIFIER_KEY: email
       AUTH_KEYCLOAK_LABEL: KeyCLIC
       AUTH_KEYCLOAK_ICON: key
+      AUTH_KEYCLOAK_ALLOW_PUBLIC_REGISTRATION: "true"
     depends_on:
       - database
     volumes:
