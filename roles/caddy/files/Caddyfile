@@ -3,8 +3,6 @@
 }
 
 https://clic.epfl.ch {
-	tls internal
-
 	redir /nextclic* /nextcloud
 	handle_path /nextcloud* {
 		header {
@@ -53,22 +51,18 @@ https://clic.epfl.ch {
 
 # Github Webhooks
 https://clic.epfl.ch:4000 {
-	tls internal
 	reverse_proxy http://0.0.0.0:4001
 }
 
 # OnlyOffice
 https://clic.epfl.ch:7000 {
-	tls internal
 	reverse_proxy http://0.0.0.0:9000
 }
 
 https://www.icelan.ch {
-	tls internal
 	reverse_proxy http://0.0.0.0:8009
 }
 
 https://clic.epfl.ch:8443 {
-	tls internal
 	reverse_proxy /* http://0.0.0.0:8010
 }
