@@ -6,7 +6,7 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      APP_URL: https://clic.epfl.ch/bookstack
+      APP_URL: https://clic.epfl.ch/wiclic
       DB_HOST: database
       DB_PORT: 3306
       DB_USER: bookstack
@@ -19,9 +19,9 @@ services:
       MAIL_USERNAME: it.clic
       MAIL_PASSWORD: ${SMTP_IT_PASSWORD}
       MAIL_FROM: it.clic@epfl.ch
-      MAIL_FROM_NAME: CLIC - Bookstack
+      MAIL_FROM_NAME: CLIC - Wiclic
 
-      # AUTH_METHOD: oidc
+      AUTH_METHOD: oidc
       OIDC_NAME: KeyCLIC
       OIDC_DISPLAY_NAME_CLAIMS: full name
       OIDC_CLIENT_ID: bookstack

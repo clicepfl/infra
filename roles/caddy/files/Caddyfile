@@ -21,6 +21,7 @@ https://clic.epfl.ch {
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
 	reverse_proxy /keyclic* http://0.0.0.0:8008
+	redir /me https://clic.epfl.ch/keyclic/realms/master/account/ permanent
 
 	reverse_proxy /mattermost* http://0.0.0.0:8004
 
@@ -32,8 +33,10 @@ https://clic.epfl.ch {
 	redir /armoire /armoire/ permanent
 	reverse_proxy /armoire/* http://0.0.0.0:8003
 
-	redir /bookclic* /bookstack
 	handle_path /bookstack* {
+		redir * /wiclic{uri} permanent
+	}
+	handle_path /wiclic* {
 		reverse_proxy http://0.0.0.0:8002
 	}
 
