@@ -42,7 +42,7 @@
       ignore_errors: true
       register: docker_path 
 
-    - name: Create cron job to prune Docker images weekly
+    - name: Create cron job to prune unused Docker images, containers and networks weekly
       cron:
         name: "Prune Docker images weekly"
         minute: "0"
