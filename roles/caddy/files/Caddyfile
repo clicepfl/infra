@@ -37,9 +37,7 @@ https://clic.epfl.ch {
 		redir * /wiclic{uri} permanent
 	}
 
-	handle_path /wiki* {
-		redir * /wiclic{uri} permanent
-	}
+	redir /wiki* /wiclic
 
 	handle_path /wiclic* {
 		reverse_proxy http://0.0.0.0:8002
