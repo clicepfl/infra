@@ -22,7 +22,6 @@
           - vaultwarden
           - website
           - webhook
-          - wiki
 
     - name: Compute list of services to deploy
       ansible.builtin.set_fact:
@@ -66,7 +65,6 @@
           - /var/lib/docker/volumes/mattermost_data
           - /var/lib/docker/volumes/nextcloud_nextcloud-app
           - /var/lib/docker/volumes/vaultwarden_vaultwarden
-          - /var/lib/docker/volumes/wiki_images
           - /var/lib/docker/volumes/bookstack_app
           - /var/lib/docker/volumes/mattermost_config
           - /var/lib/docker/volumes/mattermost_data
@@ -92,9 +90,6 @@
             - >-
               MYSQL_PWD={{ services.nextcloud.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5000
               --protocol tcp --user nextcloud --databases nextcloud --result-file /var/db-dumps/nextcloud.sql
-            - >-
-              MYSQL_PWD={{ services.wiki.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5002
-              --protocol tcp --user wikiuser --databases my_wiki --result-file /var/db-dumps/my_wiki.sql
             - >-
               MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004
               --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql

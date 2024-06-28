@@ -36,6 +36,9 @@ https://clic.epfl.ch {
 	handle_path /bookstack* {
 		redir * /wiclic{uri} permanent
 	}
+
+	redir /wiki* /wiclic
+
 	handle_path /wiclic* {
 		reverse_proxy http://0.0.0.0:8002
 	}
@@ -45,8 +48,6 @@ https://clic.epfl.ch {
 	}
 
 	reverse_proxy /* http://0.0.0.0:8000
-
-	redir /wiki* https://clic.epfl.ch:8443/
 }
 
 # Github Webhooks
@@ -61,8 +62,4 @@ https://clic.epfl.ch:7000 {
 
 https://www.icelan.ch {
 	reverse_proxy http://0.0.0.0:8009
-}
-
-https://clic.epfl.ch:8443 {
-	reverse_proxy /* http://0.0.0.0:8010
 }
