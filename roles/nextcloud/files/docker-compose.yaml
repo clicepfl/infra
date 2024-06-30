@@ -14,7 +14,7 @@ services:
       - 5000:3306
 
   nextcloud:
-    image: nextcloud:27-apache
+    image: nextcloud:28-apache
     hostname: nextcloud
     volumes:
       - nextcloud-app:/var/www/html
@@ -41,7 +41,7 @@ services:
   # We can simply run a second container on the same volume, with the entrypoint /cron.sh
   # See: https://help.nextcloud.com/t/clarification-regarding-cron-jobs-setup-config/134450/2
   cron:
-    image: nextcloud:27-apache
+    image: nextcloud:28-apache
     volumes:
       - nextcloud-app:/var/www/html
     environment:
