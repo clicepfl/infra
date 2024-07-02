@@ -38,12 +38,13 @@
           - "o=Debian,codename=${distro_codename},a=proposed-updates"
 
     - name: Get docker path
-      command: which docker
+      ansible.builtin.command: which docker
       ignore_errors: true
-      register: docker_path 
+      changed_when: true
+      register: docker_path
 
     - name: Create cron job to prune unused Docker images, containers and networks weekly
-      cron:
+      ansible.builtin.cron:
         name: "Prune Docker images weekly"
         minute: "0"
         hour: "0"
