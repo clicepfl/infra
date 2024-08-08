@@ -3,6 +3,8 @@
 }
 
 https://clic.epfl.ch {
+	respond /googlec6cc9bda0ca2d073.html "google-site-verification: googlec6cc9bda0ca2d073.html"
+
 	redir /nextclic* /nextcloud
 	handle_path /nextcloud* {
 		header {
