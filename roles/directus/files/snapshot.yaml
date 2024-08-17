@@ -1,5 +1,5 @@
 version: 1
-directus: 10.12.0
+directus: 10.12.1
 vendor: postgres
 collections:
   - collection: association
@@ -314,6 +314,30 @@ collections:
       versioning: false
     schema:
       name: commissions
+  - collection: commissions_members
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: commissions_members
+      color: null
+      display_template: null
+      group: commissions
+      hidden: true
+      icon: import_export
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: 1
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: commissions_members
   - collection: commissions_social_links
     meta:
       accountability: all
@@ -362,6 +386,54 @@ collections:
       versioning: false
     schema:
       name: commissions_translations
+  - collection: event
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: event
+      color: null
+      display_template: null
+      group: null
+      hidden: false
+      icon: event
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: 8
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: event
+  - collection: event_translations
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: event_translations
+      color: null
+      display_template: null
+      group: event
+      hidden: true
+      icon: import_export
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: 2
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: event_translations
   - collection: inventory
     meta:
       accountability: all
@@ -379,7 +451,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: null
+      sort: 9
       sort_field: null
       translations: null
       unarchive_value: null
@@ -602,6 +674,30 @@ collections:
       versioning: false
     schema:
       name: partners
+  - collection: registration
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: registration
+      color: null
+      display_template: null
+      group: event
+      hidden: false
+      icon: null
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: 1
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: registration
   - collection: social_links
     meta:
       accountability: all
@@ -885,6 +981,29 @@ fields:
       validation_message: null
       width: full
   - collection: association
+    field: social_links
+    type: alias
+    meta:
+      collection: association
+      conditions: null
+      display: null
+      display_options: null
+      field: social_links
+      group: null
+      hidden: false
+      interface: list-m2m
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 8
+      special:
+        - m2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: association
     field: partners
     type: alias
     meta:
@@ -908,28 +1027,44 @@ fields:
       validation_message: null
       width: full
   - collection: association
-    field: social_links
-    type: alias
+    field: preview_image
+    type: uuid
     meta:
       collection: association
       conditions: null
       display: null
       display_options: null
-      field: social_links
+      field: preview_image
       group: null
       hidden: false
-      interface: list-m2m
+      interface: file-image
       note: null
       options: null
       readonly: false
       required: false
-      sort: 8
+      sort: 11
       special:
-        - m2m
+        - file
       translations: null
       validation: null
       validation_message: null
       width: full
+    schema:
+      name: preview_image
+      table: association
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
   - collection: association
     field: public_files
     type: integer
@@ -969,45 +1104,6 @@ fields:
       generation_expression: null
       has_auto_increment: false
       foreign_key_table: association_public_files
-      foreign_key_column: id
-  - collection: association
-    field: preview_image
-    type: uuid
-    meta:
-      collection: association
-      conditions: null
-      display: null
-      display_options: null
-      field: preview_image
-      group: null
-      hidden: false
-      interface: file-image
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: 11
-      special:
-        - file
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      name: preview_image
-      table: association
-      data_type: uuid
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: directus_files
       foreign_key_column: id
   - collection: association_memberships
     field: id
@@ -1513,31 +1609,6 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: association_poles
-    field: translations
-    type: alias
-    meta:
-      collection: association_poles
-      conditions: null
-      display: translations
-      display_options:
-        template: "{{name}}"
-        userLanguage: true
-      field: translations
-      group: null
-      hidden: false
-      interface: translations
-      note: null
-      options: null
-      readonly: false
-      required: true
-      sort: 4
-      special:
-        - translations
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-  - collection: association_poles
     field: slug
     type: string
     meta:
@@ -1576,6 +1647,31 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: association_poles
+    field: translations
+    type: alias
+    meta:
+      collection: association_poles
+      conditions: null
+      display: translations
+      display_options:
+        template: "{{name}}"
+        userLanguage: true
+      field: translations
+      group: null
+      hidden: false
+      interface: translations
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 4
+      special:
+        - translations
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
   - collection: association_poles
     field: mail
     type: string
@@ -1887,6 +1983,34 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: association_public_files
+    field: translations
+    type: alias
+    meta:
+      collection: association_public_files
+      conditions: null
+      display: translations
+      display_options:
+        template: "{{name}}"
+        userLanguage: true
+      field: translations
+      group: null
+      hidden: false
+      interface: translations
+      note: null
+      options:
+        defaultOpenSplitView: true
+        languageDirectionField: code
+        languageField: name
+      readonly: false
+      required: false
+      sort: 5
+      special:
+        - translations
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: association_public_files
     field: icon
     type: uuid
     meta:
@@ -1926,34 +2050,6 @@ fields:
       has_auto_increment: false
       foreign_key_table: directus_files
       foreign_key_column: id
-  - collection: association_public_files
-    field: translations
-    type: alias
-    meta:
-      collection: association_public_files
-      conditions: null
-      display: translations
-      display_options:
-        template: "{{name}}"
-        userLanguage: true
-      field: translations
-      group: null
-      hidden: false
-      interface: translations
-      note: null
-      options:
-        defaultOpenSplitView: true
-        languageDirectionField: code
-        languageField: name
-      readonly: false
-      required: false
-      sort: 5
-      special:
-        - translations
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
   - collection: association_public_files_translations
     field: id
     type: integer
@@ -3028,6 +3124,120 @@ fields:
       validation: null
       validation_message: null
       width: full
+  - collection: commissions_members
+    field: id
+    type: integer
+    meta:
+      collection: commissions_members
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: commissions_members
+      data_type: integer
+      default_value: nextval('commissions_members_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: commissions_members
+    field: commissions_id
+    type: integer
+    meta:
+      collection: commissions_members
+      conditions: null
+      display: null
+      display_options: null
+      field: commissions_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: commissions_id
+      table: commissions_members
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: commissions
+      foreign_key_column: id
+  - collection: commissions_members
+    field: members_id
+    type: integer
+    meta:
+      collection: commissions_members
+      conditions: null
+      display: null
+      display_options: null
+      field: members_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: members_id
+      table: commissions_members
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: members
+      foreign_key_column: id
   - collection: commissions_social_links
     field: id
     type: integer
@@ -3372,6 +3582,829 @@ fields:
       has_auto_increment: false
       foreign_key_table: directus_files
       foreign_key_column: id
+  - collection: event
+    field: id
+    type: integer
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: event
+      data_type: integer
+      default_value: nextval('event_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: type
+    type: string
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: type
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: Other
+            value: other
+          - text: Faculty dinner
+            value: faculty_dinner
+            icon: restaurant
+          - text: ICBD
+            value: icbd
+            icon: lightbulb
+          - text: Hello World
+            value: hello_world
+            icon: videogame_asset
+      readonly: false
+      required: true
+      sort: 9
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: type
+      table: event
+      data_type: character varying
+      default_value: other
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: meals
+    type: json
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: meals
+      group: faculty_dinner
+      hidden: false
+      interface: list
+      note: null
+      options:
+        addLabel: New
+        fields:
+          - field: name
+            name: name
+            type: string
+            meta:
+              field: name
+              type: string
+              interface: null
+          - field: description
+            name: description
+            meta:
+              field: description
+          - field: diet
+            name: diet
+            type: string
+            meta:
+              field: diet
+              type: string
+              required: false
+              interface: select-dropdown
+              options:
+                choices:
+                  - text: Omnivorous
+                    value: omnivorous
+                  - text: Vegetarian
+                    value: vegetarian
+                  - text: Vegan
+                    value: vegan
+      readonly: false
+      required: false
+      sort: 1
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: meals
+      table: event
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: translations
+    type: alias
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: translations
+      group: null
+      hidden: false
+      interface: translations
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 3
+      special:
+        - translations
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: event
+    field: faculty_dinner
+    type: alias
+    meta:
+      collection: event
+      conditions:
+        - name: faculty_dinner
+          rule:
+            _and:
+              - type:
+                  _eq: faculty_dinner
+          readonly: false
+          hidden: false
+          options: {}
+      display: null
+      display_options: null
+      field: faculty_dinner
+      group: null
+      hidden: true
+      interface: group-raw
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 10
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: event
+    field: eventStartTime
+    type: dateTime
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: eventStartTime
+      group: null
+      hidden: false
+      interface: datetime
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: eventStartTime
+      table: event
+      data_type: timestamp without time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: eventEndTime
+    type: dateTime
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: eventEndTime
+      group: null
+      hidden: false
+      interface: datetime
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: eventEndTime
+      table: event
+      data_type: timestamp without time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: staffingStartTime
+    type: dateTime
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: staffingStartTime
+      group: null
+      hidden: false
+      interface: datetime
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: staffingStartTime
+      table: event
+      data_type: timestamp without time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: staffingEndTime
+    type: dateTime
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: staffingEndTime
+      group: null
+      hidden: false
+      interface: datetime
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 7
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: staffingEndTime
+      table: event
+      data_type: timestamp without time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: staffingShiftLength
+    type: integer
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: staffingShiftLength
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        max: 60
+        min: 15
+        step: 5
+      readonly: false
+      required: true
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: staffingShiftLength
+      table: event
+      data_type: integer
+      default_value: 30
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: slug
+    type: string
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: slug
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: slug
+      table: event
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: true
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: icbd
+    type: alias
+    meta:
+      collection: event
+      conditions:
+        - name: icbd
+          rule:
+            _and:
+              - type:
+                  _eq: icbd
+          readonly: false
+          options: {}
+          hidden: false
+      display: null
+      display_options: null
+      field: icbd
+      group: null
+      hidden: true
+      interface: group-raw
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 11
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: event
+    field: talks
+    type: json
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: talks
+      group: icbd
+      hidden: false
+      interface: list
+      note: null
+      options:
+        fields:
+          - field: name
+            name: name
+            type: string
+            meta:
+              field: name
+              type: string
+              required: true
+              interface: input
+          - field: description
+            name: description
+            type: text
+            meta:
+              field: description
+              type: text
+              required: true
+              interface: null
+          - field: start
+            name: start
+            type: time
+            meta:
+              field: start
+              width: half
+              type: time
+              required: true
+              interface: null
+          - field: end
+            name: end
+            type: time
+            meta:
+              field: end
+              width: half
+              type: time
+              required: true
+              interface: null
+      readonly: false
+      required: false
+      sort: 1
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: talks
+      table: event
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event
+    field: interviews
+    type: json
+    meta:
+      collection: event
+      conditions: null
+      display: null
+      display_options: null
+      field: interviews
+      group: icbd
+      hidden: false
+      interface: list
+      note: null
+      options:
+        fields:
+          - field: type
+            name: type
+            type: string
+            meta:
+              field: type
+              width: half
+              type: string
+              required: true
+              interface: select-dropdown
+              options:
+                choices:
+                  - text: Classic
+                    value: classic
+                    icon: person
+                  - text: Coding
+                    value: coding
+                    icon: code
+          - field: interviewer
+            name: interviewer
+            type: string
+            meta:
+              field: interviewer
+              width: half
+              type: string
+              required: true
+              interface: null
+          - field: start
+            name: start
+            type: time
+            meta:
+              field: start
+              width: half
+              type: time
+              required: true
+              interface: null
+          - field: end
+            name: end
+            type: time
+            meta:
+              field: end
+              width: half
+              type: time
+              interface: null
+      readonly: false
+      required: false
+      sort: 2
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: interviews
+      table: event
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event_translations
+    field: id
+    type: integer
+    meta:
+      collection: event_translations
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: event_translations
+      data_type: integer
+      default_value: nextval('event_translations_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event_translations
+    field: event_id
+    type: integer
+    meta:
+      collection: event_translations
+      conditions: null
+      display: null
+      display_options: null
+      field: event_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: event_id
+      table: event_translations
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: event
+      foreign_key_column: id
+  - collection: event_translations
+    field: languages_code
+    type: string
+    meta:
+      collection: event_translations
+      conditions: null
+      display: null
+      display_options: null
+      field: languages_code
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: languages_code
+      table: event_translations
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: languages
+      foreign_key_column: code
+  - collection: event_translations
+    field: title
+    type: string
+    meta:
+      collection: event_translations
+      conditions: null
+      display: null
+      display_options: null
+      field: title
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: title
+      table: event_translations
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: event_translations
+    field: description
+    type: text
+    meta:
+      collection: event_translations
+      conditions: null
+      display: null
+      display_options: null
+      field: description
+      group: null
+      hidden: false
+      interface: input-rich-text-md
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: description
+      table: event_translations
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: inventory
     field: id
     type: integer
@@ -3531,90 +4564,6 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: inventory
-    field: tags
-    type: json
-    meta:
-      collection: inventory
-      conditions: null
-      display: labels
-      display_options: null
-      field: tags
-      group: description
-      hidden: false
-      interface: tags
-      note: null
-      options:
-        presets:
-          - Clothing - Goodies
-          - Consumable
-          - Drink
-          - Food
-          - Tools
-          - Utensil
-      readonly: false
-      required: false
-      sort: 3
-      special:
-        - cast-json
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      name: tags
-      table: inventory
-      data_type: json
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: inventory
-    field: details
-    type: text
-    meta:
-      collection: inventory
-      conditions: null
-      display: null
-      display_options: null
-      field: details
-      group: description
-      hidden: false
-      interface: input-multiline
-      note: Why it is usefull ? Where can we find it ?
-      options: null
-      readonly: false
-      required: false
-      sort: 2
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      name: details
-      table: inventory
-      data_type: text
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: inventory
     field: divider-ypuikl
     type: alias
     meta:
@@ -3707,46 +4656,6 @@ fields:
       validation: null
       validation_message: null
       width: full
-  - collection: inventory
-    field: picture
-    type: uuid
-    meta:
-      collection: inventory
-      conditions: null
-      display: image
-      display_options: null
-      field: picture
-      group: description
-      hidden: false
-      interface: file-image
-      note: null
-      options:
-        folder: f656eb54-a2c2-4c19-8e4c-1543031d5703
-      readonly: false
-      required: false
-      sort: 1
-      special:
-        - file
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      name: picture
-      table: inventory
-      data_type: uuid
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: directus_files
-      foreign_key_column: id
   - collection: inventory
     field: commission
     type: integer
@@ -3959,6 +4868,130 @@ fields:
       has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
+  - collection: inventory
+    field: tags
+    type: json
+    meta:
+      collection: inventory
+      conditions: null
+      display: labels
+      display_options: null
+      field: tags
+      group: description
+      hidden: false
+      interface: tags
+      note: null
+      options:
+        presets:
+          - Clothing - Goodies
+          - Consumable
+          - Drink
+          - Food
+          - Tools
+          - Utensil
+      readonly: false
+      required: false
+      sort: 3
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: tags
+      table: inventory
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inventory
+    field: details
+    type: text
+    meta:
+      collection: inventory
+      conditions: null
+      display: null
+      display_options: null
+      field: details
+      group: description
+      hidden: false
+      interface: input-multiline
+      note: Why it is usefull ? Where can we find it ?
+      options: null
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: details
+      table: inventory
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: inventory
+    field: picture
+    type: uuid
+    meta:
+      collection: inventory
+      conditions: null
+      display: image
+      display_options: null
+      field: picture
+      group: description
+      hidden: false
+      interface: file-image
+      note: null
+      options:
+        folder: f656eb54-a2c2-4c19-8e4c-1543031d5703
+      readonly: false
+      required: false
+      sort: 1
+      special:
+        - file
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: picture
+      table: inventory
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_files
+      foreign_key_column: id
   - collection: languages
     field: code
     type: string
@@ -4386,113 +5419,6 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: news
-    field: status
-    type: string
-    meta:
-      collection: news
-      conditions: null
-      display: labels
-      display_options:
-        choices:
-          - text: $t:published
-            value: published
-            color: var(--theme--primary)
-            foreground: var(--theme--primary)
-            background: var(--theme--primary-background)
-          - text: $t:draft
-            value: draft
-            color: var(--theme--foreground)
-            foreground: var(--theme--foreground)
-            background: var(--theme--background-normal)
-          - text: $t:archived
-            value: archived
-            color: var(--theme--warning)
-            foreground: var(--theme--warning)
-            background: var(--theme--warning-background)
-        showAsDot: true
-      field: status
-      group: null
-      hidden: false
-      interface: select-dropdown
-      note: null
-      options:
-        choices:
-          - text: $t:published
-            value: published
-            color: var(--theme--primary)
-            icon: task_alt
-          - text: $t:draft
-            value: draft
-            color: var(--theme--foreground)
-            icon: draft_orders
-          - text: $t:archived
-            value: archived
-            color: var(--theme--warning)
-            icon: archive
-        icon: null
-      readonly: false
-      required: false
-      sort: 2
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: half
-    schema:
-      name: status
-      table: news
-      data_type: character varying
-      default_value: draft
-      max_length: 255
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: false
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: news
-    field: sort
-    type: integer
-    meta:
-      collection: news
-      conditions: null
-      display: null
-      display_options: null
-      field: sort
-      group: null
-      hidden: true
-      interface: input
-      note: null
-      options: null
-      readonly: false
-      required: false
-      sort: 8
-      special: null
-      translations: null
-      validation: null
-      validation_message: null
-      width: full
-    schema:
-      name: sort
-      table: news
-      data_type: integer
-      default_value: null
-      max_length: null
-      numeric_precision: 32
-      numeric_scale: 0
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: news
     field: user_created
     type: uuid
     meta:
@@ -4604,6 +5530,113 @@ fields:
       max_length: null
       numeric_precision: null
       numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: news
+    field: status
+    type: string
+    meta:
+      collection: news
+      conditions: null
+      display: labels
+      display_options:
+        choices:
+          - text: $t:published
+            value: published
+            color: var(--theme--primary)
+            foreground: var(--theme--primary)
+            background: var(--theme--primary-background)
+          - text: $t:draft
+            value: draft
+            color: var(--theme--foreground)
+            foreground: var(--theme--foreground)
+            background: var(--theme--background-normal)
+          - text: $t:archived
+            value: archived
+            color: var(--theme--warning)
+            foreground: var(--theme--warning)
+            background: var(--theme--warning-background)
+        showAsDot: true
+      field: status
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: $t:published
+            value: published
+            color: var(--theme--primary)
+            icon: task_alt
+          - text: $t:draft
+            value: draft
+            color: var(--theme--foreground)
+            icon: draft_orders
+          - text: $t:archived
+            value: archived
+            color: var(--theme--warning)
+            icon: archive
+        icon: null
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: status
+      table: news
+      data_type: character varying
+      default_value: draft
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: news
+    field: sort
+    type: integer
+    meta:
+      collection: news
+      conditions: null
+      display: null
+      display_options: null
+      field: sort
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 8
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: sort
+      table: news
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
       is_nullable: true
       is_unique: false
       is_primary_key: false
@@ -5832,6 +6865,554 @@ fields:
       has_auto_increment: false
       foreign_key_table: partner_category
       foreign_key_column: id
+  - collection: registration
+    field: id
+    type: uuid
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 1
+      special:
+        - uuid
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: registration
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: event
+    type: integer
+    meta:
+      collection: registration
+      conditions: null
+      display: related-values
+      display_options:
+        template: "{{slug}}"
+      field: event
+      group: null
+      hidden: false
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        enableCreate: false
+        template: "{{slug}}"
+      readonly: false
+      required: true
+      sort: 2
+      special:
+        - m2o
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: event
+      table: registration
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: event
+      foreign_key_column: id
+  - collection: registration
+    field: mail
+    type: string
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: mail
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        iconLeft: alternate_email
+      readonly: false
+      required: true
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: mail
+      table: registration
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: hello_world
+    type: alias
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: hello_world
+      group: accordion-lu4yjc
+      hidden: false
+      interface: group-raw
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 1
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: registration
+    field: faculty_dinner
+    type: alias
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: faculty_dinner
+      group: accordion-lu4yjc
+      hidden: false
+      interface: group-raw
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 3
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: registration
+    field: icbd
+    type: alias
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: icbd
+      group: accordion-lu4yjc
+      hidden: false
+      interface: group-raw
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 2
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: registration
+    field: name
+    type: string
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: name
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: true
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: name
+      table: registration
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: surname
+    type: string
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: surname
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: surname
+      table: registration
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: menu
+    type: integer
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: menu
+      group: faculty_dinner
+      hidden: false
+      interface: input
+      note: null
+      options:
+        min: 0
+      readonly: false
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: menu
+      table: registration
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: payment
+    type: string
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: payment
+      group: faculty_dinner
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: Cash
+            value: cash
+            icon: attach_money
+          - text: Camipro
+            value: camipro
+            icon: credit_card
+          - text: Bank transfer
+            value: bank
+            icon: house_with_shield
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: payment
+      table: registration
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: attributes
+    type: json
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: attributes
+      group: faculty_dinner
+      hidden: false
+      interface: select-multiple-checkbox
+      note: null
+      options:
+        choices:
+          - text: Late payment
+            value: late_payment
+          - text: Vegan
+            value: vegan
+      readonly: false
+      required: false
+      sort: 3
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: attributes
+      table: registration
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: allergies
+    type: json
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: allergies
+      group: faculty_dinner
+      hidden: false
+      interface: list
+      note: null
+      options:
+        fields:
+          - field: name
+            name: name
+            meta:
+              field: name
+              required: true
+      readonly: false
+      required: false
+      sort: 4
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: allergies
+      table: registration
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: accordion-lu4yjc
+    type: alias
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: accordion-lu4yjc
+      group: null
+      hidden: false
+      interface: group-accordion
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 7
+      special:
+        - alias
+        - group
+        - no-data
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: registration
+    field: team
+    type: string
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: team
+      group: hello_world
+      hidden: false
+      interface: input
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: team
+      table: registration
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: registration
+    field: comment
+    type: text
+    meta:
+      collection: registration
+      conditions: null
+      display: null
+      display_options: null
+      field: comment
+      group: null
+      hidden: false
+      interface: input-multiline
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: comment
+      table: registration
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: social_links
     field: id
     type: integer
@@ -6051,27 +7632,6 @@ relations:
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: association
-    field: public_files
-    related_collection: association_public_files
-    meta:
-      junction_field: null
-      many_collection: association
-      many_field: public_files
-      one_allowed_collections: null
-      one_collection: association_public_files
-      one_collection_field: null
-      one_deselect_action: nullify
-      one_field: null
-      sort_field: null
-    schema:
-      table: association
-      column: public_files
-      foreign_key_table: association_public_files
-      foreign_key_column: id
-      constraint_name: association_public_files_foreign
-      on_update: NO ACTION
-      on_delete: SET NULL
-  - collection: association
     field: preview_image
     related_collection: directus_files
     meta:
@@ -6090,6 +7650,27 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: association_preview_image_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: association
+    field: public_files
+    related_collection: association_public_files
+    meta:
+      junction_field: null
+      many_collection: association
+      many_field: public_files
+      one_allowed_collections: null
+      one_collection: association_public_files
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: association
+      column: public_files
+      foreign_key_table: association_public_files
+      foreign_key_column: id
+      constraint_name: association_public_files_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: association_memberships
@@ -6533,6 +8114,48 @@ relations:
       constraint_name: commissions_logo_foreign
       on_update: NO ACTION
       on_delete: SET NULL
+  - collection: commissions_members
+    field: members_id
+    related_collection: members
+    meta:
+      junction_field: commissions_id
+      many_collection: commissions_members
+      many_field: members_id
+      one_allowed_collections: null
+      one_collection: members
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: commissions_members
+      column: members_id
+      foreign_key_table: members
+      foreign_key_column: id
+      constraint_name: commissions_members_members_id_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: commissions_members
+    field: commissions_id
+    related_collection: commissions
+    meta:
+      junction_field: members_id
+      many_collection: commissions_members
+      many_field: commissions_id
+      one_allowed_collections: null
+      one_collection: commissions
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: commissions_members
+      column: commissions_id
+      foreign_key_table: commissions
+      foreign_key_column: id
+      constraint_name: commissions_members_commissions_id_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
   - collection: commissions_social_links
     field: social_links_id
     related_collection: social_links
@@ -6636,6 +8259,48 @@ relations:
       foreign_key_table: directus_files
       foreign_key_column: id
       constraint_name: commissions_translations_banner_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: event_translations
+    field: languages_code
+    related_collection: languages
+    meta:
+      junction_field: event_id
+      many_collection: event_translations
+      many_field: languages_code
+      one_allowed_collections: null
+      one_collection: languages
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: event_translations
+      column: languages_code
+      foreign_key_table: languages
+      foreign_key_column: code
+      constraint_name: event_translations_languages_code_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: event_translations
+    field: event_id
+    related_collection: event
+    meta:
+      junction_field: languages_code
+      many_collection: event_translations
+      many_field: event_id
+      one_allowed_collections: null
+      one_collection: event
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: translations
+      sort_field: null
+    schema:
+      table: event_translations
+      column: event_id
+      foreign_key_table: event
+      foreign_key_column: id
+      constraint_name: event_translations_event_id_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: inventory
@@ -6972,6 +8637,27 @@ relations:
       foreign_key_table: partner_category
       foreign_key_column: id
       constraint_name: partners_category_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: registration
+    field: event
+    related_collection: event
+    meta:
+      junction_field: null
+      many_collection: registration
+      many_field: event
+      one_allowed_collections: null
+      one_collection: event
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: registration
+      column: event
+      foreign_key_table: event
+      foreign_key_column: id
+      constraint_name: registration_event_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: social_links
