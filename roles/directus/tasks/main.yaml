@@ -28,6 +28,13 @@
   ansible.builtin.set_fact:
     container_name: directus_directus.1.{{ ps.stdout }}
 
+# The schema is downloaded instead of cloning the repository to avoid having the sample data on the server.
+- name: Download schema
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/clicepfl/directus-config/main/snapshot.yaml
+    dest: "{{ role_path }}/files/snapshot.yaml"
+    mode: 777
+
 - name: Copy schema into container
   community.docker.docker_container_copy_into:
     container: "{{ container_name }}"
