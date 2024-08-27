@@ -16,6 +16,9 @@ https://clic.epfl.ch {
 		reverse_proxy http://0.0.0.0:8005
 	}
 
+	# Hardfix for https://github.com/nextcloud/user_oidc/issues/545, waiting for the update.
+	rewrite /apps* /nextcloud{uri}
+
 	redir /.well-known/carddav /nextcloud/remote.php/dav permanent
 	redir /.well-known/caldav /nextcloud/remote.php/dav permanent
 	redir /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger permanent
