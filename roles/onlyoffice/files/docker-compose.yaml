@@ -2,7 +2,7 @@ version: "3.8"
 services:
   onlyoffice-document-server:
     hostname: onlyoffice-document-server
-    image: onlyoffice/documentserver:latest
+    image: onlyoffice/documentserver:8.1
     environment:
       - JWT_SECRET=${JWT_SECRET}
     ports:
