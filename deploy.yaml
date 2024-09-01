@@ -11,6 +11,7 @@
           - bookstack
           - caddy
           - clicketing
+          - crabfit
           - directus
           - icelan
           - keycloak
@@ -108,6 +109,9 @@
             - >-
               PGPASSWORD={{ services.synapse.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007
               --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
+            - >-
+              PGPASSWORD={{ services.crabfit.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5008
+              --username crabfit --format plain crabfit -f /var/db-dumps/crabfit.sql
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4

@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  api:
+    image: ghcr.io/clicepfl/crab.fit-api:main
+    environment:
+      FRONTEND_URL: https://clic.epfl.ch
+      DATABASE_URL: postgres://crabfit:${DATABASE_PASSWORD}@database:5432/crabfit?sslmode=disable&connect_timeout=10
+    ports:
+      - 8012:3000
+
+
+  frontend:
+    image: ghcr.io/clicepfl/crab.fit-frontend:main
+    environment:
+      NEXT_PUBLIC_API_URL: https://clic.epfl.ch/crabfit/api
+      NEXT_PUBLIC_FRONTEND_URL: https://clic.epfl.ch/crabfit
+    ports:
+      - 8013:3000
+
+  database:
+    image: postgres:15.4-alpine3.18
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ${DATABASE_INIT}:/docker-entrypoint-initdb.d
+    environment:
+      TZ: UTC
+      POSTGRES_USER: crabfit
+      POSTGRES_DB: crabfit
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - 5008:5432
+
+volumes:
+  database:

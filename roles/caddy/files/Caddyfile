@@ -54,6 +54,11 @@ https://clic.epfl.ch {
 		reverse_proxy http://0.0.0.0:8001
 	}
 
+	handle_path /crabfit/api* {
+		reverse_proxy http://0.0.0.0:8012
+	}
+	reverse_proxy /crabfit* http://0.0.0.0:8013
+
 	reverse_proxy /* http://0.0.0.0:8000
 }
 
