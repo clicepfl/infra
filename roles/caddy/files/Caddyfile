@@ -17,7 +17,7 @@ https://clic.epfl.ch {
 	}
 
 	# Hardfix for https://github.com/nextcloud/user_oidc/issues/545, waiting for the update.
-	redir /apps* /nextcloud{uri}
+	header /nextcloud/apps/user_oidc/code >Location (.*) "/nextcloud$1"
 
 	redir /.well-known/carddav /nextcloud/remote.php/dav permanent
 	redir /.well-known/caldav /nextcloud/remote.php/dav permanent
