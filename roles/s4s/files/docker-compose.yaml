@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  api:
+    image: ghcr.io/clicepfl/s4s-2024-app:main
+    environment:
+      NEXT_PUBLIC_API_URL: https://clic.epfl.ch/s4s/api
+    ports:
+      - 8015:3000
+
+  frontend:
+    image: ghcr.io/clicepfl/s4s-2024-backend:main
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - data:/data
+    ports:
+      - 8014:8000
+
+volumes:
+  data:
