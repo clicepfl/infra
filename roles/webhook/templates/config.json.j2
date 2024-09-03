@@ -1,7 +1,7 @@
 {
   "secret": "{{ service.github_secret }}",
   "default": {
-    "start_command": "ansible-pull -U {{ service.repository }} -e @{{ service.secrets_file }} playbooks/deploy.yaml -e SERVICE=$SERVICE"
+    "start_command": "ansible-pull -U {{ service.repository }} -e @{{ service.secrets_file }} deploy.yaml --extra-vars SERVICE=$SERVICE"
   },
   "services": {
     {{ webhook_services }}
