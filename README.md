@@ -12,7 +12,7 @@ There are two playbooks, at the root of the repository:
 
   ```sh
   ansible-pull \
-      -U git@github.com:clicepfl/clic-infra.git \ # URL of the infra repo
+      -U git@github.com:clicepfl/infra.git \ # URL of the infra repo
       -e @/var/secrets.yaml \ # File containing all the secrets
       deploy.yaml \
       --extra-vars SERVICE=keycloak # Optional. Services to (re)deploy

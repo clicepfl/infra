@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   roboclic:
-    image: ghcr.io/clicepfl/roboclic-v2:main
+    image: ghcr.io/clicepfl/roboclic:main
     volumes:
       - roboclic:/data
     environment:
