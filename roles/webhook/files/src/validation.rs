@@ -13,7 +13,7 @@ fn validate_delivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<bo
     };
 
     if state.processed_deliveries.contains(&delivery_id.to_owned()) {
-        log::info!("Ignoring re-delivery for {delivery_id}");
+        tracing::info!("Ignoring re-delivery for {delivery_id}");
         Ok(false)
     } else {
         state.processed_deliveries.insert(0, delivery_id.to_owned());
@@ -27,7 +27,7 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
         .get("X-Hub-Signature-256")
         .map(|h| h.to_str().map(|s| s.strip_prefix("sha256=")))
     else {
-        log::warn!(
+        tracing::warn!(
             "Received request with badly formatted signature (origin: {:?})",
             headers.get("X-Forwarded-For")
         );
@@ -35,7 +35,7 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     };
 
     let Ok(signature) = hex::decode(signature) else {
-        log::warn!(
+        tracing::warn!(
             "Received request with badly formatted signature (origin: {:?})",
             headers.get("X-Forwarded-For")
         );
@@ -48,7 +48,7 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     if hmac.verify_slice(&signature).is_ok() {
         Ok(())
     } else {
-        log::warn!(
+        tracing::warn!(
             "Received request with invalid signature (origin: {:?})",
             headers.get("X-Forwarded-For")
         );

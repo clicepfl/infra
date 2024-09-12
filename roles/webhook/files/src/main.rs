@@ -3,9 +3,11 @@ use std::sync::Mutex;
 use actix_web::{web, App, HttpServer};
 use config::config;
 use routes::{all, targeted};
+use tracing::Level;
 
 mod config;
 mod error;
+pub mod restart;
 mod routes;
 mod validation;
 
@@ -16,8 +18,10 @@ pub type State = Mutex<WebhookState>;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-    log::info!("Starting webhook on 127.0.0.1:4001");
+    tracing_subscriber::fmt()
+        .with_max_level(Level::DEBUG)
+        .init();
+    tracing::info!("Starting webhook on 127.0.0.1:4001");
 
     // Load the config
     config();
