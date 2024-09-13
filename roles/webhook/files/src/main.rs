@@ -2,12 +2,14 @@ use std::sync::Mutex;
 
 use actix_web::{web, App, HttpServer};
 use config::config;
+use log::LogWriter;
 use routes::{all, targeted};
 use tracing::Level;
 
 mod config;
 mod error;
-pub mod restart;
+mod log;
+mod restart;
 mod routes;
 mod validation;
 
@@ -19,6 +21,7 @@ pub type State = Mutex<WebhookState>;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     tracing_subscriber::fmt()
+        .with_writer(|| LogWriter {})
         .with_max_level(Level::DEBUG)
         .init();
     tracing::info!("Starting webhook on 127.0.0.1:4001");
