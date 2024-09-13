@@ -80,3 +80,7 @@ https://clic.epfl.ch:7000 {
 https://www.icelan.ch {
 	reverse_proxy http://0.0.0.0:8009
 }
+
+https://www.clicgamestar.ch {
+	redir https://clic.epfl.ch/commissions/game-star
+}
