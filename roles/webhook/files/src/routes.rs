@@ -1,6 +1,7 @@
 use crate::{
     config::config,
     error::Error,
+    github::open_issue,
     log::{start_capture, stop_capture},
     restart::restart,
     validation::{validate_call, validate_service_list},
@@ -25,19 +26,25 @@ pub async fn all(
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
-    spawn(async {
+    spawn(async move {
         tracing::info!("Triggered global restart");
         start_capture();
         tracing::info!("Triggered global restart");
 
-        config()
-            .services
-            .iter()
-            .for_each(|(n, s)| restart(n, s, &config().default));
+        let mut failed = false;
+
+        for (n, s) in config().services.iter() {
+            if !restart(n, s, &config().default) {
+                failed = true;
+            }
+        }
 
         tracing::info!("Full restart complete");
 
         let log = stop_capture();
+        if failed {
+            open_issue(log, vec![], String::from_utf8_lossy(&payload).to_string()).await;
+        }
     });
 
     Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
@@ -61,15 +68,25 @@ pub async fn targeted(
         start_capture();
         tracing::info!("Triggered restart for service {}", service);
 
-        let res = if let Some(s) = config().services.get(service.as_str()) {
-            restart(&service, s, &config().default);
-            Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))
+        let mut failed = false;
+
+        if let Some(s) = config().services.get(service.as_str()) {
+            if !restart(&service, s, &config().default) {
+                failed = true
+            }
         } else {
             tracing::warn!("Service {} not found", service);
-            Err(Error::ServiceNotFound)
         };
 
         let log = stop_capture();
+        if failed {
+            open_issue(
+                log,
+                vec![service.to_string()],
+                String::from_utf8_lossy(&payload).to_string(),
+            )
+            .await;
+        }
     });
 
     Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()))

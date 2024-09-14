@@ -12,6 +12,7 @@ mod log;
 mod restart;
 mod routes;
 mod validation;
+mod github;
 
 pub struct WebhookState {
     pub processed_deliveries: Vec<String>,
