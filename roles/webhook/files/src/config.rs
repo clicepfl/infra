@@ -13,6 +13,7 @@ pub struct Service {
 #[derive(Deserialize)]
 pub struct Config {
     pub secret: String,
+    pub github_access_token: String,
     pub default: Service,
     pub services: BTreeMap<String, Service>,
 }
