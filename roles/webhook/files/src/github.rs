@@ -88,7 +88,10 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
                 repo_url = repository.html_url
             ),
         },
-        Err(_) => todo!(),
+        Err(e) => {
+            tracing::error!("Invalid request payload: {}", e);
+            return;
+        }
     };
 
     match reqwest::Client::new()
