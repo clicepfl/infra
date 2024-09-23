@@ -11,5 +11,11 @@ argument_specs:
             required: true
           repository:
             required: true
-          github_secret:
+          github:
+            type: "dict"
             required: true
+            options:
+              secret:
+                required: true
+              access_token:
+                required: true
