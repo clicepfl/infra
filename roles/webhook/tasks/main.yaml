@@ -1,6 +1,6 @@
 - name: Copy webhook source to build directory
   ansible.builtin.copy:
-    src: .
+    src: "{{ role_path }}/files/"
     dest: /tmp/webhook
     mode: "0777"
   when: (build | default('true')) == 'true'
@@ -14,7 +14,6 @@
       - build
       - --release
     auto_remove: true
-    detach: false
     mounts:
       - type: bind
         source: /tmp/webhook
