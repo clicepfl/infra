@@ -1,3 +1,5 @@
+use std::process::Command;
+
 use serde::{Deserialize, Serialize};
 
 use crate::config;
@@ -94,15 +96,22 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
         }
     };
 
-    match dbg!(reqwest::Client::new()
-        .post("https://api.github.com/repos/clicepfl/infra/issues".to_string())
-        .bearer_auth(dbg!(config().github_access_token.clone()))
-        .header("Accept", "application/vnd.github+json")
-        .header("X-GitHub-Api-Version", "2022-11-28")
-        .body(serde_json::to_string(&body).unwrap()))
-    .send()
-    .await
-    {
+    let output = Command::new("curl")
+        .arg("-X")
+        .arg("POST")
+        .arg("https://api.github.com/repos/clicepfl/infra/issues")
+        .arg("-H")
+        .arg(format!(
+            "Authorization: Bearer {}",
+            config().github_access_token
+        ))
+        .arg("-H")
+        .arg("Accept: application/vnd.github+json")
+        .arg("-d")
+        .arg(serde_json::to_string(&body).unwrap())
+        .output();
+
+    match output {
         Ok(r) => {
             tracing::info!("Issue opened: {r:#?}")
         }
