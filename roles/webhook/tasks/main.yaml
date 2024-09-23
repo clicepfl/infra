@@ -8,12 +8,11 @@
 - name: Build webhook
   community.docker.docker_container:
     name: webhook-build
-    image: rust:slim-bullseye
+    image: rust:bullseye
     entrypoint:
       - cargo
       - build
       - --release
-    auto_remove: true
     mounts:
       - type: bind
         source: /tmp/webhook
