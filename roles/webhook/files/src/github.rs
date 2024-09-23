@@ -94,16 +94,18 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
         }
     };
 
-    match reqwest::Client::new()
+    match dbg!(reqwest::Client::new()
         .post("https://api.github.com/repos/clicepfl/infra/issues".to_string())
-        .bearer_auth(config().github_access_token.clone())
+        .bearer_auth(dbg!(config().github_access_token.clone()))
         .header("Accept", "application/vnd.github+json")
         .header("X-GitHub-Api-Version", "2022-11-28")
-        .body(serde_json::to_string(&body).unwrap())
-        .send()
-        .await
+        .body(serde_json::to_string(&body).unwrap()))
+    .send()
+    .await
     {
-        Ok(_) => {}
+        Ok(r) => {
+            tracing::info!("Issue opened: {r:#?}")
+        }
         Err(e) => tracing::error!("Could not open issue: {e:#?}"),
     };
 }

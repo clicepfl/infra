@@ -5,6 +5,9 @@
     "start_command": "ansible-pull -U {{ service.repository }} -e @{{ service.secrets_file }} deploy.yaml --extra-vars SERVICE=$SERVICE"
   },
   "services": {
-    {{ webhook_services }}
+    {{ webhook_services }},
+    "test": {
+      "start_command": "exit this in an error && exit 1"
+    }
   }
 }
