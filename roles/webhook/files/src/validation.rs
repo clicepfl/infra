@@ -20,7 +20,8 @@ struct PackageVersion {
 }
 
 fn validate_delivery(payload: &[u8], state: &mut WebhookState) -> Result<bool, Error> {
-    if let Ok(Action::Published { package }) = serde_json::from_slice::<Action>(payload) {
+    if let Ok(Action::Published { package }) = dbg!(serde_json::from_slice::<Action>(payload)) {
+        dbg!(&state);
         if state
             .processed_package_versions
             .contains(&package.package_version.version)

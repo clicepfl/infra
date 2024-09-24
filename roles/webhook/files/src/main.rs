@@ -14,6 +14,7 @@ mod restart;
 mod routes;
 mod validation;
 
+#[derive(Debug)]
 pub struct WebhookState {
     pub processed_deliveries: Vec<String>,
     pub processed_package_versions: Vec<String>,

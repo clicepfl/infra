@@ -46,13 +46,13 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
             title: format!("Deployment failed on package {} publication", package.name),
             body: format!(
                 r#"
-            Deployment for {services} failed.
-            Triggered by the publication of [{package}]({package_url}) at {date}.
+Deployment for {services} failed.
+Triggered by the publication of [{package}]({package_url}) at {date}.
 
-            Logs: 
-            ```
-            {log}
-            ```
+Logs: 
+```
+{log}
+```
             "#,
                 services = if services.is_empty() {
                     "all services".to_owned()
