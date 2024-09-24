@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::{collections::HashMap, sync::Mutex, time::SystemTime};
 
 use actix_web::{web, App, HttpServer};
 use config::config;
@@ -14,10 +14,10 @@ mod restart;
 mod routes;
 mod validation;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct WebhookState {
     pub processed_deliveries: Vec<String>,
-    pub processed_package_versions: Vec<String>,
+    pub processed_packages: HashMap<String, SystemTime>,
 }
 pub type State = Mutex<WebhookState>;
 
@@ -31,10 +31,7 @@ async fn main() -> std::io::Result<()> {
 
     // Load the config
     config();
-    let data = web::Data::new(Mutex::new(WebhookState {
-        processed_deliveries: vec![],
-        processed_package_versions: vec![],
-    }));
+    let data = web::Data::<Mutex<WebhookState>>::default();
 
     HttpServer::new(move || {
         App::new()

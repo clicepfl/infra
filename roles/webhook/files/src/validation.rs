@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use serde::Deserialize;
@@ -12,26 +14,27 @@ enum Action {
 }
 #[derive(Deserialize, Debug)]
 struct Package {
-    package_version: PackageVersion,
-}
-#[derive(Deserialize, Debug)]
-struct PackageVersion {
-    version: String,
+    name: String,
 }
 
 fn validate_delivery(payload: &[u8], state: &mut WebhookState) -> Result<bool, Error> {
     if let Ok(Action::Published { package }) = dbg!(serde_json::from_slice::<Action>(payload)) {
         dbg!(&state);
-        if state
-            .processed_package_versions
-            .contains(&package.package_version.version)
-        {
-            return Ok(false);
-        } else {
-            state
-                .processed_package_versions
-                .push(package.package_version.version);
+        if let Some(date) = state.processed_packages.get(&package.name) {
+            if date.elapsed().is_ok_and(|d| d.as_secs() < 120) {
+                tracing::info!(
+                    "Already triggered recently ({}), skipping",
+                    date.duration_since(SystemTime::UNIX_EPOCH)
+                        .map(|d| d.as_secs())
+                        .unwrap_or(0)
+                );
+                return Ok(false);
+            }
         }
+
+        state
+            .processed_packages
+            .insert(package.name, SystemTime::now());
     }
 
     Ok(true)
