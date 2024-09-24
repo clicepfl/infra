@@ -5,26 +5,31 @@ use sha2::Sha256;
 
 use crate::{config::config, error::Error, WebhookState};
 
-#[derive(Deserialize)]
-struct PackagePublished {
+#[derive(Deserialize, Debug)]
+#[serde(tag = "action", rename_all = "snake_case")]
+enum Action {
+    Published { package: Package },
+}
+#[derive(Deserialize, Debug)]
+struct Package {
     package_version: PackageVersion,
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 struct PackageVersion {
     version: String,
 }
 
 fn validate_delivery(payload: &[u8], state: &mut WebhookState) -> Result<bool, Error> {
-    if let Ok(payload) = serde_json::from_slice::<PackagePublished>(payload) {
+    if let Ok(Action::Published { package }) = serde_json::from_slice::<Action>(payload) {
         if state
             .processed_package_versions
-            .contains(&payload.package_version.version)
+            .contains(&package.package_version.version)
         {
             return Ok(false);
         } else {
             state
                 .processed_package_versions
-                .push(payload.package_version.version);
+                .push(package.package_version.version);
         }
     }
 

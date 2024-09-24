@@ -31,7 +31,7 @@ pub fn start_capture() {
     *CAPTURED_LOG.lock().unwrap() = Some(String::new());
 }
 pub fn stop_capture() -> String {
-    let ansi_seq = Regex::new("\u{FFFD}\\[\\d+?m").unwrap();
+    let ansi_seq = Regex::new("\u{001b}\\[\\d+?m").unwrap();
 
     let mut lock = CAPTURED_LOG.lock().unwrap();
 
