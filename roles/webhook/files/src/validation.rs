@@ -18,8 +18,7 @@ struct Package {
 }
 
 fn validate_delivery(payload: &[u8], state: &mut WebhookState) -> Result<bool, Error> {
-    if let Ok(Action::Published { package }) = dbg!(serde_json::from_slice::<Action>(payload)) {
-        dbg!(&state);
+    if let Ok(Action::Published { package }) = serde_json::from_slice::<Action>(payload) {
         if let Some(date) = state.processed_packages.get(&package.name) {
             if date.elapsed().is_ok_and(|d| d.as_secs() < 120) {
                 tracing::info!(
