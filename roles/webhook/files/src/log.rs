@@ -3,6 +3,8 @@ use std::{
     sync::Mutex,
 };
 
+use regex::Regex;
+
 pub struct LogWriter {}
 
 impl Write for LogWriter {
@@ -29,6 +31,11 @@ pub fn start_capture() {
     *CAPTURED_LOG.lock().unwrap() = Some(String::new());
 }
 pub fn stop_capture() -> String {
+    let ansi_seq = Regex::new("\u{FFFD}\\[\\d+?m").unwrap();
+
     let mut lock = CAPTURED_LOG.lock().unwrap();
-    lock.take().unwrap_or("".to_owned())
+
+    ansi_seq
+        .replace_all(&lock.take().unwrap_or("".to_owned()), "")
+        .to_string()
 }
