@@ -16,6 +16,7 @@ mod validation;
 
 pub struct WebhookState {
     pub processed_deliveries: Vec<String>,
+    pub processed_package_versions: Vec<String>,
 }
 pub type State = Mutex<WebhookState>;
 
@@ -31,6 +32,7 @@ async fn main() -> std::io::Result<()> {
     config();
     let data = web::Data::new(Mutex::new(WebhookState {
         processed_deliveries: vec![],
+        processed_package_versions: vec![],
     }));
 
     HttpServer::new(move || {

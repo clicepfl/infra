@@ -1,25 +1,34 @@
 use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
+use serde::Deserialize;
 use sha2::Sha256;
 
 use crate::{config::config, error::Error, WebhookState};
 
-fn validate_delivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<bool, Error> {
-    let Some(delivery_id) = headers
-        .get("X-GitHub-Delivery")
-        .and_then(|h| h.to_str().ok())
-    else {
-        return Err(Error::InvalidDelivery);
-    };
+#[derive(Deserialize)]
+struct PackagePublished {
+    package_version: PackageVersion,
+}
+#[derive(Deserialize)]
+struct PackageVersion {
+    version: String,
+}
 
-    if state.processed_deliveries.contains(&delivery_id.to_owned()) {
-        tracing::info!("Ignoring re-delivery for {delivery_id}");
-        Ok(false)
-    } else {
-        state.processed_deliveries.insert(0, delivery_id.to_owned());
-        state.processed_deliveries.truncate(10);
-        Ok(true)
+fn validate_delivery(payload: &[u8], state: &mut WebhookState) -> Result<bool, Error> {
+    if let Ok(payload) = serde_json::from_slice::<PackagePublished>(payload) {
+        if state
+            .processed_package_versions
+            .contains(&payload.package_version.version)
+        {
+            return Ok(false);
+        } else {
+            state
+                .processed_package_versions
+                .push(payload.package_version.version);
+        }
     }
+
+    Ok(true)
 }
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
@@ -66,7 +75,7 @@ pub fn validate_call(
     state: &mut WebhookState,
 ) -> Result<bool, Error> {
     validate_signature(headers, payload)?;
-    Ok(validate_event(headers)? && validate_delivery(headers, state)?)
+    Ok(validate_event(headers)? && validate_delivery(payload, state)?)
 }
 
 pub fn validate_service_list(str: &str) -> Result<(), Error> {
