@@ -45,3 +45,8 @@
   community.docker.docker_container_exec:
     container: "{{ container_name }}"
     command: npx directus schema apply /snapshot.yaml -y
+
+- name: Restart container
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: stopped # The swarm will take care of booting up a new container
