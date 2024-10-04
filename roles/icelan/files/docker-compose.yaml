@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   icelan:
-    image: ghcr.io/clicgamestarprojects/icelan-website-v2:master
+    image: ghcr.io/clicgamestarprojects/icelan-website:master
     hostname: icelan
     ports:
       - 8009:80
