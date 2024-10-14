@@ -30,6 +30,12 @@ services:
       NC_dbpassword: ${DATABASE_PASSWORD}
     ports:
       - 8005:80
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '3'
+          memory: 8g
 
   redis:
     image: redis:7.0-alpine
