@@ -46,6 +46,23 @@
     container: "{{ container_name }}"
     command: npx directus schema apply /snapshot.yaml -y
 
+- name: Download flows
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/clicepfl/directus-config/main/flows.sql
+    dest: "{{ role_path }}/files/snapshot.yaml"
+    mode: 777
+
+- name: Copy flows into container
+  community.docker.docker_container_copy_into:
+    container: "{{ container_name }}"
+    container_path: /flows.sql
+    path: "{{ role_path }}/files/flows.sql"
+
+- name: Apply flows script
+  community.docker.docker_container_exec:
+    container: "{{ container_name }}"
+    command: psql -U directus_user directus_data -f /flows.sql
+
 - name: Restart container
   community.docker.docker_container:
     name: "{{ container_name }}"
