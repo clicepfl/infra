@@ -14,7 +14,7 @@ services:
       - 5000:3306
 
   nextcloud:
-    image: nextcloud:29-apache
+    image: nextcloud:30-apache
     hostname: nextcloud
     volumes:
       - nextcloud-app:/var/www/html
