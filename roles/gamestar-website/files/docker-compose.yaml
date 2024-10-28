@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  website:
+    image: ghcr.io/clicgamestarprojects/gamestarsite:main
+    hostname: gamestar-website
+    environment:
+      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN}
+    ports:
+      - 8016:3000
