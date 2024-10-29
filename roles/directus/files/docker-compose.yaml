@@ -40,6 +40,11 @@ services:
       AUTH_KEYCLOAK_LABEL: KeyCLIC
       AUTH_KEYCLOAK_ICON: key
       AUTH_KEYCLOAK_ALLOW_PUBLIC_REGISTRATION: "true"
+
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: https://clic.epfl.ch,https://www.clicgamestar.ch,https://www.icelan.ch
+      CORS_METHODS: GET,POST,PUT,DELETE
+      CORS_ALLOWED_HEADERS: Content-Type,Authorization,X-Requested-With
     depends_on:
       - database
     volumes:
