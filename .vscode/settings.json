@@ -6,8 +6,7 @@
     "deploy.yaml": "ansible",
     "init.yaml": "ansible"
   },
-  "editor.rulers": [
-    160
-  ],
-  "ansible.python.interpreterPath": "/bin/python"
+  "editor.rulers": [160],
+  "ansible.python.interpreterPath": "/bin/python",
+  "rust-analyzer.linkedProjects": ["roles/webhook/files/Cargo.toml"]
 }

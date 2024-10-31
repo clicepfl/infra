@@ -45,15 +45,7 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
         Ok(Payload::Package { package, .. }) => PostIssueBody {
             title: format!("Deployment failed on package {} publication", package.name),
             body: format!(
-                r#"
-Deployment for {services} failed.
-Triggered by the publication of [{package}]({package_url}) at {date}.
-
-Logs: 
-```
-{log}
-```
-            "#,
+                "Deployment for {services} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
                 services = if services.is_empty() {
                     "all services".to_owned()
                 } else {
