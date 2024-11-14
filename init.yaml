@@ -51,3 +51,13 @@
         day: "*"
         weekday: "0"
         job: "{{ docker_path.stdout }} system prune -af"
+
+    - name: Create cron job to reboot server weekly
+      ansible.builtin.cron:
+        name: "Reboot server weekly"
+        minute: "0"
+        hour: "0"
+        day: "*"
+        month: "*"
+        weekday: "MON"
+        job: "reboot"
