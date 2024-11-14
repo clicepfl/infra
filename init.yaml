@@ -1,5 +1,6 @@
 - name: Initialize server
   hosts: clic
+  become: true
   tasks:
     - name: Install required packages
       ansible.builtin.apt:
