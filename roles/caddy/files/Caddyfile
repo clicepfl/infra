@@ -16,6 +16,10 @@ https://clic.epfl.ch {
 		reverse_proxy http://0.0.0.0:8005
 	}
 
+	handle_path /qrbill-generator* {
+		reverse_proxy http://0.0.0.0:8017
+	}
+
 	# Hardfix for https://github.com/nextcloud/user_oidc/issues/545, waiting for the update.
 	header /nextcloud/apps/user_oidc/code >Location (?:https://clic.epfl.ch)?(?:/nextcloud)?(.*) "https://clic.epfl.ch/nextcloud$1"
 
