@@ -64,15 +64,7 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
         }) => PostIssueBody {
             title: format!("Deployment failed on commit {}", after),
             body: format!(
-                r#"
-            Deployment for {services} failed.
-            Triggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}
-
-            Logs: 
-            ```
-            {log}
-            ```
-            "#,
+                "Deployment for {services} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
                 services = if services.is_empty() {
                     "all services".to_owned()
                 } else {
