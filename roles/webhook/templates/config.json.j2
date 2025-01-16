@@ -1,6 +1,7 @@
 {
   "secret": "{{ service.github.secret }}",
   "github_access_token": "{{ service.github.access_token }}",
+  "github_assignees": {{ service.github.assignees }},
   "default": {
     "start_command": "ansible-pull -U {{ service.repository }} -e @{{ service.secrets_file }} deploy.yaml --extra-vars SERVICE=$SERVICE"
   },

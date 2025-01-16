@@ -14,6 +14,7 @@ pub struct Service {
 pub struct Config {
     pub secret: String,
     pub github_access_token: String,
+    pub github_assignees: Vec<String>,
     pub default: Service,
     pub services: BTreeMap<String, Service>,
 }

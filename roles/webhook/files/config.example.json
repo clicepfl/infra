@@ -1,6 +1,9 @@
 {
   "secret": "hmac-secret",
   "github_access_token": "",
+  "github_assignees": [
+    "octocat"
+  ],
   "default": {
     "start_command": "echo $SERVICE >> /tmp/webhook.out"
   },

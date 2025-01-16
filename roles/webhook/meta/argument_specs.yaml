@@ -19,3 +19,5 @@ argument_specs:
                 required: true
               access_token:
                 required: true
+              assignees:
+                required: true

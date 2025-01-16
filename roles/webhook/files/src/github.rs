@@ -8,6 +8,7 @@ use crate::config;
 struct PostIssueBody {
     title: String,
     body: String,
+    assignees: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -43,7 +44,7 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
 
     let body = match parsed_payload {
         Ok(Payload::Package { package, .. }) => PostIssueBody {
-            title: format!("Deployment failed on package {} publication", package.name),
+            title: format!("Deployment failed for package {}", package.name),
             body: format!(
                 "Deployment for {services} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
                 services = if services.is_empty() {
@@ -55,25 +56,29 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
                 date = package.updated_at.unwrap_or("None".to_owned()),
                 package_url = package.html_url
             ),
+            assignees: config().github_assignees.clone()
         },
         Ok(Payload::Push {
             after,
             commits,
             repository,
             ..
-        }) => PostIssueBody {
-            title: format!("Deployment failed on commit {}", after),
+        }) => {
+            let services = if services.is_empty() {
+                "all services".to_owned()
+            } else {
+                services.join(", ")
+            };
+
+           PostIssueBody {
+            title: format!("Deployment failed for {services} ({})", &after.as_str()[0..6]),
             body: format!(
                 "Deployment for {services} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
-                services = if services.is_empty() {
-                    "all services".to_owned()
-                } else {
-                    services.join(", ")
-                },
                 count = commits.len(),
                 repo_url = repository.html_url
             ),
-        },
+            assignees: config().github_assignees.clone()
+        }},
         Err(e) => {
             tracing::error!("Invalid request payload: {}", e);
             return;
