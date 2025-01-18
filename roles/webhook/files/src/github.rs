@@ -1,6 +1,6 @@
 use std::process::Command;
 
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::config;
 
@@ -37,6 +37,37 @@ enum Payload {
         commits: Vec<Commit>,
         repository: Repository,
     },
+}
+
+#[derive(Serialize, Deserialize)]
+struct EmptyBody {}
+
+async fn github_api_call<B, R>(uri: &str, method: &str, body: B) -> Result<R, std::io::Error>
+where
+    B: Serialize,
+    R: DeserializeOwned,
+{
+    Command::new("curl")
+        .arg("-X")
+        .arg(method)
+        .arg(uri)
+        .arg("-H")
+        .arg(format!(
+            "Authorization: Bearer {}",
+            config().github_access_token
+        ))
+        .arg("-H")
+        .arg("Accept: application/vnd.github+json")
+        .arg("-d")
+        .arg(serde_json::to_string(&body).unwrap())
+        .output()
+        .map(|o| {
+            tracing::trace!(
+                "Got github response: {}",
+                String::from_utf8_lossy(&o.stdout)
+            );
+            serde_json::from_slice(&o.stdout).unwrap()
+        })
 }
 
 pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
@@ -85,25 +116,109 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
         }
     };
 
-    let output = Command::new("curl")
-        .arg("-X")
-        .arg("POST")
-        .arg("https://api.github.com/repos/clicepfl/infra/issues")
-        .arg("-H")
-        .arg(format!(
-            "Authorization: Bearer {}",
-            config().github_access_token
-        ))
-        .arg("-H")
-        .arg("Accept: application/vnd.github+json")
-        .arg("-d")
-        .arg(serde_json::to_string(&body).unwrap())
-        .output();
-
-    match output {
-        Ok(r) => {
-            tracing::info!("Issue opened: {r:#?}")
-        }
+    match github_api_call::<_, EmptyBody>(
+        "https://api.github.com/repos/clicepfl/infra/issues",
+        "POST",
+        body,
+    )
+    .await
+    {
+        Ok(_) => tracing::info!("Issue opened"),
         Err(e) => tracing::error!("Could not open issue: {e:#?}"),
     };
+}
+
+pub async fn close_issues(services: Vec<String>, payload: String) {
+    let fix_source = match serde_json::from_str::<Payload>(&payload) {
+        Ok(Payload::Package { package }) => {
+            format!(
+                "package {} ({})",
+                package.name,
+                package.updated_at.unwrap_or_default()
+            )
+        }
+        Ok(Payload::Push { after, .. }) => format!("commit {}", &after.as_str()[0..6]),
+        Err(_) => "<unable to parse hook payload>".to_owned(),
+    };
+
+    #[derive(Deserialize, Clone)]
+    struct OpenIssue {
+        number: u32,
+        title: String,
+    }
+
+    #[derive(Serialize)]
+    struct ListIssuesRequestBody {}
+
+    #[derive(Serialize)]
+    struct IssueCommentRequestBody {
+        body: String,
+    }
+
+    #[derive(Serialize)]
+    struct UpdateIssueRequestBody {
+        state: String,
+    }
+
+    let issues: Vec<OpenIssue> = match github_api_call(
+        "https://api.github.com/repos/clicepfl/infra/issues",
+        "GET",
+        ListIssuesRequestBody {},
+    )
+    .await
+    {
+        Ok(v) => v,
+        Err(e) => {
+            tracing::error!("Could not list repo issues: {e:#?}");
+            return;
+        }
+    };
+
+    let matching_issues = issues
+        .into_iter()
+        .filter(|i| {
+            i.title.starts_with("Deployment failed") && services.iter().any(|s| i.title.contains(s))
+        })
+        .collect::<Vec<_>>();
+
+    tracing::info!(
+        "Closing issues {}",
+        matching_issues
+            .iter()
+            .map(|i| i.number.to_string())
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
+
+    for issue in matching_issues.iter() {
+        let issue_url = format!(
+            "https://api.github.com/repos/clicepfl/infra/issues/{}",
+            issue.number
+        );
+        let issue_comment_url = format!("{}/comments", issue_url);
+
+        let mut result: Result<EmptyBody, _> = github_api_call(
+            &issue_comment_url,
+            "POST",
+            IssueCommentRequestBody {
+                body: format!("Fixed by {}", fix_source),
+            },
+        )
+        .await;
+
+        if result.is_ok() {
+            result = github_api_call(
+                &issue_url,
+                "PATCH",
+                UpdateIssueRequestBody {
+                    state: "closed".to_owned(),
+                },
+            )
+            .await;
+        }
+
+        if let Err(e) = result {
+            tracing::error!("Could not update issue {}: {e:#?}", issue.number);
+        }
+    }
 }

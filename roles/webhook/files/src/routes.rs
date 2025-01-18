@@ -1,7 +1,7 @@
 use crate::{
     config::config,
     error::Error,
-    github::open_issue,
+    github::{close_issues, open_issue},
     log::{start_capture, stop_capture},
     restart::restart,
     validation::{validate_call, validate_service_list},
@@ -42,8 +42,12 @@ pub async fn all(
         tracing::info!("Full restart complete");
 
         let log = stop_capture();
+        let payload = String::from_utf8_lossy(&payload).to_string();
+
         if failed {
-            open_issue(log, vec![], String::from_utf8_lossy(&payload).to_string()).await;
+            open_issue(log, vec![], payload).await;
+        } else {
+            close_issues(config().services.keys().cloned().collect(), payload).await;
         }
     });
 
@@ -79,13 +83,12 @@ pub async fn targeted(
         };
 
         let log = stop_capture();
+        let payload = String::from_utf8_lossy(&payload).to_string();
+
         if failed {
-            open_issue(
-                log,
-                vec![service.to_string()],
-                String::from_utf8_lossy(&payload).to_string(),
-            )
-            .await;
+            open_issue(log, vec![service.to_string()], payload).await;
+        } else {
+            close_issues(vec![service.to_string()], payload).await;
         }
     });
 
