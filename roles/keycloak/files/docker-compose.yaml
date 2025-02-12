@@ -2,15 +2,19 @@ version: "3.6"
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:24.0
+    image: quay.io/keycloak/keycloak:26.1
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://database:5432/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: ${DB_PASSWORD}
 
+      KC_FRONTEND_URL: https://clic.epfl.ch/keyclic/auth
+      KC_HOSTNAME: https://clic.epfl.ch/keyclic
+      KC_HOSTNAME_ADMIN: https://clic.epfl.ch/keyclic
       KC_HOSTNAME_URL: https://clic.epfl.ch/keyclic
-      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_ADMIN_URL: https://clic.epfl.ch/keyclic
+      KC_HOSTNAME_STRICT: "true"
 
       KC_HTTP_ENABLED: "true"
       KC_HTTP_RELATIVE_PATH: /keyclic

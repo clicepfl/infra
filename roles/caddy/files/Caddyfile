@@ -31,7 +31,11 @@ https://clic.epfl.ch {
 	reverse_proxy /clicketing/api* http://0.0.0.0:8006
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
-	reverse_proxy /keyclic* http://0.0.0.0:8008
+	reverse_proxy /keyclic* http://0.0.0.0:8008 {
+		header_up +X-Forwarded-Proto https
+		header_up +X-Forwarded-Scheme https
+		header_up +X-Forwarded-Port 443
+	}
 	redir /me https://clic.epfl.ch/keyclic/realms/master/account/ permanent
 
 	reverse_proxy /mattermost* http://0.0.0.0:8004
@@ -82,7 +86,7 @@ https://clic.epfl.ch:7000 {
 }
 
 https://www.icelan.ch {
-  redir * https://icelan.ch{uri} permanent
+	redir * https://icelan.ch{uri} permanent
 }
 
 https://icelan.ch {
