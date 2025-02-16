@@ -38,8 +38,6 @@ https://clic.epfl.ch {
 	}
 	redir /me https://clic.epfl.ch/keyclic/realms/master/account/ permanent
 
-	reverse_proxy /mattermost* http://0.0.0.0:8004
-
 	reverse_proxy /_matrix/* http://0.0.0.0:8011
 	reverse_proxy /_synapse/client/* http://0.0.0.0:8011
 

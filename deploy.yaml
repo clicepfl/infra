@@ -16,7 +16,6 @@
           - icelan
           - gamestar-website
           - keycloak
-          - mattermost
           - nextcloud
           - onlyoffice
           - roboclic
@@ -65,16 +64,9 @@
         borgmatic_timer_minute: 0
         borg_source_directories:
           - /var/lib/docker/volumes/roboclic
-          - /var/lib/docker/volumes/mattermost_data
           - /var/lib/docker/volumes/nextcloud_nextcloud-app
           - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/lib/docker/volumes/bookstack_app
-          - /var/lib/docker/volumes/mattermost_config
-          - /var/lib/docker/volumes/mattermost_data
-          - /var/lib/docker/volumes/mattermost_logs
-          - /var/lib/docker/volumes/mattermost_plugins
-          - /var/lib/docker/volumes/mattermost_client-plugins
-          - /var/lib/docker/volumes/mattermost_bleve-indexes
           - /var/lib/docker/volumes/onlyoffice_config
           - /var/lib/docker/volumes/onlyoffice_data
           - /var/lib/docker/volumes/onlyoffice_fonts
@@ -96,9 +88,6 @@
             - >-
               MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004
               --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
-            - >-
-              PGPASSWORD={{ services.mattermost.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5001
-              --username mattermost --format plain mattermost -f /var/db-dumps/mattermost.sql
             - >-
               PGPASSWORD={{ services.clicketing.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003
               --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
