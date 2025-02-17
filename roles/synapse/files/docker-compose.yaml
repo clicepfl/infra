@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   synapse:
-    image: matrixdotorg/synapse:latest
+    image: matrixdotorg/synapse:v1.124.0
     volumes:
       - data:/data
       - ${CONFIG_PATH}:/data/homeserver.yaml
