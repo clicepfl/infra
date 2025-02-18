@@ -1,3 +1,9 @@
+- name: Download the KeyCLIC theme
+  ansible.builtin.get_url:
+    url: https://github.com/clicepfl/keyclic-theme/releases/download/v0.1.0/keycloak-theme-for-kc-all-other-versions.jar
+    dest: "{{ role_path }}/files/clic_theme/clic-theme.jar"
+    mode: "0644"
+
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
