@@ -1,3 +1,8 @@
+- name: Get config
+  ansible.builtin.git:
+    repo: https://github.com/clicepfl/directus-config
+    dest: "{{ role_path }}/files/directus-config"
+    
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
@@ -28,11 +33,6 @@
 - name: Compute container name
   ansible.builtin.set_fact:
     container_name: directus_directus.1.{{ ps.stdout }}
-
-- name: Get config
-  ansible.builtin.git:
-    repo: https://github.com/clicepfl/directus-config
-    dest: "{{ role_path }}/files/directus-config"
 
 - name: Copy schema into container
   community.docker.docker_container_copy_into:
