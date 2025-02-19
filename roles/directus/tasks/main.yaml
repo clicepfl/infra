@@ -13,6 +13,7 @@
     DATABASE_INIT: "{{ service.database.init }}"
     DATABASE_PASSWORD: "{{ service.database.password }}"
     SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
+    BASE_PATH: "{{ role_path }}"
 
 - name: Wait for directus to be available
   ansible.builtin.wait_for:
@@ -28,18 +29,16 @@
   ansible.builtin.set_fact:
     container_name: directus_directus.1.{{ ps.stdout }}
 
-# The schema is downloaded instead of cloning the repository to avoid having the sample data on the server.
-- name: Download schema
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/clicepfl/directus-config/main/snapshot.yaml
-    dest: "{{ role_path }}/files/snapshot.yaml"
-    mode: 777
+- name: Get config
+  ansible.builtin.git:
+    repo: https://github.com/clicepfl/directus-config
+    dest: "{{ role_path }}/files/directus-config"
 
 - name: Copy schema into container
   community.docker.docker_container_copy_into:
     container: "{{ container_name }}"
     container_path: /snapshot.yaml
-    path: "{{ role_path }}/files/snapshot.yaml"
+    path: "{{ role_path }}/files/directus-config/snapshot.yaml"
 
 - name: Apply schema
   community.docker.docker_container_exec:

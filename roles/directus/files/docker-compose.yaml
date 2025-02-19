@@ -48,6 +48,7 @@ services:
     depends_on:
       - database
     volumes:
+      - ${BASE_PATH}/files/directus-config/templates:/directus/templates
       - directus-uploads:/directus/uploads
       - directus-extensions:/directus-extensions
     ports:
