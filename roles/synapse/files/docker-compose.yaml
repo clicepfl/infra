@@ -25,15 +25,6 @@ services:
     ports:
       - 5007:5432
 
-  generate:
-    image: matrixdotorg/synapse:latest
-    volumes:
-      - data:/data
-    command: generate
-    environment:
-      SYNAPSE_SERVER_NAME: clic.epfl.ch
-      SYNAPSE_REPORT_STATS: "yes"
-
 volumes:
   data:
   database:
