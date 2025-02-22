@@ -89,9 +89,6 @@
               MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004
               --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
             - >-
-              PGPASSWORD={{ services.clicketing.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5003
-              --username clicketing --format plain clicketing -f /var/db-dumps/clicketing.sql
-            - >-
               PGPASSWORD={{ services.directus.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005
               --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
             - >-

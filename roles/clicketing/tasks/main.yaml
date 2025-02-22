@@ -6,6 +6,4 @@
     compose:
       - "{{ role_path }}/files/docker-compose.yaml"
   environment:
-    DATABASE_PASSWORD: "{{ service.database.password }}"
-    DATABASE_INIT: "{{ service.database.init }}"
-    ADMIN_TOKEN: "{{ service.admin_token }}"
+    DIRECTUS_TOKEN: "{{ service.directus_token }}"

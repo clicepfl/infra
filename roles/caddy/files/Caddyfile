@@ -28,7 +28,6 @@ https://clic.epfl.ch {
 	redir /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger permanent
 	redir /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo permanent
 
-	reverse_proxy /clicketing/api* http://0.0.0.0:8006
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
 	reverse_proxy /keyclic* http://0.0.0.0:8008 {
