@@ -67,6 +67,7 @@ https://clic.epfl.ch {
 	handle_path /s4s/api* {
 		reverse_proxy http://0.0.0.0:8014
 	}
+
 	reverse_proxy /s4s* http://0.0.0.0:8015
 
 	reverse_proxy /* http://0.0.0.0:8000
@@ -91,5 +92,6 @@ https://icelan.ch {
 }
 
 https://clicgamestar.ch {
-	reverse_proxy http://0.0.0.0:8016
+	# reverse_proxy http://0.0.0.0:8016
+	redir https://clic.epfl.ch/commissions/game-star
 }
