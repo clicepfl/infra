@@ -11,6 +11,7 @@
     compose:
       - "{{ role_path }}/files/docker-compose.yaml"
   environment:
+    MAIL_SENDER_SECRET: "{{ service.mail_sender_secret }}"
     ADMIN_PASSWORD: "{{ service.admin_password }}"
     KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
     SECRET: "{{ service.secret }}"
