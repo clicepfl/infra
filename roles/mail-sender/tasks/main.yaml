@@ -1,0 +1,10 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: mail-sender
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    SECRET: "{{ service.secret }}"
+    MAIL_PASSWORD: "{{ general.mail.comm_password }}"

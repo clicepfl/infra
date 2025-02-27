@@ -16,6 +16,7 @@
           - icelan
           - gamestar-website
           - keycloak
+          - mail-sender
           - nextcloud
           - onlyoffice
           - roboclic

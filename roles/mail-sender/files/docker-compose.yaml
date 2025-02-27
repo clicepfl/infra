@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  sender:
+    image: ghcr.io/clicepfl/mail-sender:main
+    environment:
+      SECRET: ${SECRET}
+
+      EMAIL_FROM: CLIC <communication.clic@epfl.ch>
+      EMAIL_SERVER: mail.epfl.ch
+      EMAIL_USERNAME: communication.clic
+      EMAIL_PASSWORD: ${MAIL_PASSWORD}
+
+      ROCKET_ADDRESS: "0.0.0.0"
+      ROCKET_PORT: 8000
+
+    ports:
+      - 8006:8000
