@@ -28,7 +28,7 @@ https://clic.epfl.ch {
 	redir /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger permanent
 	redir /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo permanent
 
-	reverse_proxy /clicketing/api* http://0.0.0.0:8006
+	reverse_proxy /mail-sender* http://0.0.0.0:8006
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
 	reverse_proxy /keyclic* http://0.0.0.0:8008 {
@@ -68,6 +68,7 @@ https://clic.epfl.ch {
 	handle_path /s4s/api* {
 		reverse_proxy http://0.0.0.0:8014
 	}
+
 	reverse_proxy /s4s* http://0.0.0.0:8015
 
 	reverse_proxy /* http://0.0.0.0:8000
@@ -92,5 +93,6 @@ https://icelan.ch {
 }
 
 https://clicgamestar.ch {
-	reverse_proxy http://0.0.0.0:8016
+	# reverse_proxy http://0.0.0.0:8016
+	redir https://clic.epfl.ch/commissions/game-star
 }

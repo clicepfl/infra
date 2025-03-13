@@ -4,6 +4,9 @@ services:
     image: directus/directus
     hostname: directus
     environment:
+      MAIL_SENDER_SECRET: ${MAIL_SENDER_SECRET}
+      FLOWS_ENV_ALLOW_LIST: MAIL_SENDER_SECRET
+
       SECRET: ${SECRET}
       KEY: ${KEY}
       DB_CLIENT: postgres
@@ -48,6 +51,7 @@ services:
     depends_on:
       - database
     volumes:
+      - ${BASE_PATH}/files/directus-config/templates:/directus/templates
       - directus-uploads:/directus/uploads
       - directus-extensions:/directus-extensions
     ports:

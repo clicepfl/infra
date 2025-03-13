@@ -1,3 +1,8 @@
+- name: Get config
+  ansible.builtin.git:
+    repo: https://github.com/clicepfl/directus-config
+    dest: "{{ role_path }}/files/directus-config"
+
 - name: Using default deploy method
   community.docker.docker_stack:
     state: present
@@ -6,6 +11,7 @@
     compose:
       - "{{ role_path }}/files/docker-compose.yaml"
   environment:
+    MAIL_SENDER_SECRET: "{{ service.mail_sender_secret }}"
     ADMIN_PASSWORD: "{{ service.admin_password }}"
     KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
     SECRET: "{{ service.secret }}"
@@ -13,40 +19,55 @@
     DATABASE_INIT: "{{ service.database.init }}"
     DATABASE_PASSWORD: "{{ service.database.password }}"
     SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
+    BASE_PATH: "{{ role_path }}"
 
 - name: Wait for directus to be available
   ansible.builtin.wait_for:
     port: 8001
 
-- name: Get container id
+- name: Get directus container id
   ansible.builtin.command:
     cmd: docker service ps directus_directus --filter desired-state=running -q
   changed_when: false
   register: ps
 
-- name: Compute container name
+- name: Compute directus container name
   ansible.builtin.set_fact:
-    container_name: directus_directus.1.{{ ps.stdout }}
+    directus_container_name: directus_directus.1.{{ ps.stdout }}
 
-# The schema is downloaded instead of cloning the repository to avoid having the sample data on the server.
-- name: Download schema
-  ansible.builtin.get_url:
-    url: https://raw.githubusercontent.com/clicepfl/directus-config/main/snapshot.yaml
-    dest: "{{ role_path }}/files/snapshot.yaml"
-    mode: 777
+- name: Get database container id
+  ansible.builtin.command:
+    cmd: docker service ps directus_database --filter desired-state=running -q
+  changed_when: false
+  register: ps
+
+- name: Compute database container name
+  ansible.builtin.set_fact:
+    database_container_name: directus_database.1.{{ ps.stdout }}
 
 - name: Copy schema into container
   community.docker.docker_container_copy_into:
-    container: "{{ container_name }}"
+    container: "{{ directus_container_name }}"
     container_path: /snapshot.yaml
-    path: "{{ role_path }}/files/snapshot.yaml"
+    path: "{{ role_path }}/files/directus-config/snapshot.yaml"
 
 - name: Apply schema
   community.docker.docker_container_exec:
-    container: "{{ container_name }}"
+    container: "{{ directus_container_name }}"
     command: npx directus schema apply /snapshot.yaml -y
 
-- name: Restart container
+- name: Copy schema into container
+  community.docker.docker_container_copy_into:
+    container: "{{ database_container_name }}"
+    container_path: /flows.sql
+    path: "{{ role_path }}/files/directus-config/flows.sql"
+
+- name: Apply flows dump
+  community.docker.docker_container_exec:
+    container: "{{ database_container_name }}"
+    command: psql -U directus_user directus_data -f /flows.sql
+
+- name: Restart directus container
   community.docker.docker_container:
-    name: "{{ container_name }}"
+    name: "{{ directus_container_name }}"
     state: stopped # The swarm will take care of booting up a new container
