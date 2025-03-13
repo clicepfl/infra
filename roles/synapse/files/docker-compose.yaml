@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   synapse:
-    image: matrixdotorg/synapse:v1.124.0
+    image: matrixdotorg/synapse:v1.126.0
     volumes:
       - data:/data
       - ${CONFIG_PATH}:/data/homeserver.yaml
@@ -21,7 +21,7 @@ services:
       POSTGRES_USER: synapse
       POSTGRES_DB: synapse
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C' # Because python
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C" # Because python
     ports:
       - 5007:5432
 
