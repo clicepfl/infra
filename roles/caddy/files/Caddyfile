@@ -72,7 +72,7 @@ https://clic.epfl.ch {
 	reverse_proxy /s4s* http://0.0.0.0:8015
 
 	handle_path /ic-plays-pokemon/screen* {
-		redir https://clic.epfl.ch:8019
+		redir https://clic.epfl.ch:7001
 	}
 
 	handle_path /ic-plays-pokemon* {
@@ -93,7 +93,7 @@ https://clic.epfl.ch:7000 {
 }
 
 # IC Plays Pokemon
-https://clic.epfl.ch:8019 {
+https://clic.epfl.ch:7001 {
 	reverse_proxy http://0.0.0.0:8019
 }
 
