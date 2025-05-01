@@ -71,6 +71,12 @@ https://clic.epfl.ch {
 
 	reverse_proxy /s4s* http://0.0.0.0:8015
 
+	handle_path /ic-plays-pokemon/api* {
+		reverse_proxy http://0.0.0.0:8018
+	}
+
+	reverse_proxy /ic-plays-pokemon* http://0.0.0.0:8019
+
 	reverse_proxy /* http://0.0.0.0:8000
 }
 
