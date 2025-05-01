@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  ic-plays-pokemon:
+    image: ghcr.io/clicepfl/ic-plays-pokemon:main
+    hostname: ic-plays-pokemon
+    ports:
+      - 8018:8000
+      - 8019:3000
+
