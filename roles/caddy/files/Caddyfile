@@ -72,7 +72,7 @@ https://clic.epfl.ch {
 	reverse_proxy /s4s* http://0.0.0.0:8015
 
 	handle_path /ic-plays-pokemon/screen* {
-		reverse_proxy http://0.0.0.0:8019
+		redir https://clic.epfl.ch:8019
 	}
 
 	handle_path /ic-plays-pokemon* {
@@ -90,6 +90,11 @@ https://clic.epfl.ch:4000 {
 # OnlyOffice
 https://clic.epfl.ch:7000 {
 	reverse_proxy http://0.0.0.0:9000
+}
+
+# IC Plays Pokemon
+https://clic.epfl.ch:8019 {
+	reverse_proxy http://0.0.0.0:8019
 }
 
 https://www.icelan.ch {
