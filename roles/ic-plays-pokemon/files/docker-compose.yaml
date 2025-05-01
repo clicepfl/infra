@@ -4,6 +4,25 @@ services:
     image: ghcr.io/clicepfl/ic-plays-pokemon:main
     hostname: ic-plays-pokemon
     ports:
-      - 8018:8000
-      - 8019:3000
+      - 8018:6901
+      - 8019:8000
+    environment:
+      VNC_RESOLUTION: 960x864
+      VNC_VIEW_ONLY: "true"
+      ROCKET_ADDRESS: "0.0.0.0"
+    volumes:
+      - config:/headless/.config
+    command:
+      [
+        "sh",
+        "./startup.sh",
+        "./PokemonRed.zip",
+        "--fullscreen",
+        "--doNotSaveSettings",
+        "--preferences.alwaysOnTop=true",
+        "--preferences.autoHideMenu=true",
+      ]
+
+volumes:
+  config:
 
