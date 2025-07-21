@@ -65,7 +65,7 @@
         borgmatic_timer_hour: 0
         borgmatic_timer_minute: 0
         borg_source_directories:
-          - /var/lib/docker/volumes/roboclic
+          - /var/lib/docker/volumes/roboclic_roboclic
           - /var/lib/docker/volumes/nextcloud_nextcloud-app
           - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/lib/docker/volumes/bookstack_app
