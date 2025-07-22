@@ -29,7 +29,7 @@
 
     - name: Compute list of services to deploy
       ansible.builtin.set_fact:
-        to_deploy: "{{ ((SERVICE | default('')) == '') | ternary(service_names, SERVICE | default('') | split(',')) }}"
+        to_deploy: "{{ ((SERVICES | default('')) == '') | ternary(service_names, SERVICES | default('') | split(',')) }}"
 
     - name: Deploy
       ansible.builtin.include_role:

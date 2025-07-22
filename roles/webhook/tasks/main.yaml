@@ -3,13 +3,13 @@
     src: "{{ role_path }}/files/"
     dest: /tmp/webhook
     mode: "0777"
-  when: (build | default('true')) == 'true'
+  when: (WH_BUILD | default('true')) == 'true'
 
 - name: Build webhook
   ansible.builtin.command:
     cmd: docker run --rm -v /tmp/webhook:/webhook --workdir /webhook rust:bullseye cargo b --release
   changed_when: true
-  when: (build | default('true')) == 'true'
+  when: (WH_BUILD | default('true')) == 'true'
 
 - name: Install webhook
   ansible.builtin.copy:
@@ -17,13 +17,13 @@
     dest: /usr/local/bin/webhook
     mode: "0755"
     owner: root
-  when: (build | default('true')) == 'true'
+  when: (WH_BUILD | default('true')) == 'true'
 
 - name: Remove build directory
   ansible.builtin.file:
     path: /tmp/webhook
     state: absent
-  when: (build | default('true')) == 'true'
+  when: (WH_BUILD | default('true')) == 'true'
 
 - name: Create webhook directory
   ansible.builtin.file:
