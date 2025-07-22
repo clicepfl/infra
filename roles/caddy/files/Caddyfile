@@ -28,6 +28,9 @@ https://clic.epfl.ch {
 	redir /.well-known/webfinger /nextcloud/index.php/.well-known/webfinger permanent
 	redir /.well-known/nodeinfo /nextcloud/index.php/.well-known/nodeinfo permanent
 
+	# Server delegation for Matrix
+	respond /.well-known/matrix/server "{\"m.server\": \"clic.epfl.ch:443\"}"
+
 	reverse_proxy /mail-sender* http://0.0.0.0:8006
 	reverse_proxy /clicketing* http://0.0.0.0:8007
 
