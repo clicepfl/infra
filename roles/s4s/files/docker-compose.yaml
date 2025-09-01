@@ -1,19 +1,23 @@
 version: '3.8'
 services:
-  api:
+  frontend:
     image: ghcr.io/clicepfl/s4s-2024-app:main
     ports:
       - 8015:3000
 
-  frontend:
+  api:
     image: ghcr.io/clicepfl/s4s-2024-backend:main
     environment:
       DATA_DIR: /data
+      SOCK_DIR: /sockets
+      SOCK_VOL: s4s_sockets
     volumes:
       - data:/data
+      - sockets:/sockets
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8014:8000
 
 volumes:
   data:
+  sockets:
