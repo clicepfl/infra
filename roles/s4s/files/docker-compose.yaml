@@ -11,6 +11,7 @@ services:
       DATA_DIR: /data
       SOCK_DIR: /sockets
       SOCK_VOL: s4s_sockets
+      RUNNER_IMAGE: ghcr.io/clicepfl/s4s-2024-runner:main
     volumes:
       - data:/data
       - sockets:/sockets
