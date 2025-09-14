@@ -109,6 +109,5 @@ https://icelan.ch {
 }
 
 https://clicgamestar.ch {
-	# reverse_proxy http://0.0.0.0:8016
-	redir https://clic.epfl.ch/commissions/game-star
+	reverse_proxy http://0.0.0.0:8016
 }
