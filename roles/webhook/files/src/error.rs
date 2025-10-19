@@ -6,6 +6,7 @@ use actix_web::{http::StatusCode, ResponseError};
 pub enum Error {
     InvalidSignature,
     InvalidServiceList,
+    ForbiddenEvent,
     Actix(actix_web::Error),
 }
 
@@ -14,6 +15,7 @@ impl Display for Error {
         match self {
             Error::InvalidSignature => f.write_str("Invalid Signature"),
             Error::InvalidServiceList => f.write_str("Invalid service list"),
+            Error::ForbiddenEvent => f.write_str("Event is not allowed"),
             Error::Actix(e) => e.fmt(f),
         }
     }
@@ -24,6 +26,7 @@ impl ResponseError for Error {
         match self {
             Error::InvalidSignature => StatusCode::FORBIDDEN,
             Error::InvalidServiceList => StatusCode::BAD_REQUEST,
+            Error::ForbiddenEvent => StatusCode::BAD_REQUEST,
             Error::Actix(e) => e.as_response_error().status_code(),
         }
     }

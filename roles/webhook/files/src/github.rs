@@ -4,6 +4,8 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 use crate::config;
 
+pub mod event;
+
 #[derive(Serialize)]
 struct PostIssueBody {
     title: String,
