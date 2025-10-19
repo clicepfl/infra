@@ -2,41 +2,54 @@ use std::time::SystemTime;
 
 use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
-use serde::Deserialize;
 use sha2::Sha256;
 
-use crate::{config::config, error::Error, WebhookState};
+use crate::{
+    config::config,
+    error::Error,
+    github::event::{Action, Push},
+    WebhookState,
+};
 
-#[derive(Deserialize, Debug)]
-#[serde(tag = "action", rename_all = "snake_case")]
-enum Action {
-    Published { package: Package },
-}
-#[derive(Deserialize, Debug)]
-struct Package {
-    name: String,
-}
-
-fn validate_delivery(payload: &[u8], state: &mut WebhookState) -> Result<bool, Error> {
-    if let Ok(Action::Published { package }) = serde_json::from_slice::<Action>(payload) {
-        if let Some(date) = state.processed_packages.get(&package.name) {
-            if date.elapsed().is_ok_and(|d| d.as_secs() < 120) {
-                tracing::info!(
-                    "Already triggered recently ({}), skipping",
-                    date.duration_since(SystemTime::UNIX_EPOCH)
-                        .map(|d| d.as_secs())
-                        .unwrap_or(0)
-                );
-                return Ok(false);
+fn validate_event(
+    headers: &HeaderMap,
+    payload: &[u8],
+    state: &mut WebhookState,
+) -> Result<bool, Error> {
+    match headers
+        .get("X-GitHub-Event")
+        .map(|h| h.to_str().ok())
+        .flatten()
+    {
+        Some("action") => {
+            // All publicated packages trigger a redeploy unless the package was redeployed recently
+            // enough (ergo this call is considered retry and should be ignored).
+            let Action::Published { package } = serde_json::from_slice(payload)?;
+            if let Some(date) = state.processed_packages.get(&package.name) {
+                if date.elapsed().is_ok_and(|d| d.as_secs() < 120) {
+                    tracing::info!(
+                        "Already triggered recently ({}), skipping",
+                        date.duration_since(SystemTime::UNIX_EPOCH)
+                            .map(|d| d.as_secs())
+                            .unwrap_or(0)
+                    );
+                    return Ok(false);
+                }
             }
+
+            state
+                .processed_packages
+                .insert(package.name, SystemTime::now());
+
+            Ok(true)
         }
-
-        state
-            .processed_packages
-            .insert(package.name, SystemTime::now());
+        Some("push") => {
+            // Only pushes to the repo main branch should trigger a redeploy.
+            let Push { r#ref, repository } = serde_json::from_slice(payload)?;
+            Ok(r#ref == format!("refs/head/{}", repository.default_branch))
+        }
+        _ => Err(Error::ForbiddenEvent),
     }
-
-    Ok(true)
 }
 
 fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
@@ -73,17 +86,13 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     }
 }
 
-fn validate_event(headers: &HeaderMap) -> Result<bool, Error> {
-    Ok(headers.get("X-GitHub-Event").is_some_and(|h| h != "ping"))
-}
-
 pub fn validate_call(
     headers: &HeaderMap,
     payload: &[u8],
     state: &mut WebhookState,
 ) -> Result<bool, Error> {
     validate_signature(headers, payload)?;
-    Ok(validate_event(headers)? && validate_delivery(payload, state)?)
+    validate_event(headers, payload, state)
 }
 
 pub fn validate_service_list(str: &str) -> Result<(), Error> {
