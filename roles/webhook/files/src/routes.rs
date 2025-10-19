@@ -42,12 +42,15 @@ pub async fn all(
         tracing::info!("Full restart complete");
 
         let log = stop_capture();
-        let payload = String::from_utf8_lossy(&payload).to_string();
-
         if failed {
-            open_issue(log, vec![], payload).await;
+            open_issue(log, vec![], req.headers(), &payload).await;
         } else {
-            close_issues(config().services.keys().cloned().collect(), payload).await;
+            close_issues(
+                config().services.keys().cloned().collect(),
+                req.headers(),
+                &payload,
+            )
+            .await;
         }
     });
 
@@ -83,12 +86,10 @@ pub async fn targeted(
         };
 
         let log = stop_capture();
-        let payload = String::from_utf8_lossy(&payload).to_string();
-
         if failed {
-            open_issue(log, vec![service.to_string()], payload).await;
+            open_issue(log, vec![service.to_string()], req.headers(), &payload).await;
         } else {
-            close_issues(vec![service.to_string()], payload).await;
+            close_issues(vec![service.to_string()], req.headers(), &payload).await;
         }
     });
 

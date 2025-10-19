@@ -1,5 +1,3 @@
-use std::time::SystemTime;
-
 use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
@@ -7,52 +5,24 @@ use sha2::Sha256;
 use crate::{
     config::config,
     error::Error,
-    github::event::{Action, Push},
+    github::event::{parse_payload, Payload, HEADER_DELIVERY_ID},
     WebhookState,
 };
 
-fn validate_event(
-    headers: &HeaderMap,
-    payload: &[u8],
-    state: &mut WebhookState,
-) -> Result<bool, Error> {
-    match headers
-        .get("X-GitHub-Event")
-        .map(|h| h.to_str().ok())
-        .flatten()
-    {
-        Some("action") => {
-            // All publicated packages trigger a redeploy unless the package was redeployed recently
-            // enough (ergo this call is considered retry and should be ignored).
-            let Action::Published { package } = serde_json::from_slice(payload)?;
-            if let Some(date) = state.processed_packages.get(&package.name) {
-                if date.elapsed().is_ok_and(|d| d.as_secs() < 120) {
-                    tracing::info!(
-                        "Already triggered recently ({}), skipping",
-                        date.duration_since(SystemTime::UNIX_EPOCH)
-                            .map(|d| d.as_secs())
-                            .unwrap_or(0)
-                    );
-                    return Ok(false);
-                }
-            }
-
-            state
-                .processed_packages
-                .insert(package.name, SystemTime::now());
-
+fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<bool, Error> {
+    match parse_payload(headers, payload)? {
+        Payload::Action(_) => {
+            // All publicated packages trigger a redeploy.
             Ok(true)
         }
-        Some("push") => {
+        Payload::Push(push) => {
             // Only pushes to the repo main branch should trigger a redeploy.
-            let Push { r#ref, repository } = serde_json::from_slice(payload)?;
-            Ok(r#ref == format!("refs/head/{}", repository.default_branch))
+            Ok(push.r#ref == format!("refs/head/{}", push.repository.default_branch))
         }
-        _ => Err(Error::ForbiddenEvent),
     }
 }
 
-fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> {
+fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<bool, Error> {
     let Some(Ok(Some(signature))) = headers
         .get("X-Hub-Signature-256")
         .map(|h| h.to_str().map(|s| s.strip_prefix("sha256=")))
@@ -76,7 +46,7 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     hmac.update(payload);
 
     if hmac.verify_slice(&signature).is_ok() {
-        Ok(())
+        Ok(true)
     } else {
         tracing::warn!(
             "Received request with invalid signature (origin: {:?})",
@@ -86,13 +56,29 @@ fn validate_signature(headers: &HeaderMap, payload: &[u8]) -> Result<(), Error> 
     }
 }
 
+fn check_redelivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<bool, Error> {
+    let Some(Ok(delivery_id)) = headers.get(HEADER_DELIVERY_ID).map(|h| h.to_str()) else {
+        return Err(Error::BadRequest);
+    };
+    let delivery_id = delivery_id.to_owned();
+
+    // Ignore deliveries that were already/are being processed.
+    if state.processed_deliveries.contains(&delivery_id) {
+        return Ok(false);
+    }
+    state.processed_deliveries.push(delivery_id);
+
+    Ok(true)
+}
+
 pub fn validate_call(
     headers: &HeaderMap,
     payload: &[u8],
     state: &mut WebhookState,
 ) -> Result<bool, Error> {
-    validate_signature(headers, payload)?;
-    validate_event(headers, payload, state)
+    Ok(check_redelivery(headers, state)?
+        && validate_signature(headers, payload)?
+        && validate_event(headers, payload)?)
 }
 
 pub fn validate_service_list(str: &str) -> Result<(), Error> {

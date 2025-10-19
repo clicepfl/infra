@@ -1,48 +1,18 @@
 use std::process::Command;
 
+use actix_web::http::header::HeaderMap;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
-use crate::config;
+use crate::{
+    config,
+    github::{
+        event::{parse_payload, Action, Payload, Push},
+        issues::{EmptyBody, PostIssueBody},
+    },
+};
 
 pub mod event;
-
-#[derive(Serialize)]
-struct PostIssueBody {
-    title: String,
-    body: String,
-    assignees: Vec<String>,
-}
-
-#[derive(Deserialize)]
-struct Repository {
-    html_url: String,
-}
-
-#[derive(Deserialize)]
-struct Package {
-    name: String,
-    updated_at: Option<String>,
-    html_url: String,
-}
-
-#[derive(Deserialize)]
-struct Commit {}
-
-#[derive(Deserialize)]
-#[serde(untagged)]
-enum Payload {
-    Package {
-        package: Package,
-    },
-    Push {
-        after: String,
-        commits: Vec<Commit>,
-        repository: Repository,
-    },
-}
-
-#[derive(Serialize, Deserialize)]
-struct EmptyBody {}
+pub mod issues;
 
 async fn github_api_call<B, R>(uri: &str, method: &str, body: B) -> Result<R, std::io::Error>
 where
@@ -72,11 +42,11 @@ where
         })
 }
 
-pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
-    let parsed_payload = serde_json::from_str::<Payload>(&payload);
+pub async fn open_issue(log: String, services: Vec<String>, headers: &HeaderMap, payload: &[u8]) {
+    let parsed_payload = parse_payload(headers, payload);
 
     let body = match parsed_payload {
-        Ok(Payload::Package { package, .. }) => PostIssueBody {
+        Ok(Payload::Action(Action::Published { package }) )=> PostIssueBody {
             title: format!("Deployment failed for package {}", package.name),
             body: format!(
                 "Deployment for {services} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
@@ -91,12 +61,12 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
             ),
             assignees: config().github_assignees.clone()
         },
-        Ok(Payload::Push {
+        Ok(Payload::Push( Push{
             after,
             commits,
             repository,
             ..
-        }) => {
+        })) => {
             let services = if services.is_empty() {
                 "all services".to_owned()
             } else {
@@ -130,16 +100,16 @@ pub async fn open_issue(log: String, services: Vec<String>, payload: String) {
     };
 }
 
-pub async fn close_issues(services: Vec<String>, payload: String) {
-    let fix_source = match serde_json::from_str::<Payload>(&payload) {
-        Ok(Payload::Package { package }) => {
+pub async fn close_issues(services: Vec<String>, headers: &HeaderMap, payload: &[u8]) {
+    let fix_source = match parse_payload(headers, payload) {
+        Ok(Payload::Action(Action::Published { package })) => {
             format!(
                 "package {} ({})",
                 package.name,
                 package.updated_at.unwrap_or_default()
             )
         }
-        Ok(Payload::Push { after, .. }) => format!("commit {}", &after.as_str()[0..6]),
+        Ok(Payload::Push(Push { after, .. })) => format!("commit {}", &after.as_str()[0..6]),
         Err(_) => "<unable to parse hook payload>".to_owned(),
     };
 

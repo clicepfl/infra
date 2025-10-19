@@ -4,6 +4,7 @@ use actix_web::{http::StatusCode, ResponseError};
 
 #[derive(Debug)]
 pub enum Error {
+    BadRequest,
     InvalidSignature,
     InvalidServiceList,
     ForbiddenEvent,
@@ -13,6 +14,7 @@ pub enum Error {
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            Error::BadRequest => f.write_str("Bad request"),
             Error::InvalidSignature => f.write_str("Invalid Signature"),
             Error::InvalidServiceList => f.write_str("Invalid service list"),
             Error::ForbiddenEvent => f.write_str("Event is not allowed"),
@@ -24,6 +26,7 @@ impl Display for Error {
 impl ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
+            Error::BadRequest => StatusCode::BAD_REQUEST,
             Error::InvalidSignature => StatusCode::FORBIDDEN,
             Error::InvalidServiceList => StatusCode::BAD_REQUEST,
             Error::ForbiddenEvent => StatusCode::BAD_REQUEST,
