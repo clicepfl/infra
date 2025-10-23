@@ -16,10 +16,9 @@ impl Write for LogWriter {
         if let Some(captured) = lock.take() {
             let log = String::from_utf8(buf.to_vec()).unwrap();
             *lock = Some(captured + &log);
-            Ok(buf.len())
-        } else {
-            io::stdout().write(buf)
         }
+
+        io::stdout().write(buf)
     }
 
     fn flush(&mut self) -> std::io::Result<()> {

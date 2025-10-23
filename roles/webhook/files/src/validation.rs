@@ -24,7 +24,7 @@ fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<bool, Error> {
         }
         Payload::Push(push) => {
             // Only pushes to the repo main branch should trigger a redeploy.
-            Ok(push.r#ref == format!("refs/head/{}", push.repository.default_branch))
+            Ok(push.r#ref == format!("refs/heads/{}", push.repository.default_branch))
         }
     }
 }
