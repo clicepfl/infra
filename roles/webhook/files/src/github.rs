@@ -32,17 +32,23 @@ where
     let mut request = client
         .request(method, uri)
         .bearer_auth(&config().github_access_token)
-        .header("Accept", "application/vnd.github+json");
+        .header("Accept", "application/vnd.github+json")
+        // https://docs.github.com/en/rest/about-the-rest-api/api-versions?apiVersion=2022-11-28
+        .header("X-GitHub-Api-Version", "2022-11-28")
+        // https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api?apiVersion=2022-11-28#user-agent
+        .header("User-Agent", "CLIC-Webhook");
 
     if let Some(body) = body {
         request = request.body(serde_json::to_vec(&body)?)
     };
 
-    let response = request.send().await.map_err(std::io::Error::other)?;
-
-    let body = response.text().await.map_err(std::io::Error::other)?;
-
-    serde_json::from_str(&body).map_err(std::io::Error::other)
+    request
+        .send()
+        .await
+        .map_err(std::io::Error::other)?
+        .json()
+        .await
+        .map_err(std::io::Error::other)
 }
 
 /// Open an issue on the infra repository using the provided metadata.
