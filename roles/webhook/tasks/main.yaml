@@ -7,7 +7,7 @@
 
 - name: Build webhook
   ansible.builtin.command:
-    cmd: docker run --rm -v /tmp/webhook:/webhook --workdir /webhook rust:bullseye cargo b --release
+    cmd: docker run --rm -v /tmp/webhook:/webhook --workdir /webhook rust:trixie cargo b --release
   changed_when: true
   when: (WH_BUILD | default('true')) == 'true'
 
