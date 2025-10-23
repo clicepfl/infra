@@ -79,7 +79,7 @@ fn check_redelivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<boo
 }
 
 fn validate_service(service: &str) -> Result<(), Error> {
-    if !config().services.contains_key(service) {
+    if config().services.contains_key(service) {
         Ok(())
     } else {
         Err(Error::InvalidService)
