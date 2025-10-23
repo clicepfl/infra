@@ -1,7 +1,13 @@
+//! Functions to redeploy a service.
+
 use crate::config::Service;
 use std::process::Command;
 use tracing::{span, Level};
 
+/// Attempts to run a shell command, logging its output in case of failure.
+///
+/// - `command`: The command to run. This function does nothing if this value is `None`.
+/// - `service`: The value to pass to the command through the `SERVICE` environment variable.
 fn try_run(command: Option<&String>, service: &str) -> bool {
     let Some(command) = command else {
         tracing::debug!("Command is empty, skipping");
@@ -30,6 +36,11 @@ fn try_run(command: Option<&String>, service: &str) -> bool {
     }
 }
 
+/// Restarts the given service.
+///
+/// - `name`: Name of the service to restart
+/// - `service`: Specific deployment configuration for that service.
+/// - `default`: Default deployment configuration.
 pub fn restart(name: &str, service: &Service, default: &Service) -> bool {
     let _enter = span!(Level::INFO, "service", name).entered();
 

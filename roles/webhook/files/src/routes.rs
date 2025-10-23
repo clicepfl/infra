@@ -1,10 +1,12 @@
+//! Routes that the webhook exposes.
+
 use crate::{
     config::config,
     error::Error,
     github::{close_issues, open_issue},
     log::{start_capture, stop_capture},
     restart::restart,
-    validation::{validate_call, validate_service_list},
+    validation::validate_call,
     State,
 };
 use actix_web::{
@@ -22,7 +24,7 @@ pub async fn all(
     state: web::Data<State>,
 ) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
-    if !validate_call(req.headers(), &payload, &mut state.lock().unwrap())? {
+    if !validate_call(req.headers(), &payload, &mut state.lock().unwrap(), None)? {
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
@@ -43,14 +45,9 @@ pub async fn all(
 
         let log = stop_capture();
         if failed {
-            open_issue(log, vec![], req.headers(), &payload).await;
+            open_issue(log, None, req.headers(), &payload).await;
         } else {
-            close_issues(
-                config().services.keys().cloned().collect(),
-                req.headers(),
-                &payload,
-            )
-            .await;
+            close_issues(None, req.headers(), &payload).await;
         }
     });
 
@@ -65,10 +62,14 @@ pub async fn targeted(
     state: web::Data<State>,
 ) -> Result<HttpResponse<String>, Error> {
     let payload = payload.to_bytes().await?;
-    if !validate_call(req.headers(), &payload, &mut state.lock().unwrap())? {
+    if !validate_call(
+        req.headers(),
+        &payload,
+        &mut state.lock().unwrap(),
+        Some(&service),
+    )? {
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
-    validate_service_list(&service)?;
 
     spawn(async move {
         tracing::info!("Triggered restart for service {}", service);
@@ -87,9 +88,9 @@ pub async fn targeted(
 
         let log = stop_capture();
         if failed {
-            open_issue(log, vec![service.to_string()], req.headers(), &payload).await;
+            open_issue(log, Some(&service), req.headers(), &payload).await;
         } else {
-            close_issues(vec![service.to_string()], req.headers(), &payload).await;
+            close_issues(Some(&service), req.headers(), &payload).await;
         }
     });
 

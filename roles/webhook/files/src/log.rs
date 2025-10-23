@@ -1,3 +1,5 @@
+//! Custom logger, allowing to capture parts of the log output through the [`start_capture`] and [`stop_capture`] commands.
+
 use std::{
     io::{self, Write},
     sync::Mutex,
