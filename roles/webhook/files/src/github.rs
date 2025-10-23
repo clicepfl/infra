@@ -8,9 +8,7 @@ use crate::{
     config,
     github::{
         event::{parse_payload, Action, Payload, Push},
-        issues::{
-            EmptyBody, IssueCommentBody, OpenIssueBody, PostIssueBody, UpdateIssueBody,
-        },
+        issues::{EmptyBody, IssueCommentBody, OpenIssueBody, PostIssueBody, UpdateIssueBody},
     },
 };
 
@@ -20,26 +18,29 @@ pub mod event;
 mod issues;
 
 /// Util function to call the GitHub API.
-async fn github_api_call<B, R>(uri: &str, method: Method, body: B) -> Result<R, std::io::Error>
+async fn github_api_call<B, R>(
+    uri: &str,
+    method: Method,
+    body: Option<B>,
+) -> Result<R, std::io::Error>
 where
     B: Serialize,
     R: DeserializeOwned,
 {
     let client = Client::new();
 
-    let response = client
+    let mut request = client
         .request(method, uri)
         .bearer_auth(&config().github_access_token)
-        .header("Accept", "application/vnd.github+json")
-        .body(serde_json::to_vec(&body)?)
-        .send()
-        .await
-        .map_err(std::io::Error::other)?;
+        .header("Accept", "application/vnd.github+json");
 
-    let body = response
-        .text()
-        .await
-        .map_err(std::io::Error::other)?;
+    if let Some(body) = body {
+        request = request.body(serde_json::to_vec(&body)?)
+    };
+
+    let response = request.send().await.map_err(std::io::Error::other)?;
+
+    let body = response.text().await.map_err(std::io::Error::other)?;
 
     serde_json::from_str(&body).map_err(std::io::Error::other)
 }
@@ -90,7 +91,7 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
     match github_api_call::<_, EmptyBody>(
         "https://api.github.com/repos/clicepfl/infra/issues",
         Method::POST,
-        body,
+        Some(body),
     )
     .await
     {
@@ -118,7 +119,7 @@ pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &
     let issues: Vec<OpenIssueBody> = match github_api_call(
         "https://api.github.com/repos/clicepfl/infra/issues",
         Method::GET,
-        EmptyBody {},
+        Option::<EmptyBody>::None,
     )
     .await
     {
@@ -155,9 +156,9 @@ pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &
         let mut result: Result<EmptyBody, _> = github_api_call(
             &issue_comment_url,
             Method::POST,
-            IssueCommentBody {
+            Some(IssueCommentBody {
                 body: format!("Fixed by {}", fix_source),
-            },
+            }),
         )
         .await;
 
@@ -165,9 +166,9 @@ pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &
             result = github_api_call(
                 &issue_url,
                 Method::PATCH,
-                UpdateIssueBody {
+                Some(UpdateIssueBody {
                     state: "closed".to_owned(),
-                },
+                }),
             )
             .await;
         }
