@@ -1,60 +1,63 @@
-use std::process::Command;
+//! This crate provides function and types to interact with GitHub API, both through HTTPS calls or an incoming webhook.
 
 use actix_web::http::header::HeaderMap;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use reqwest::{Client, Method};
+use serde::{de::DeserializeOwned, Serialize};
 
 use crate::{
     config,
     github::{
         event::{parse_payload, Action, Payload, Push},
-        issues::{EmptyBody, PostIssueBody},
+        issues::{
+            EmptyBody, IssueCommentBody, OpenIssueBody, PostIssueBody, UpdateIssueBody,
+        },
     },
 };
 
+/// Webhook data types.
 pub mod event;
-pub mod issues;
+/// Data types for the Issue API paths.
+mod issues;
 
-async fn github_api_call<B, R>(uri: &str, method: &str, body: B) -> Result<R, std::io::Error>
+/// Util function to call the GitHub API.
+async fn github_api_call<B, R>(uri: &str, method: Method, body: B) -> Result<R, std::io::Error>
 where
     B: Serialize,
     R: DeserializeOwned,
 {
-    Command::new("curl")
-        .arg("-X")
-        .arg(method)
-        .arg(uri)
-        .arg("-H")
-        .arg(format!(
-            "Authorization: Bearer {}",
-            config().github_access_token
-        ))
-        .arg("-H")
-        .arg("Accept: application/vnd.github+json")
-        .arg("-d")
-        .arg(serde_json::to_string(&body).unwrap())
-        .output()
-        .map(|o| {
-            tracing::trace!(
-                "Got github response: {}",
-                String::from_utf8_lossy(&o.stdout)
-            );
-            serde_json::from_slice(&o.stdout).unwrap()
-        })
+    let client = Client::new();
+
+    let response = client
+        .request(method, uri)
+        .bearer_auth(&config().github_access_token)
+        .header("Accept", "application/vnd.github+json")
+        .body(serde_json::to_vec(&body)?)
+        .send()
+        .await
+        .map_err(std::io::Error::other)?;
+
+    let body = response
+        .text()
+        .await
+        .map_err(std::io::Error::other)?;
+
+    serde_json::from_str(&body).map_err(std::io::Error::other)
 }
 
-pub async fn open_issue(log: String, services: Vec<String>, headers: &HeaderMap, payload: &[u8]) {
+/// Open an issue on the infra repository using the provided metadata.
+///
+/// - `log`: The log produced by handling the event (see [log][crate::log]).
+/// - `services`: The services that were targeted for redeployment.
+/// - `headers` and `payload`: Data provided by GitHub through the webhook.
+pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
     let parsed_payload = parse_payload(headers, payload);
 
     let body = match parsed_payload {
         Ok(Payload::Action(Action::Published { package }) )=> PostIssueBody {
             title: format!("Deployment failed for package {}", package.name),
             body: format!(
-                "Deployment for {services} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
-                services = if services.is_empty() {
-                    "all services".to_owned()
-                } else {
-                    services.join(", ")
-                },
+                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
+                service = service.unwrap_or("all services"),
                 package = package.name,
                 date = package.updated_at.unwrap_or("None".to_owned()),
                 package_url = package.html_url
@@ -67,16 +70,12 @@ pub async fn open_issue(log: String, services: Vec<String>, headers: &HeaderMap,
             repository,
             ..
         })) => {
-            let services = if services.is_empty() {
-                "all services".to_owned()
-            } else {
-                services.join(", ")
-            };
+            let service = service.unwrap_or("all services");
 
            PostIssueBody {
-            title: format!("Deployment failed for {services} ({})", &after.as_str()[0..6]),
+            title: format!("Deployment failed for {service} ({})", &after.as_str()[0..6]),
             body: format!(
-                "Deployment for {services} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
+                "Deployment for {service} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
                 count = commits.len(),
                 repo_url = repository.html_url
             ),
@@ -90,7 +89,7 @@ pub async fn open_issue(log: String, services: Vec<String>, headers: &HeaderMap,
 
     match github_api_call::<_, EmptyBody>(
         "https://api.github.com/repos/clicepfl/infra/issues",
-        "POST",
+        Method::POST,
         body,
     )
     .await
@@ -100,7 +99,10 @@ pub async fn open_issue(log: String, services: Vec<String>, headers: &HeaderMap,
     };
 }
 
-pub async fn close_issues(services: Vec<String>, headers: &HeaderMap, payload: &[u8]) {
+/// Closes all issues referencing the failed deployment of `service`, or all of them if `service` is `None`.
+///
+/// - `headers` and `payload`: Data provided by GitHub through the webhook.
+pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
     let fix_source = match parse_payload(headers, payload) {
         Ok(Payload::Action(Action::Published { package })) => {
             format!(
@@ -113,29 +115,10 @@ pub async fn close_issues(services: Vec<String>, headers: &HeaderMap, payload: &
         Err(_) => "<unable to parse hook payload>".to_owned(),
     };
 
-    #[derive(Deserialize, Clone)]
-    struct OpenIssue {
-        number: u32,
-        title: String,
-    }
-
-    #[derive(Serialize)]
-    struct ListIssuesRequestBody {}
-
-    #[derive(Serialize)]
-    struct IssueCommentRequestBody {
-        body: String,
-    }
-
-    #[derive(Serialize)]
-    struct UpdateIssueRequestBody {
-        state: String,
-    }
-
-    let issues: Vec<OpenIssue> = match github_api_call(
+    let issues: Vec<OpenIssueBody> = match github_api_call(
         "https://api.github.com/repos/clicepfl/infra/issues",
-        "GET",
-        ListIssuesRequestBody {},
+        Method::GET,
+        EmptyBody {},
     )
     .await
     {
@@ -149,7 +132,7 @@ pub async fn close_issues(services: Vec<String>, headers: &HeaderMap, payload: &
     let matching_issues = issues
         .into_iter()
         .filter(|i| {
-            i.title.starts_with("Deployment failed") && services.iter().any(|s| i.title.contains(s))
+            i.title.starts_with("Deployment failed") && service.is_none_or(|s| i.title.contains(s))
         })
         .collect::<Vec<_>>();
 
@@ -171,8 +154,8 @@ pub async fn close_issues(services: Vec<String>, headers: &HeaderMap, payload: &
 
         let mut result: Result<EmptyBody, _> = github_api_call(
             &issue_comment_url,
-            "POST",
-            IssueCommentRequestBody {
+            Method::POST,
+            IssueCommentBody {
                 body: format!("Fixed by {}", fix_source),
             },
         )
@@ -181,8 +164,8 @@ pub async fn close_issues(services: Vec<String>, headers: &HeaderMap, payload: &
         if result.is_ok() {
             result = github_api_call(
                 &issue_url,
-                "PATCH",
-                UpdateIssueRequestBody {
+                Method::PATCH,
+                UpdateIssueBody {
                     state: "closed".to_owned(),
                 },
             )

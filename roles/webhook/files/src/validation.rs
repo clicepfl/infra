@@ -1,3 +1,10 @@
+//! This crate defines functions used to check whether an incoming request should be processed, by ensuring:
+//!
+//! - The request originated from GitHub and was correctly signed.
+//! - It refers to a valid service.
+//! - It is not a redelivery.
+//! - The payload is correctly formed.
+
 use actix_web::http::header::HeaderMap;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
@@ -71,23 +78,25 @@ fn check_redelivery(headers: &HeaderMap, state: &mut WebhookState) -> Result<boo
     Ok(true)
 }
 
+fn validate_service(service: &str) -> Result<(), Error> {
+    if !config().services.contains_key(service) {
+        Ok(())
+    } else {
+        Err(Error::InvalidService)
+    }
+}
+
 pub fn validate_call(
     headers: &HeaderMap,
     payload: &[u8],
     state: &mut WebhookState,
+    service: Option<&str>,
 ) -> Result<bool, Error> {
+    if let Some(service) = service {
+        validate_service(service)?;
+    }
+
     Ok(check_redelivery(headers, state)?
         && validate_signature(headers, payload)?
         && validate_event(headers, payload)?)
-}
-
-pub fn validate_service_list(str: &str) -> Result<(), Error> {
-    let mut services = str.split(",");
-    let allowed: Vec<&str> = config().services.keys().map(|s| s.as_ref()).collect();
-
-    if services.all(|s| allowed.contains(&s)) {
-        Ok(())
-    } else {
-        Err(Error::InvalidServiceList)
-    }
 }

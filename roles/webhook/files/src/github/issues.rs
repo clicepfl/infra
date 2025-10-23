@@ -8,3 +8,19 @@ pub struct PostIssueBody {
 }
 #[derive(Serialize, Deserialize)]
 pub struct EmptyBody {}
+
+#[derive(Deserialize, Clone)]
+pub struct OpenIssueBody {
+    pub number: u32,
+    pub title: String,
+}
+
+#[derive(Serialize)]
+pub struct IssueCommentBody {
+    pub body: String,
+}
+
+#[derive(Serialize)]
+pub struct UpdateIssueBody {
+    pub state: String,
+}
