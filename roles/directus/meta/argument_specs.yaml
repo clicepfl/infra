@@ -16,6 +16,8 @@ argument_specs:
           
           admin_password:
             required: true
+          admin_token:
+            required: true
           keycloak_secret:
             required: true
           secret:

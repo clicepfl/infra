@@ -20,6 +20,7 @@ services:
       ROOT_REDIRECT: /directus/admin
       ADMIN_EMAIL: clic@epfl.ch
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
 
       EMAIL_VERIFY_SETUP: "true"
       EMAIL_FROM: it.clic@epfl.ch
@@ -56,22 +57,6 @@ services:
       - directus-extensions:/directus-extensions
     ports:
       - 8001:8055
-
-  # Sync database
-  sync:
-    image: node:22
-    working_dir: /directus-config
-    # Run the sync job and sleep forever. This prevents the swarm from
-    # respawning the sync job every time after completion.
-    command: ["sh", "-c", "npx -y directus-sync push && sleep 1000d"]
-    environment:
-      DIRECTUS_URL: https://clic.epfl.ch/directus
-      DIRECTUS_ADMIN_EMAIL: clic@epfl.ch
-      DIRECTUS_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-    volumes:
-      - target: /directus-config
-        source: ${CONFIG_PATH}
-        type: bind
 
   # Database for directus
   database:

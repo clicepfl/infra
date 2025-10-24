@@ -13,6 +13,7 @@
   environment:
     MAIL_SENDER_SECRET: "{{ service.mail_sender_secret }}"
     ADMIN_PASSWORD: "{{ service.admin_password }}"
+    ADMIN_TOKEN: "{{ service.admin_token }}"
     KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
     SECRET: "{{ service.secret }}"
     KEY: "{{ service.key }}"
@@ -20,4 +21,35 @@
     DATABASE_PASSWORD: "{{ service.database.password }}"
     SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
     BASE_PATH: "{{ role_path }}"
-    CONFIG_PATH: "{{ role_path }}/files/directus-config"
+
+- name: Give docker time to down the current instance
+  ansible.builtin.wait_for:
+    timeout: 5
+
+- name: Wait for directus to be online
+  ansible.builtin.uri:
+    url: "https://clic.epfl.ch/directus/server/health"
+    return_content: yes
+    status_code:
+      - 200
+  until: uri_output is defined and uri_output.status == 200
+  retries: 30
+  delay: 5
+  register: uri_output
+
+- name: Sync docker schema
+  community.docker.docker_container:
+    name: directus-sync
+    image: node:22
+    command: npx -y directus-sync push
+    working_dir: "/directus-config"
+    volumes:
+      - "{{ role_path }}/files/directus-config:/directus-config"
+    env:
+      DIRECTUS_URL: https://clic.epfl.ch/directus
+      DIRECTUS_TOKEN: "{{ service.admin_token }}"
+    state: started
+    detach: false
+    output_logs: true
+  register: sync_result
+  failed_when: "sync_result.status != 0"
