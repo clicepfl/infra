@@ -82,6 +82,10 @@ https://clic.epfl.ch {
 		reverse_proxy http://0.0.0.0:8018
 	}
 
+    handle_path /overclicked* {
+		reverse_proxy http://0.0.0.0:8020
+	}
+
 	reverse_proxy /* http://0.0.0.0:8000
 }
 

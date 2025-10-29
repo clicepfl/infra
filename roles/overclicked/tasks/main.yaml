@@ -1,0 +1,7 @@
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: overclicked
+    resolve_image: always
+    compose:
+      - '{{ role_path }}/files/docker-compose.yaml'

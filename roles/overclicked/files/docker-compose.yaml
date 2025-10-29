@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  overclicked:
+    image: ghcr.io/clicepfl/overclicked:latest
+    environment:
+      OVERCLICKED_DB_DIR: /db
+    volumes:
+      - overclicked_db:/db
+    ports:
+      - 8020:3000
+
+volumes:
+  overclicked_db:
