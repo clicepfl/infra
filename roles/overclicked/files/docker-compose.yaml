@@ -1,7 +1,6 @@
 services:
   overclicked:
-#    image: ghcr.io/clicepfl/overclicked:latest
-    image: ghcr.io/parura5726/overclicked:main
+    image: ghcr.io/clicepfl/overclicked:main
     environment:
       # Change this only if sure that the new directory has the proper permissions
       OVERCLICKED_DB_DIR: "/db"
