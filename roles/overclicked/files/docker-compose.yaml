@@ -5,9 +5,9 @@ services:
       # Change this only if sure that the new directory has the proper permissions
       OVERCLICKED_DB_DIR: "/db"
     volumes:
-      - "overclicked_db:/db"
+      - "db:/db"
     ports:
       - 8020:3000
 
 volumes:
-  overclicked_db:
+  db:
