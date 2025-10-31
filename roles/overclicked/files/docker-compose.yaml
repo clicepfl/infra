@@ -1,11 +1,12 @@
-version: '3.8'
 services:
   overclicked:
-    image: ghcr.io/clicepfl/overclicked:latest
+#    image: ghcr.io/clicepfl/overclicked:latest
+    image: ghcr.io/parura5726/overclicked:main
     environment:
-      OVERCLICKED_DB_DIR: /db
+      # Change this only if sure that the new directory has the proper permissions
+      OVERCLICKED_DB_DIR: "/db"
     volumes:
-      - overclicked_db:/db
+      - "overclicked_db:/db"
     ports:
       - 8020:3000
 
