@@ -212,7 +212,7 @@ services:
 
   # Comment out everything below this point if you are using an external Postgres database
   db:
-    hostname: supabase-db
+    hostname: ${POSTGRES_HOST}
     image: supabase/postgres:15.8.1.060
     volumes:
       - ${CONFIG_PATH}/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
