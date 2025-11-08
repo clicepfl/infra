@@ -83,6 +83,8 @@ https://clic.epfl.ch {
 	}
 
 	reverse_proxy /* http://0.0.0.0:8000
+
+	reverse_proxy /shelf http://0.0.0.0:8020
 }
 
 # Github Webhooks
