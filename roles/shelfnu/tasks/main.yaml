@@ -36,7 +36,7 @@
     SECRET_KEY_BASE: "{{ service.database.secret_key }}"
     VAULT_ENC_KEY: "{{ service.database.vault_encryption_key }}"
 
-    KONG_HTTPS_PORT: 6000
+    KONG_HTTPS_PORT: 8021
 
-    GOTRUE_PORT: 6001
+    GOTRUE_PORT: 8022
     KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
