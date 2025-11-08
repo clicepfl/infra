@@ -9,7 +9,7 @@ services:
   shelf:
     image: ghcr.io/shelf-nu/shelf.nu:main-1a8d06c
     environment:
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@pooler:6543/${POSTGRES_DB}?pgbouncer=true
+      DATABASE_URL: postgres://postgres.pooler:${POSTGRES_PASSWORD}@pooler:6543/${POSTGRES_DB}?pgbouncer=true
       DIRECT_URL: postgres://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
       SUPABASE_ANON_PUBLIC: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE: ${SERVICE_ROLE_KEY}
@@ -332,7 +332,7 @@ services:
       METRICS_JWT_SECRET: ${JWT_SECRET}
       REGION: local
       ERL_AFLAGS: -proto_dist inet_tcp
-      POOLER_TENANT_ID: pooler-tenant
+      POOLER_TENANT_ID: pooler
       POOLER_DEFAULT_POOL_SIZE: 20
       POOLER_MAX_CLIENT_CONN: 100
       POOLER_POOL_MODE: transaction
