@@ -126,7 +126,6 @@ services:
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
 
       GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
-
       GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
 
       GOTRUE_SMTP_HOST: mail.epfl.ch

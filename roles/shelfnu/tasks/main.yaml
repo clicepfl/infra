@@ -41,4 +41,3 @@
 
     GOTRUE_HTTP_PORT: 8022
     GOTRUE_HTTPS_PORT: 7003
-    KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"

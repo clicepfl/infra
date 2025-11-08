@@ -29,8 +29,6 @@ argument_specs:
               dashboard_password:
                 required: true
 
-          keycloak_secret:
-            required: true
           maptiler_token:
             required: true
           invite_token:
