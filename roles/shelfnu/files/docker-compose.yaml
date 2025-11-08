@@ -9,7 +9,7 @@ services:
   shelf:
     image: ghcr.io/shelf-nu/shelf.nu:main-1a8d06c
     environment:
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@pooler:6543/${POSTGRES_DB}?pgbouncer=true
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
       DIRECT_URL: postgres://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
       SUPABASE_ANON_PUBLIC: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE: ${SERVICE_ROLE_KEY}
