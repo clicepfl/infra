@@ -24,7 +24,7 @@ services:
       INVITE_TOKEN_SECRET: ${INVITE_TOKEN_SECRET}
       MAPTILER_TOKEN: ${MAPTILER_TOKEN}
     ports:
-      - 8020:80
+      - 8020:8080
 
 
   studio:
