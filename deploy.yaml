@@ -78,6 +78,10 @@
           - /var/lib/docker/volumes/onlyoffice_psql
           - /var/lib/docker/volumes/onlyoffice_rabbit
           - /var/lib/docker/volumes/onlyoffice_redis
+          - /var/lib/docker/volumes/shelfnu_db-data
+          - /var/lib/docker/volumes/shelfnu_db-encryption
+          - /var/lib/docker/volumes/shelfnu_functions
+          - /var/lib/docker/volumes/shelfnu_storage
           - /var/db-dumps
           - /var/secrets.yaml
           - /etc/webhook
@@ -103,6 +107,9 @@
             - >-
               PGPASSWORD={{ services.crabfit.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5008
               --username crabfit --format plain crabfit -f /var/db-dumps/crabfit.sql
+            - >-
+              PGPASSWORD={{ services.shelfnu.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5009
+              --username postgres --format plain db -f /var/db-dumps/shelfnu.sql
         borg_retention_policy:
           keep_daily: 3
           keep_weekly: 4
