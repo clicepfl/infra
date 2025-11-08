@@ -71,7 +71,7 @@ services:
     hostname: supabase-kong
     image: kong:2.8.1
     ports:
-      - ${KONG_HTTPS_PORT}:8443/tcp
+      - ${KONG_HTTP_PORT}:8000/tcp
     volumes:
       # https://github.com/supabase/supabase/issues/12661
       - ${VOLUMES_PATH}/api/kong.yml:/home/kong/temp.yml:ro,z
@@ -110,7 +110,7 @@ services:
     environment:
       GOTRUE_API_HOST: 0.0.0.0
       GOTRUE_API_PORT: 9999
-      API_EXTERNAL_URL: https://clic.epfl.ch:${GOTRUE_PORT}
+      API_EXTERNAL_URL: https://clic.epfl.ch:${GOTRUE_HTTPS_PORT}
 
       GOTRUE_DB_DRIVER: postgres
       GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
@@ -129,10 +129,10 @@ services:
       GOTRUE_EXTERNAL_KEYCLOAK_ENABLED: "true"
       GOTRUE_EXTERNAL_KEYCLOAK_CLIENT_ID: shelfnu-supabase
       GOTRUE_EXTERNAL_KEYCLOAK_SECRET: ${KEYCLOAK_SECRET}
-      GOTRUE_EXTERNAL_KEYCLOAK_REDIRECT_URI: https://clic.epfl.ch:${GOTRUE_PORT}/auth/v1/callback
+      GOTRUE_EXTERNAL_KEYCLOAK_REDIRECT_URI: https://clic.epfl.ch:${GOTRUE_HTTPS_PORT}/auth/v1/callback
       GOTRUE_EXTERNAL_KEYCLOAK_URL: https://clic.epfl.ch/keyclic/realms/master
     ports:
-      - ${GOTRUE_PORT}:9999
+      - ${GOTRUE_HTTP_PORT}:9999
 
   rest:
     hostname: supabase-rest

@@ -102,6 +102,14 @@ https://clic.epfl.ch:7001 {
 	reverse_proxy http://0.0.0.0:8019
 }
 
+https://clic.epfl.ch:7002 {
+	reverse_proxy http://0.0.0.0:8021
+}
+
+https://clic.epfl.ch:7003 {
+	reverse_proxy http://0.0.0.0:8022
+}
+
 https://www.icelan.ch {
 	redir * https://icelan.ch{uri} permanent
 }
