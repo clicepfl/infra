@@ -14,7 +14,7 @@ services:
       SUPABASE_ANON_PUBLIC: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE: ${SERVICE_ROLE_KEY}
       SESSION_SECRET: super-duper-s3cret
-      SERVER_URL: https://clic.epfl.ch/shelf
+      SERVER_URL: https://clic.epfl.ch:7004
       SUPABASE_URL: http://kong:8000
       SMTP_HOST: mail.example.com
       SMTP_PORT: 465

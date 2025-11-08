@@ -84,7 +84,7 @@ https://clic.epfl.ch {
 
 	reverse_proxy /* http://0.0.0.0:8000
 
-	reverse_proxy /shelf http://0.0.0.0:8020
+	redir /shelf https://clic.epfl.ch:7004
 }
 
 # Github Webhooks
@@ -108,6 +108,10 @@ https://clic.epfl.ch:7002 {
 
 https://clic.epfl.ch:7003 {
 	reverse_proxy http://0.0.0.0:8022
+}
+
+https://clic.epfl.ch:7004 {
+	reverse_proxy http://0.0.0.0:8020
 }
 
 https://www.icelan.ch {
