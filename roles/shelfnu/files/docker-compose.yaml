@@ -15,7 +15,7 @@ services:
       SUPABASE_SERVICE_ROLE: ${SERVICE_ROLE_KEY}
       SESSION_SECRET: super-duper-s3cret
       SERVER_URL: https://clic.epfl.ch/shelf
-      SUPABASE_URL: http://kong:8000
+      SUPABASE_URL: http://supabase-kong:8000
       SMTP_HOST: mail.example.com
       SMTP_PORT: 465
       SMTP_USER: it.clic
@@ -25,6 +25,47 @@ services:
       MAPTILER_TOKEN: ${MAPTILER_TOKEN}
     ports:
       - 8020:80
+
+
+  studio:
+    container_name: supabase-studio
+    image: supabase/studio:2025.04.21-sha-173cc56
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://studio:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})"
+        ]
+      timeout: 10s
+      interval: 5s
+      retries: 3
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      DEFAULT_ORGANIZATION_NAME: clicepfl
+      DEFAULT_PROJECT_NAME: shelf-nu
+
+      SUPABASE_URL: http://supabase-kong:8000
+      SUPABASE_PUBLIC_URL: https://clic.epfl.ch:${KONG_HTTPS_PORT}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${JWT_SECRET}
+
+
+  meta:
+    hostname: supabase-meta
+    image: supabase/postgres-meta:v0.88.9
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: ${POSTGRES_HOST}
+      PG_META_DB_PORT: ${POSTGRES_PORT}
+      PG_META_DB_NAME: ${POSTGRES_DB}
+      PG_META_DB_USER: supabase_admin
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
 
   kong:
     hostname: supabase-kong
@@ -202,7 +243,7 @@ services:
       - functions:/home/deno/functions
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      SUPABASE_URL: http://kong:8000
+      SUPABASE_URL: http://supabase-kong:8000
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
       SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
