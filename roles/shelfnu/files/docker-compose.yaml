@@ -87,7 +87,7 @@ services:
       GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
 
       GOTRUE_EXTERNAL_KEYCLOAK_ENABLED: "true"
-      GOTRUE_EXTERNAL_KEYCLOAK_CLIENT_ID: selfnu-supabase
+      GOTRUE_EXTERNAL_KEYCLOAK_CLIENT_ID: shelfnu-supabase
       GOTRUE_EXTERNAL_KEYCLOAK_SECRET: ${KEYCLOAK_SECRET}
       GOTRUE_EXTERNAL_KEYCLOAK_REDIRECT_URI: https://clic.epfl.ch:${GOTRUE_PORT}/auth/v1/callback
       GOTRUE_EXTERNAL_KEYCLOAK_URL: https://clic.epfl.ch/keyclic/realms/master
