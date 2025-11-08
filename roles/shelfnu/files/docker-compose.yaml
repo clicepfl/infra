@@ -9,13 +9,13 @@ services:
   shelf:
     image: ghcr.io/shelf-nu/shelf.nu:main-1a8d06c
     environment:
-      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@supabase-pooler:6543/${POSTGRES_DB}?pgbouncer=true
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@pooler:6543/${POSTGRES_DB}?pgbouncer=true
       DIRECT_URL: postgres://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
       SUPABASE_ANON_PUBLIC: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE: ${SERVICE_ROLE_KEY}
       SESSION_SECRET: super-duper-s3cret
       SERVER_URL: https://clic.epfl.ch/shelf
-      SUPABASE_URL: http://supabase-kong:8000
+      SUPABASE_URL: http://kong:8000
       SMTP_HOST: mail.example.com
       SMTP_PORT: 465
       SMTP_USER: it.clic
@@ -28,7 +28,7 @@ services:
 
 
   studio:
-    container_name: supabase-studio
+    container_name: studio
     image: supabase/studio:2025.04.21-sha-173cc56
     healthcheck:
       test:
@@ -48,7 +48,7 @@ services:
       DEFAULT_ORGANIZATION_NAME: clicepfl
       DEFAULT_PROJECT_NAME: shelf-nu
 
-      SUPABASE_URL: http://supabase-kong:8000
+      SUPABASE_URL: http://kong:8000
       SUPABASE_PUBLIC_URL: https://clic.epfl.ch:${KONG_HTTPS_PORT}
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
@@ -56,7 +56,7 @@ services:
 
 
   meta:
-    hostname: supabase-meta
+    hostname: meta
     image: supabase/postgres-meta:v0.88.9
     environment:
       PG_META_PORT: 8080
@@ -68,7 +68,7 @@ services:
 
 
   kong:
-    hostname: supabase-kong
+    hostname: kong
     image: kong:2.8.1
     ports:
       - ${KONG_HTTP_PORT}:8000/tcp
@@ -92,7 +92,7 @@ services:
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'
 
   auth:
-    hostname: supabase-auth
+    hostname: auth
     image: supabase/gotrue:v2.171.0
     healthcheck:
       test:
@@ -135,7 +135,7 @@ services:
       - ${GOTRUE_HTTP_PORT}:9999
 
   rest:
-    hostname: supabase-rest
+    hostname: rest
     image: postgrest/postgrest:v12.2.11
     environment:
       PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
@@ -187,7 +187,7 @@ services:
 
   # To use S3 backed storage: docker compose -f docker-compose.yml -f docker-compose.s3.yml up
   storage:
-    hostname: supabase-storage
+    hostname: storage
     image: supabase/storage-api:v1.22.7
     volumes:
       - storage:/var/lib/storage
@@ -221,7 +221,7 @@ services:
       IMGPROXY_URL: http://imgproxy:5001
 
   imgproxy:
-    hostname: supabase-imgproxy
+    hostname: imgproxy
     image: darthsim/imgproxy:v3.8.0
     volumes:
       - storage:/var/lib/storage
@@ -237,13 +237,13 @@ services:
       IMGPROXY_ENABLE_WEBP_DETECTION: "true"
 
   functions:
-    hostname: supabase-edge-functions
+    hostname: functions
     image: supabase/edge-runtime:v1.67.4
     volumes:
       - functions:/home/deno/functions
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      SUPABASE_URL: http://supabase-kong:8000
+      SUPABASE_URL: http://kong:8000
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
       SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
@@ -298,7 +298,7 @@ services:
 
   # Update the DATABASE_URL if you are using an external Postgres database
   supavisor:
-    hostname: supabase-pooler
+    hostname: pooler
     image: supabase/supavisor:2.5.1
     ports:
       - ${POSTGRES_EXTERNAL_PORT}:5432
