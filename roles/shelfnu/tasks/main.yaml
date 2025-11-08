@@ -3,8 +3,7 @@
 - name: Fetch Supabase repository
   ansible.builtin.git:
     repo: https://github.com/supabase/supabase
-    refspec: "1.25.04"
-    single_branch: true
+    refspec: "refs/tags/1.25.04"
     dest: "{{ role_path }}/files/supabase"
 
 - name: Using default deploy method
