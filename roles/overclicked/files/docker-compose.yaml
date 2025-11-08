@@ -7,7 +7,7 @@ services:
     volumes:
       - "db:/db"
     ports:
-      - 8020:3000
+      - 8023:3000
 
 volumes:
   db:
