@@ -28,7 +28,7 @@ services:
 
 
   studio:
-    container_name: studio
+    hostname: studio
     image: supabase/studio:2025.04.21-sha-173cc56
     healthcheck:
       test:
