@@ -15,7 +15,7 @@
     compose:
       - "{{ role_path }}/files/docker-compose.yaml"
   environment:
-    CONFIG_PATH: "{{ role_path }}/files/supabase"
+    VOLUMES_PATH: "{{ role_path }}/files/supabase/docker/volumes"
 
     INVITE_TOKEN_SECRET: "{{ service.invite_token }}" # TODO: maybe not required
     MAPTILER_TOKEN: "{{ service.maptiler_token }}" # TODO: maybe not required
