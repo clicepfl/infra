@@ -24,6 +24,8 @@ argument_specs:
                 required: true
               service_role_key:
                 required: true
+              session_secret:
+                required: true
               jwt_secret:
                 required: true
               dashboard_password:

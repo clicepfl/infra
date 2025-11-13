@@ -23,6 +23,8 @@
     ANON_KEY: "{{ service.supabase.anon_key }}"
     SERVICE_ROLE_KEY: "{{ service.supabase.service_role_key }}"
     JWT_SECRET: "{{ service.supabase.jwt_secret }}"
+    JWT_EXPIRY: "3600"
+    SESSION_SECRET: "{{ service.supabase.session_secret }}"
     # Still required in Kong config, even if the panel does not exist.
     DASHBOARD_USERNAME: clic-admin
     DASHBOARD_PASSWORD: "{{ service.supabase.dashboard_password }}"

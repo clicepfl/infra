@@ -6,7 +6,7 @@ services:
             DIRECT_URL: postgres://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
             SUPABASE_ANON_PUBLIC: ${ANON_KEY}
             SUPABASE_SERVICE_ROLE: ${SERVICE_ROLE_KEY}
-            SESSION_SECRET: super-duper-s3cret
+            SESSION_SECRET: ${SESSION_SECRET}
             SERVER_URL: https://clic.epfl.ch:7004
             SUPABASE_URL: http://kong:8000
 
@@ -15,6 +15,9 @@ services:
             SMTP_USER: it.clic
             SMTP_FROM: '"IT CLIC" <it.clic@epfl.ch>'
             SMTP_PWD: ${SMTP_IT_PASSWORD}
+
+            DISABLE_SSO: "true"
+            DISABLE_SIGNUP: "true"
 
             INVITE_TOKEN_SECRET: ${INVITE_TOKEN_SECRET}
             MAPTILER_TOKEN: ${MAPTILER_TOKEN}
