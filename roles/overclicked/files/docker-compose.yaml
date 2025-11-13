@@ -4,6 +4,7 @@ services:
     environment:
       # Change this only if sure that the new directory has the proper permissions
       OVERCLICKED_DB_DIR: "/db"
+      OVERCLICKED_PASSWORD: ${OVERCLICKED_PASSWORD}
     volumes:
       - "db:/db"
     ports:
