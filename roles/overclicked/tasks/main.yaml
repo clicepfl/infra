@@ -5,3 +5,5 @@
     resolve_image: always
     compose:
       - '{{ role_path }}/files/docker-compose.yaml'
+  environment:
+    OVERCLICKED_PASSWORD: "{{ service.overclicked_password }}"
