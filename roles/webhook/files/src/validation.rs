@@ -18,7 +18,7 @@ use crate::{
 
 fn validate_event(headers: &HeaderMap, payload: &[u8]) -> Result<bool, Error> {
     match parse_payload(headers, payload)? {
-        Payload::Action(_) => {
+        Payload::Package(_) => {
             // All publicated packages trigger a redeploy.
             Ok(true)
         }

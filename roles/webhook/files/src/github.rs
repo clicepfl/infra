@@ -7,7 +7,7 @@ use serde::{de::DeserializeOwned, Serialize};
 use crate::{
     config,
     github::{
-        event::{parse_payload, Action, Payload, Push},
+        event::{parse_payload, PackageAction, Payload, Push},
         issues::{EmptyBody, IssueCommentBody, OpenIssueBody, PostIssueBody, UpdateIssueBody},
     },
 };
@@ -60,7 +60,7 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
     let parsed_payload = parse_payload(headers, payload);
 
     let body = match parsed_payload {
-        Ok(Payload::Action(Action::Published { package }) )=> PostIssueBody {
+        Ok(Payload::Package(PackageAction::Published { package }) )=> PostIssueBody {
             title: format!("Deployment failed for package {}", package.name),
             body: format!(
                 "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
@@ -111,7 +111,7 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
 /// - `headers` and `payload`: Data provided by GitHub through the webhook.
 pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
     let fix_source = match parse_payload(headers, payload) {
-        Ok(Payload::Action(Action::Published { package })) => {
+        Ok(Payload::Package(PackageAction::Published { package })) => {
             format!(
                 "package {} ({})",
                 package.name,

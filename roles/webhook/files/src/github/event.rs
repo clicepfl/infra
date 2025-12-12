@@ -12,7 +12,7 @@ pub struct Package {
 
 #[derive(Deserialize, Debug)]
 #[serde(tag = "action", rename_all = "snake_case")]
-pub enum Action {
+pub enum PackageAction {
     Published { package: Package },
 }
 
@@ -38,13 +38,13 @@ pub const HEADER_EVENT: &str = "X-GitHub-Event";
 pub const HEADER_DELIVERY_ID: &str = "X-GitHub-Delivery";
 
 pub enum Payload {
-    Action(Action),
+    Package(PackageAction),
     Push(Push),
 }
 
 pub fn parse_payload(headers: &HeaderMap, payload: &[u8]) -> Result<Payload, Error> {
     match headers.get(HEADER_EVENT).and_then(|h| h.to_str().ok()) {
-        Some("action") => Ok(Payload::Action(serde_json::from_slice(payload)?)),
+        Some("package") => Ok(Payload::Package(serde_json::from_slice(payload)?)),
         Some("push") => Ok(Payload::Push(serde_json::from_slice(payload)?)),
         _ => Err(Error::ForbiddenEvent),
     }
