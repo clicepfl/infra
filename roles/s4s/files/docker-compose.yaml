@@ -4,6 +4,11 @@ services:
     image: ghcr.io/clicepfl/s4s-2024-app:main
     ports:
       - 8015:3000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
   api:
     image: ghcr.io/clicepfl/s4s-2024-backend:main
@@ -18,6 +23,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8014:8000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 volumes:
   data:

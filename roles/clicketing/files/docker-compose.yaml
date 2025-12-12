@@ -7,3 +7,8 @@ services:
       DIRECTUS_TOKEN: ${DIRECTUS_TOKEN}
     ports:
       - 8007:3000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M

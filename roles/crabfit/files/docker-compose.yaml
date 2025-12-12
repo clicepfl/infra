@@ -7,6 +7,11 @@ services:
       DATABASE_URL: postgres://crabfit:${DATABASE_PASSWORD}@database:5432/crabfit?sslmode=disable&connect_timeout=10
     ports:
       - 8012:3000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 
   frontend:
@@ -16,6 +21,11 @@ services:
       NEXT_PUBLIC_FRONTEND_URL: https://clic.epfl.ch/crabfit
     ports:
       - 8013:3000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
   database:
     image: postgres:15.4-alpine3.18
@@ -29,6 +39,11 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - 5008:5432
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 volumes:
   database:

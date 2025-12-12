@@ -16,6 +16,11 @@ services:
       - psql:/var/lib/postgresql
       - rabbit:/var/lib/rabbitmq
       - redis:/var/lib/redis
+    deploy:
+      resources:
+        limits:
+          cpus: 3
+          memory: 3G
 
 volumes:
   config:

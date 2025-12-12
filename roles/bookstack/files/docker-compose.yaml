@@ -42,6 +42,11 @@ services:
       default:
     depends_on:
       - database
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
   database:
     image: lscr.io/linuxserver/mariadb
@@ -59,6 +64,11 @@ services:
       - ${DATABASE_INIT}:/docker-entrypoint-initdb.d
     ports:
       - 5004:3306
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 volumes:
   database:

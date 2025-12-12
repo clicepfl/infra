@@ -10,5 +10,10 @@ services:
       DATA_DIR: /data
       DIRECTUS_URL: https://clic.epfl.ch/directus
       DIRECTUS_TOKEN: ${DIRECTUS_TOKEN}
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 volumes:
   roboclic:

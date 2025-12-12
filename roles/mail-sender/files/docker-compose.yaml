@@ -15,3 +15,9 @@ services:
 
     ports:
       - 8006:8000
+
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 50M

@@ -10,6 +10,11 @@ services:
       ADMIN_TOKEN: ${ADMIN_TOKEN}
     ports:
       - 8003:80
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 volumes:
   vaultwarden:

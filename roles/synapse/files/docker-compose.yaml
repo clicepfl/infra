@@ -10,6 +10,11 @@ services:
       - database
     ports:
       - 8011:8008
+    deploy:
+      resources:
+        limits:
+          cpus: 2
+          memory: 2G
 
   database:
     image: postgres:15.4-alpine3.18
@@ -24,6 +29,11 @@ services:
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C" # Because python
     ports:
       - 5007:5432
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 500M
 
 volumes:
   data:
