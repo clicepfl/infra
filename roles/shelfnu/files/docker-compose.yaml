@@ -288,12 +288,13 @@ services:
                 "-c",
                 "log_min_messages=fatal", # prevents Realtime polling queries from appearing in logs
             ]
+        ports:
+            - ${POSTGRES_EXTERNAL_PORT}:5432
 
     supavisor:
         hostname: pooler
         image: supabase/supavisor:2.5.1
         ports:
-            - ${POSTGRES_EXTERNAL_PORT}:5432
             - ${POOLER_PROXY_TRANSACTION_PORT}:6543
         volumes:
             - ${VOLUMES_PATH}/pooler/pooler.exs:/etc/pooler/pooler.exs:ro,z
