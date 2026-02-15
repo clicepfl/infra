@@ -117,3 +117,12 @@ https://www.clicgamestar.ch {
 https://clicgamestar.ch {
 	reverse_proxy http://0.0.0.0:8016
 }
+
+# Orbital Game Jam
+https://orbital-game-jam.ch {
+	redir * https://itch.io/jam/orbital-game-jam-8 temporary
+}
+
+https://www.orbital-game-jam.ch {
+	redir * https://itch.io/jam/orbital-game-jam-8 temporary
+}
