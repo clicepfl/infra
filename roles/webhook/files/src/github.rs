@@ -63,7 +63,7 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
         Ok(Payload::Package(PackageAction::Published { package }) )=> PostIssueBody {
             title: format!("Deployment failed for package {}", package.name),
             body: format!(
-                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs: ```\n{log}\n```",
+                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs:\n```\n{log}\n```\n",
                 service = service.unwrap_or("all services"),
                 package = package.name,
                 date = package.updated_at.unwrap_or("None".to_owned()),
