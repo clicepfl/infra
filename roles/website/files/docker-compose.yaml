@@ -9,3 +9,8 @@ services:
       NEXT_PUBLIC_DIRECTUS_URL: https://clic.epfl.ch/directus
     ports:
       - 8000:3000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M

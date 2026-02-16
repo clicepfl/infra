@@ -33,6 +33,11 @@ services:
       - database
     ports:
       - 8008:8080
+    deploy:
+      resources:
+        limits:
+          cpus: 1.5
+          memory: 1G
 
   database:
     image: postgres:15
@@ -46,6 +51,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - 5006:5432
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 volumes:
   data:

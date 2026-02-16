@@ -57,6 +57,11 @@ services:
       - directus-extensions:/directus-extensions
     ports:
       - 8001:8055
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 800M
 
   # Database for directus
   database:
@@ -70,6 +75,11 @@ services:
       - ${DATABASE_INIT}:/docker-entrypoint-initdb.d
     ports:
       - 5005:5432
+    deploy:
+      resources:
+        limits:
+          cpus: 1
+          memory: 400M
 
   # Query directus every 5 minutes to prevent Docker swarm from dropping the database connection.
   connection-refresh:
@@ -80,6 +90,11 @@ services:
         "-c",
         "while true; do curl http://directus:8055/items/association; sleep 5m; done",
       ]
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 50M
 
 volumes:
   # Persist directus database

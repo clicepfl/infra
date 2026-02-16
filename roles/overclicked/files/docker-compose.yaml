@@ -9,6 +9,11 @@ services:
       - "db:/db"
     ports:
       - 8023:3000
+    deploy:
+      resources:
+        limits:
+          cpus: .5
+          memory: 300M
 
 volumes:
   db:
