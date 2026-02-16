@@ -7,7 +7,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: .5
+          cpus: '0.5'
           memory: 300M
 
   api:
@@ -26,7 +26,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: .5
+          cpus: '0.5'
           memory: 300M
 
 volumes:

@@ -19,7 +19,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 3
+          cpus: '3'
           memory: 3G
 
 volumes:

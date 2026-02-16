@@ -15,7 +15,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: .5
+          cpus: '0.5'
           memory: 200M
 
   nextcloud:
@@ -38,7 +38,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 3
+          cpus: '3'
           memory: 3G
 
   redis:
@@ -68,7 +68,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: 1
+          cpus: '1'
           memory: 1G
 
 volumes:

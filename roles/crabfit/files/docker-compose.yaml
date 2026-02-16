@@ -10,7 +10,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: .5
+          cpus: '0.5'
           memory: 300M
 
 
@@ -24,7 +24,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: .5
+          cpus: '0.5'
           memory: 300M
 
   database:
@@ -42,7 +42,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: .5
+          cpus: '0.5'
           memory: 300M
 
 volumes:
