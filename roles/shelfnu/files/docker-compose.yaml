@@ -17,7 +17,7 @@ services:
             SMTP_PWD: ${SMTP_IT_PASSWORD}
 
             DISABLE_SSO: "true"
-            #DISABLE_SIGNUP: "true"
+            DISABLE_SIGNUP: "true"
 
             INVITE_TOKEN_SECRET: ${INVITE_TOKEN_SECRET}
             MAPTILER_TOKEN: ${MAPTILER_TOKEN}
