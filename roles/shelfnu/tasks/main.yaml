@@ -1,0 +1,45 @@
+# TODO: checkout Supabase repo to get database seeds (and other configs).
+
+- name: Fetch Supabase repository
+  ansible.builtin.git:
+    repo: https://github.com/supabase/supabase
+    version: "1.25.04"
+    dest: "{{ role_path }}/files/supabase"
+
+- name: Using default deploy method
+  community.docker.docker_stack:
+    state: present
+    name: shelfnu
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    VOLUMES_PATH: "{{ role_path }}/files/supabase/docker/volumes"
+
+    INVITE_TOKEN_SECRET: "{{ service.invite_token }}" # TODO: maybe not required
+    MAPTILER_TOKEN: "{{ service.maptiler_token }}" # TODO: maybe not required
+    SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
+
+    ANON_KEY: "{{ service.supabase.anon_key }}"
+    SERVICE_ROLE_KEY: "{{ service.supabase.service_role_key }}"
+    JWT_SECRET: "{{ service.supabase.jwt_secret }}"
+    JWT_EXPIRY: "3600"
+    SESSION_SECRET: "{{ service.supabase.session_secret }}"
+    # Still required in Kong config, even if the panel does not exist.
+    DASHBOARD_USERNAME: clic-admin
+    DASHBOARD_PASSWORD: "{{ service.supabase.dashboard_password }}"
+
+    POSTGRES_INTERNAL_PORT: 5432
+    POSTGRES_EXTERNAL_PORT: 5009
+    POOLER_PROXY_TRANSACTION_PORT: 5010
+    POSTGRES_DB: db
+    POSTGRES_HOST: db
+    POSTGRES_PASSWORD: "{{ service.database.password }}"
+    SECRET_KEY_BASE: "{{ service.database.secret_key }}"
+    VAULT_ENC_KEY: "{{ service.database.vault_encryption_key }}"
+
+    KONG_HTTP_PORT: 8021
+    KONG_HTTPS_PORT: 7002
+
+    GOTRUE_HTTP_PORT: 8022
+    GOTRUE_HTTPS_PORT: 7003

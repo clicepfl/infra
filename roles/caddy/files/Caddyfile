@@ -85,6 +85,8 @@ https://clic.epfl.ch {
 	reverse_proxy /overclicked* http://0.0.0.0:8023
 
 	reverse_proxy /* http://0.0.0.0:8000
+
+	redir /shelf https://clic.epfl.ch:7004
 }
 
 # Github Webhooks
@@ -100,6 +102,18 @@ https://clic.epfl.ch:7000 {
 # IC Plays Pokemon
 https://clic.epfl.ch:7001 {
 	reverse_proxy http://0.0.0.0:8019
+}
+
+https://clic.epfl.ch:7002 {
+	reverse_proxy http://0.0.0.0:8021
+}
+
+https://clic.epfl.ch:7003 {
+	reverse_proxy http://0.0.0.0:8022
+}
+
+https://clic.epfl.ch:7004 {
+	reverse_proxy http://0.0.0.0:8020
 }
 
 https://www.icelan.ch {
