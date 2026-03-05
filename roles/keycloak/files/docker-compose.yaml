@@ -2,7 +2,7 @@ version: "3.6"
 
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:26.1
+    image: quay.io/keycloak/keycloak:26.5
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://database:5432/keycloak
@@ -36,7 +36,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'.5
+          cpus: "1"
           memory: 1G
 
   database:
@@ -54,7 +54,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 300M
 
 volumes:
