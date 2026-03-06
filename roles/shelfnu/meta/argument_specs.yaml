@@ -1,0 +1,53 @@
+argument_specs:
+  main:
+    options:
+      service:
+        type: "dict"
+        required: true
+        options:
+          database:
+            type: "dict"
+            required: true
+            options:
+              password:
+                required: true
+              secret_key:
+                required: true
+              vault_encryption_key:
+                required: true
+
+          supabase:
+            type: "dict"
+            required: true
+            options:
+              anon_key:
+                required: true
+              service_role_key:
+                required: true
+              session_secret:
+                required: true
+              jwt_secret:
+                required: true
+              dashboard_password:
+                required: true
+
+          maptiler_token:
+            required: true
+          invite_token:
+            required: true
+
+
+      general:
+        type: "dict"
+        required: true
+        options:
+          mail:
+            type: "dict"
+            required: true
+            options:
+              it_password:
+                required: true
+              comm_password:
+                required: true
+          config_dir:
+            required: true
