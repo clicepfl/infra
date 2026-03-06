@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   vaultwarden:
-    image: vaultwarden/server:1.33.2-alpine
+    image: vaultwarden/server:1.35.4-alpine
     hostname: vaultwarden
     volumes:
       - vaultwarden:/data
@@ -13,7 +13,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'
+          cpus: "0.5"
           memory: 300M
 
 volumes:
