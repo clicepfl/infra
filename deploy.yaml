@@ -67,10 +67,10 @@
         borgmatic_timer_hour: 0
         borgmatic_timer_minute: 0
         borg_source_directories:
-          - /var/lib/docker/volumes/roboclic_roboclic
-          - /var/lib/docker/volumes/nextcloud_nextcloud-app
-          - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/lib/docker/volumes/bookstack_app
+          - /var/lib/docker/volumes/directus_directus-extensions
+          - /var/lib/docker/volumes/directus_directus-uploads
+          - /var/lib/docker/volumes/nextcloud_nextcloud-app
           - /var/lib/docker/volumes/onlyoffice_config
           - /var/lib/docker/volumes/onlyoffice_data
           - /var/lib/docker/volumes/onlyoffice_fonts
@@ -79,10 +79,13 @@
           - /var/lib/docker/volumes/onlyoffice_psql
           - /var/lib/docker/volumes/onlyoffice_rabbit
           - /var/lib/docker/volumes/onlyoffice_redis
+          - /var/lib/docker/volumes/roboclic_roboclic
+          - /var/lib/docker/volumes/synapse_data
           - /var/lib/docker/volumes/shelfnu_db-data
           - /var/lib/docker/volumes/shelfnu_db-encryption
           - /var/lib/docker/volumes/shelfnu_functions
           - /var/lib/docker/volumes/shelfnu_storage
+          - /var/lib/docker/volumes/vaultwarden_vaultwarden
           - /var/db-dumps
           - /var/secrets.yaml
           - /etc/webhook
