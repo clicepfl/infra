@@ -20,14 +20,26 @@ There are two playbooks, at the root of the repository:
 
   The `/var/secrets.yaml` file, based on [`secrets.yaml.example`](./secrets.yaml.example), contains the configuration options and secrets (like database/admin passwords). The playbook will check beforehand that all the variables are present.
 
-  The optional `SERVICE` variable is a comma-separated list of service to (re)deploy. Useful for partial updates, e.g. when calling from the webhook.
+  Additional (optional) variables can also be passed to the playbook through the `--extra-vars` flags (as shown above):
+    - `SERVICE`: comma-separated list of service to (re)deploy. Useful for partial updates, e.g. when calling from the webhook.
+    - `WH_BUILD` (defaults to `true`): when redeploying the webhook, whether it should be recompiled. If set to false, only the configuration is updated.
 
 ## Services
 
-Each service has a dedicated role for deployment. It is called by the `deploy.yaml` playbook, and is given as parameter `service` the corresponding entry in the `services` dictionnary from the secrets file.
-**Important:** when using files/templates from the respective directories, it may be required to append the `role_path` variable at the start of the path (e.g. `"{{ role_path }}/files/docker-compose.yaml"`).
+Each service has a dedicated Ansible role for deployment. It is called by the `deploy.yaml` playbook, and is given as parameter `service` the corresponding entry in the `services` dictionnary from the secrets file. For example, the `foo` service's dedicated role will be in `/roles/foo` and, given the config below, can access `{{ service.bar }}` and `{{ service.baz }}`.
 
-If a service's role needs to generate a configuration file, it needs to be stored in the directory `{{ general.config_dir }}/{{ SERVICE }}` (`general.config_dir` is specified in the `secrets.yaml` file). It then must be mounted into the container using a [bind mount](https://docs.docker.com/storage/bind-mounts/). Since bind mounts do not allow to change the permissions/ownership of the file, the role must take care of setting those properly.
+```
+services:
+  foo:
+    bar: changeme
+    baz: ssh://myrepo
+```
+
+In addition to thes per-service secrets, the top-level object `general` can be accessed by all roles through `{{ general.my_secret }}`.
+
+**Important:** when using files/templates from the respective directories, you need to append the `role_path` variable at the start of the path (e.g. `"{{ role_path }}/files/docker-compose.yaml"`).
+
+If a service's role needs to generate a permanent file, it needs to be stored in the directory `{{ general.config_dir }}/{{ SERVICE }}` (`general.config_dir` is specified in the `secrets.yaml` file). If the service runs in a docker container, the file must be mounted into the container using a [bind mount](https://docs.docker.com/storage/bind-mounts/). Also note that bind mounts do not allow to change the permissions/ownership of the file, so the role must take care of setting those properly.
 
 ### Caddy
 

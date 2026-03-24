@@ -1,6 +1,6 @@
 # Webhook
 
-This folder contains a webhook to automatically redeploy the infrastructure - either entierly of partially - upon reception of a valid payload from GitHub. It is a simple webserver, communicating over HTTP.
+This folder contains a webhook to automatically redeploy the infrastructure - either entierly of partially - upon reception of a valid payload from GitHub. It is a simple webserver, communicating over HTTP (like every services, HTTPS is handled by the Caddy reverse proxy). To ensure the webhook stays online, it is configured as a [`systemd`](https://wiki.archlinux.org/title/Systemd) service, see its [deployment task](../tasks/main.yaml).
 
 There are two routes:
 
@@ -20,7 +20,7 @@ The schema is as follow:
 
   /// Default command used to restart a service. The name of the service is provided in the environment variable `SERVICE`.
   "default": {
-    "start_command": "echo $SERVICE >> /tmp/webhook.out"
+    "start_command": "echo $SERVICE >> /tmp/webhook.out",
   },
 
   /// Map describing commands for each service.
@@ -28,10 +28,10 @@ The schema is as follow:
     "service1": {
       "pre_start_command": "echo pre_start >> /tmp/webhook.out",
       "start_command": "echo start >> /tmp/webhook.out",
-      "stop_command": "echo  stop >> /tmp/webhook.out"
+      "stop_command": "echo  stop >> /tmp/webhook.out",
     },
-    "service2": {}
-  }
+    "service2": {},
+  },
 }
 ```
 
@@ -44,5 +44,5 @@ The commands specified per services follow this order:
 
 Note that:
 
-- Each service must be present in the `services` map, even if it only uses the default commands.
+- Each service must be present in the `services` map, even if it only uses the default commands. Otherwise the webhook will not recognize incoming requests and reject them.
 - If a command is specified neither in the service's object nor in the `default` one, nothing is ran.
