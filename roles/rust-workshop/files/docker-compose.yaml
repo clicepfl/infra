@@ -6,7 +6,7 @@ services:
     ports:
       - 8024:80
     volumes:
-      - ${BASE_PATH}/static/:/usr/local/apache2/htdocs/
+      - ${BASE_PATH}/static/:/usr/local/apache2/htdocs/rust/
     deploy:
       resources:
         limits:
