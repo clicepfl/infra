@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  rust-workshop:
+    image: httpd:2.4
+    hostname: rust-workshop
+    ports:
+      - 8024:80
+    volumes:
+      - ${BASE_PATH}/static/:/usr/local/apache2/htdocs/
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 300M
+
