@@ -84,6 +84,9 @@ https://clic.epfl.ch {
 
 	reverse_proxy /overclicked* http://0.0.0.0:8023
 
+	redir /rust /rust/ permanent
+	reverse_proxy /rust* http://0.0.0.0:8024
+
 	reverse_proxy /* http://0.0.0.0:8000
 
 	redir /shelf https://clic.epfl.ch:7004

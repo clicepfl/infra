@@ -1,0 +1,15 @@
+- name: Pull rust-workshop from clic repo
+  ansible.builtin.git:
+    repo: https://github.com/clicepfl/rust-workshop
+    dest: "{{ role_path }}/files/rust-workshop"
+
+- name: Deploy httpd for rust workshop
+  community.docker.docker_stack:
+    state: present
+    name: rust-workshop
+    resolve_image: always
+    compose:
+      - "{{ role_path }}/files/docker-compose.yaml"
+  environment:
+    BASE_PATH: "{{ role_path }}/files/rust-workshop/"
+
