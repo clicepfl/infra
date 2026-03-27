@@ -21,10 +21,12 @@
     DATABASE_PASSWORD: "{{ service.database.password }}"
     SMTP_IT_PASSWORD: "{{ general.mail.it_password }}"
     BASE_PATH: "{{ role_path }}"
+  when: (DIRECTUS_SYNC_ONLY | default('false')) == 'false'
 
 - name: Give docker time to down the current instance
   ansible.builtin.wait_for:
     timeout: 5
+  when: (DIRECTUS_SYNC_ONLY | default('false')) == 'false'
 
 - name: Wait for directus to be online
   ansible.builtin.uri:
@@ -36,6 +38,7 @@
   retries: 30
   delay: 5
   register: uri_output
+  when: (DIRECTUS_SYNC_ONLY | default('false')) == 'false'
 
 - name: Sync docker schema
   community.docker.docker_container:

@@ -15,14 +15,15 @@ There are two playbooks, at the root of the repository:
       -U git@github.com:clicepfl/infra.git \ # URL of the infra repo
       -e @/var/secrets.yaml \ # File containing all the secrets
       deploy.yaml \
-      --extra-vars SERVICE=keycloak # Optional. Services to (re)deploy
+      --extra-vars SERVICES=keycloak # Optional. Services to (re)deploy
   ```
 
   The `/var/secrets.yaml` file, based on [`secrets.yaml.example`](./secrets.yaml.example), contains the configuration options and secrets (like database/admin passwords). The playbook will check beforehand that all the variables are present.
 
   Additional (optional) variables can also be passed to the playbook through the `--extra-vars` flags (as shown above):
-    - `SERVICE`: comma-separated list of service to (re)deploy. Useful for partial updates, e.g. when calling from the webhook.
+    - `SERVICES`: comma-separated list of service to (re)deploy. Useful for partial updates, e.g. when calling from the webhook.
     - `WH_BUILD` (defaults to `true`): when redeploying the webhook, whether it should be recompiled. If set to false, only the configuration is updated.
+    - `DIRECTUS_SYNC_ONLY` (defaults to `false`): if true, Directus' stack is not redeployed and only the schema sync is ran.
 
 ## Services
 
@@ -39,7 +40,7 @@ In addition to thes per-service secrets, the top-level object `general` can be a
 
 **Important:** when using files/templates from the respective directories, you need to append the `role_path` variable at the start of the path (e.g. `"{{ role_path }}/files/docker-compose.yaml"`).
 
-If a service's role needs to generate a permanent file, it needs to be stored in the directory `{{ general.config_dir }}/{{ SERVICE }}` (`general.config_dir` is specified in the `secrets.yaml` file). If the service runs in a docker container, the file must be mounted into the container using a [bind mount](https://docs.docker.com/storage/bind-mounts/). Also note that bind mounts do not allow to change the permissions/ownership of the file, so the role must take care of setting those properly.
+If a service's role needs to generate a permanent file, it needs to be stored in the directory `{{ general.config_dir }}/{{ SERVICES }}` (`general.config_dir` is specified in the `secrets.yaml` file). If the service runs in a docker container, the file must be mounted into the container using a [bind mount](https://docs.docker.com/storage/bind-mounts/). Also note that bind mounts do not allow to change the permissions/ownership of the file, so the role must take care of setting those properly.
 
 ### Caddy
 

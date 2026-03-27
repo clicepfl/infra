@@ -7,8 +7,8 @@
   },
   "services": {
     {{ webhook_services }},
-    "test": {
-      "start_command": "exit this in an error && exit 1"
+    "directus-sync": {
+      "start_command": "ansible-pull -U {{ service.repository }} -e @{{ service.secrets_file }} deploy.yaml --extra-vars SERVICES=directus --extra-vars DIRECTUS_SYNC_ONLY=true"
     }
   }
 }
