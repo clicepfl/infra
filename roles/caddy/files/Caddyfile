@@ -92,6 +92,11 @@ https://clic.epfl.ch {
 	redir /shelf https://clic.epfl.ch:7004
 }
 
+# Temporary fix for http redirecting to wrong port when ambiguous -> see https://github.com/caddyserver/caddy/issues/4529
+clic.epfl.ch:80 {
+  redir https://clic.epfl.ch
+}
+
 # Github Webhooks
 https://clic.epfl.ch:4000 {
 	reverse_proxy http://0.0.0.0:4001
