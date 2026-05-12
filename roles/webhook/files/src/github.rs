@@ -3,6 +3,7 @@
 use actix_web::http::header::HeaderMap;
 use reqwest::{Client, Method};
 use serde::{de::DeserializeOwned, Serialize};
+use regex::Regex;
 
 use crate::{
     config,
@@ -60,8 +61,8 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
     let parsed_payload = parse_payload(headers, payload);
 
     let body = match parsed_payload {
-        Ok(Payload::Package(PackageAction::Published { package }) )=> PostIssueBody {
-            title: format!("Deployment failed for package {}", package.name),
+        Ok(Payload::Package(PackageAction::Published { package, repository }) )=> PostIssueBody {
+            title: format!("Deployment failed for package from '{}'", repository.full_name),
             body: format!(
                 "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs:\n```\n{log}\n```\n",
                 service = service.unwrap_or("all services"),
@@ -69,7 +70,8 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
                 date = package.updated_at.unwrap_or("None".to_owned()),
                 package_url = package.html_url
             ),
-            assignees: config().github_assignees.clone()
+            assignees: config().github_assignees.clone(),
+            labels: vec![String::from("build failed")]
         },
         Ok(Payload::Push( Push{
             after,
@@ -80,13 +82,14 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
             let service = service.unwrap_or("all services");
 
            PostIssueBody {
-            title: format!("Deployment failed for {service} ({})", &after.as_str()[0..6]),
+            title: format!("Deployment failed for {service} ({}) from '{}'", &after.as_str()[0..6], repository.full_name),
             body: format!(
                 "Deployment for {service} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
                 count = commits.len(),
                 repo_url = repository.html_url
             ),
-            assignees: config().github_assignees.clone()
+            assignees: config().github_assignees.clone(),
+            labels: vec![String::from("build failed")]
         }},
         Err(e) => {
             tracing::error!("Invalid request payload: {}", e);
@@ -110,16 +113,20 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
 ///
 /// - `headers` and `payload`: Data provided by GitHub through the webhook.
 pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
-    let fix_source = match parse_payload(headers, payload) {
-        Ok(Payload::Package(PackageAction::Published { package })) => {
+    let (fix_source, fix_repo_name) = match parse_payload(headers, payload) {
+        Ok(Payload::Package(PackageAction::Published { package, repository })) => {(
             format!(
                 "package {} ({})",
                 package.name,
                 package.updated_at.unwrap_or_default()
-            )
-        }
-        Ok(Payload::Push(Push { after, .. })) => format!("commit {}", &after.as_str()[0..6]),
-        Err(_) => "<unable to parse hook payload>".to_owned(),
+            ),
+            repository.full_name
+        )}
+        Ok(Payload::Push(Push { after, repository, .. })) => (
+            format!("commit {}", &after.as_str()[0..6]),
+            repository.full_name
+        ),
+        Err(_) => ("<unable to parse hook payload>".to_owned(), "".to_owned()),
     };
 
     let issues: Vec<OpenIssueBody> = match github_api_call(
@@ -136,10 +143,27 @@ pub async fn close_issues(service: Option<&str>, headers: &HeaderMap, payload: &
         }
     };
 
+    // Extract user and repo from anything containing " from 'user/repo'"
+    let issue_rx = Regex::new(r".* from '([^'\/]*)\/([^'\/]*)'.*").unwrap();
     let matching_issues = issues
         .into_iter()
         .filter(|i| {
-            i.title.starts_with("Deployment failed") && service.is_none_or(|s| i.title.contains(s))
+            i.labels.iter().any(|l| l == "build failed") && service.is_none_or(|s| {
+                // Delete only if the repo from which the fix comes from is the one that caused the
+                // issue, or assume 'clicepfl' if it was triggered manually
+                // NOTE: This disallows deleting issues on manual restarts for services hosted
+                // outside of clic's github but thats a difficult edge-case
+                let Some(captures) = issue_rx.captures(&i.title) else { return false; };
+
+                let Some(user) = captures.get(1) else { return false; };
+                let Some(repo) = captures.get(2) else { return false; };
+
+                if fix_repo_name == "" { // Triggered manually
+                   user.as_str() == "clicepfl" && repo.as_str() == s
+                } else {
+                   format!("{}/{}", user.as_str(), repo.as_str()) == fix_repo_name
+                }
+            })
         })
         .collect::<Vec<_>>();
 
