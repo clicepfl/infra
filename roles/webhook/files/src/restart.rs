@@ -2,6 +2,7 @@
 
 use crate::config::Service;
 use std::process::Command;
+use std::sync::{Arc, Mutex};
 use tracing::{span, Level};
 
 /// Attempts to run a shell command, logging its output in case of failure.
@@ -41,8 +42,13 @@ fn try_run(command: Option<&String>, service: &str) -> bool {
 /// - `name`: Name of the service to restart
 /// - `service`: Specific deployment configuration for that service.
 /// - `default`: Default deployment configuration.
-pub fn restart(name: &str, service: &Service, default: &Service) -> bool {
+pub fn restart(name: &str, service: &Service, default: &Service, lock_state: Arc<Mutex<()>>) -> bool {
     let _enter = span!(Level::INFO, "service", name).entered();
+
+    if lock_state.lock().is_err() { // If another thread crashed, clear poison because we don't care
+                                    // about the state
+        lock_state.clear_poison();
+    }
 
     tracing::info!("Restarting...");
 

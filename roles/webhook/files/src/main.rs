@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 use actix_web::{web, App, HttpServer};
 use config::config;
@@ -17,6 +17,7 @@ mod validation;
 #[derive(Debug, Default)]
 pub struct WebhookState {
     pub processed_deliveries: Vec<String>,
+    pub ansible_lock: Arc<Mutex<()>>,
 }
 pub type State = Mutex<WebhookState>;
 
