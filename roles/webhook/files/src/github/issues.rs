@@ -5,6 +5,7 @@ pub struct PostIssueBody {
     pub title: String,
     pub body: String,
     pub assignees: Vec<String>,
+    pub labels: Vec<String>,
 }
 #[derive(Serialize, Deserialize)]
 pub struct EmptyBody {}
@@ -13,6 +14,7 @@ pub struct EmptyBody {}
 pub struct OpenIssueBody {
     pub number: u32,
     pub title: String,
+    pub labels: Vec<String>,
 }
 
 #[derive(Serialize)]

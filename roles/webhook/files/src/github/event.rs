@@ -13,13 +13,17 @@ pub struct Package {
 #[derive(Deserialize, Debug)]
 #[serde(tag = "action", rename_all = "snake_case")]
 pub enum PackageAction {
-    Published { package: Package },
+    Published {
+        package: Package,
+        repository: Repository,
+    },
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Repository {
     pub html_url: String,
     pub default_branch: String,
+    pub full_name: String,
 }
 
 #[derive(Deserialize, Debug)]
