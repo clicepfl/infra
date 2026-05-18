@@ -5,7 +5,7 @@ use crate::{
     error::Error,
     github::{close_issues, open_issue},
     log::{start_capture, stop_capture},
-    restart::restart,
+    restart::get_command_runner,
     validation::validate_call,
     State,
 };
@@ -36,7 +36,7 @@ pub async fn all(
         let mut failed = false;
 
         for (n, s) in config().services.iter() {
-            if !restart(n, s, &config().default) {
+            if !get_command_runner!().restart(n, s, &config().default) {
                 failed = true;
             }
         }
@@ -79,7 +79,7 @@ pub async fn targeted(
         let mut failed = false;
 
         if let Some(s) = config().services.get(service.as_str()) {
-            if !restart(&service, s, &config().default) {
+            if !get_command_runner!().restart(&service, s, &config().default) {
                 failed = true
             }
         } else {
