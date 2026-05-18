@@ -1,13 +1,11 @@
 //! Routes that the webhook exposes.
 
-use std::sync::Arc;
-
 use crate::{
     config::config,
     error::Error,
     github::{close_issues, open_issue},
     log::{start_capture, stop_capture},
-    restart::restart,
+    restart::get_command_runner,
     validation::validate_call,
     State,
 };
@@ -29,7 +27,6 @@ pub async fn all(
     if !validate_call(req.headers(), &payload, &mut state.lock().unwrap(), None)? {
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
-    let lock_state = Arc::clone(&state.lock().unwrap().ansible_lock);
 
     spawn(async move {
         tracing::info!("Triggered global restart");
@@ -39,7 +36,7 @@ pub async fn all(
         let mut failed = false;
 
         for (n, s) in config().services.iter() {
-            if !restart(n, s, &config().default, Arc::clone(&lock_state)) {
+            if !get_command_runner!().restart(n, s, &config().default) {
                 failed = true;
             }
         }
@@ -74,8 +71,6 @@ pub async fn targeted(
         return Ok(HttpResponse::with_body(StatusCode::OK, "OK".to_owned()));
     }
 
-    let lock_state = Arc::clone(&state.lock().unwrap().ansible_lock);
-
     spawn(async move {
         tracing::info!("Triggered restart for service {}", service);
         start_capture();
@@ -84,7 +79,7 @@ pub async fn targeted(
         let mut failed = false;
 
         if let Some(s) = config().services.get(service.as_str()) {
-            if !restart(&service, s, &config().default, lock_state) {
+            if !get_command_runner!().restart(&service, s, &config().default) {
                 failed = true
             }
         } else {
