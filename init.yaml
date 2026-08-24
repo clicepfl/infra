@@ -2,12 +2,6 @@
   hosts: clic
   become: true
   tasks:
-    - name: Serialize ansible-pull / deploys
-      ansible.builtin.command: flock -n /var/lock/webhook-deploy.lock -c 'true'
-      register: deploy_lock
-      failed_when: false
-      changed_when: false
-
     - name: Install required packages
       ansible.builtin.apt:
         update_cache: true
