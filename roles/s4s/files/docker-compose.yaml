@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   frontend:
-    image: ghcr.io/clicepfl/s4s-2024-app:main
+    image: ghcr.io/clicepfl/s4s-workshop-app:main
     ports:
       - 8015:3000
     deploy:
@@ -11,12 +11,12 @@ services:
           memory: 300M
 
   api:
-    image: ghcr.io/clicepfl/s4s-2024-backend:main
+    image: ghcr.io/clicepfl/s4s-workshop-backend:main
     environment:
       DATA_DIR: /data
       SOCK_DIR: /sockets
       SOCK_VOL: s4s_sockets
-      RUNNER_IMAGE: ghcr.io/clicepfl/s4s-2024-runner:main
+      RUNNER_IMAGE: ghcr.io/clicepfl/s4s-workshop-runner:main
     volumes:
       - data:/data
       - sockets:/sockets
