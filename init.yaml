@@ -63,7 +63,7 @@
         weekday: "MON"
         job: "reboot"
 
-    - name: Import SSH keys for Ludovic
+    - name: Import SSH keys for Lucie
       ansible.posix.authorized_key:
         user: clic-admin
         state: present
@@ -78,3 +78,14 @@
         user: clic-admin
         state: present
         key: https://github.com/SekoiaTree.keys
+    - name: Import SSH keys for Jonatan
+      ansible.posix.authorized_key:
+        user: clic-admin
+        state: present
+        key: https://github.com/PadjokeJ
+    - name: Import SSH keys for Michal
+      ansible.posix.authorized_key:
+        user: clic-admin
+        state: present
+        key: https://github.com/Parura5726.keys
+
