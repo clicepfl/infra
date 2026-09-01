@@ -42,13 +42,12 @@ fn try_run(command: Option<&String>, service: &str) -> bool {
 /// - `name`: Name of the service to restart
 /// - `service`: Specific deployment configuration for that service.
 /// - `default`: Default deployment configuration.
+///
+/// Holds `lock_state` for the full restart sequence so concurrent webhook
+/// deliveries cannot run overlapping ansible-pull deploys (#193).
 pub fn restart(name: &str, service: &Service, default: &Service, lock_state: Arc<Mutex<()>>) -> bool {
+    let _deploy_guard = lock_state.lock().unwrap_or_else(|e| e.into_inner());
     let _enter = span!(Level::INFO, "service", name).entered();
-
-    if lock_state.lock().is_err() { // If another thread crashed, clear poison because we don't care
-                                    // about the state
-        lock_state.clear_poison();
-    }
 
     tracing::info!("Restarting...");
 
