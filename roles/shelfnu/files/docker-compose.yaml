@@ -27,7 +27,7 @@ services:
     # Comment this and the next service to disable studio.
     studio:
       hostname: studio
-      image: supabase/studio:2025.04.21-sha-173cc56
+      image: supabase/studio:2026.08.31-sha-2c76bb3
       healthcheck:
         test:
           [
@@ -55,7 +55,7 @@ services:
   
     meta:
       hostname: meta
-      image: supabase/postgres-meta:v0.88.9
+      image: supabase/postgres-meta:v0.99.0
       environment:
         PG_META_PORT: 8080
         PG_META_DB_HOST: ${POSTGRES_HOST}
@@ -66,7 +66,7 @@ services:
 
     kong:
         hostname: kong
-        image: kong:2.8.1
+        image: kong:3.9.3
         ports:
             - ${KONG_HTTP_PORT}:8000/tcp
         volumes:
@@ -90,7 +90,7 @@ services:
 
     auth:
         hostname: auth
-        image: supabase/gotrue:v2.171.0
+        image: supabase/gotrue:v2.196.0
         healthcheck:
             test:
                 [
@@ -133,7 +133,7 @@ services:
 
     rest:
         hostname: rest
-        image: postgrest/postgrest:v12.2.11
+        image: postgrest/postgrest:v16.2
         environment:
             PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
             PGRST_DB_SCHEMAS: public,storage,graphql_public
@@ -184,7 +184,7 @@ services:
 
     storage:
         hostname: storage
-        image: supabase/storage-api:v1.22.7
+        image: supabase/storage-api:v1.73.0
         volumes:
             - storage:/var/lib/storage
         healthcheck:
@@ -217,7 +217,7 @@ services:
 
     imgproxy:
         hostname: imgproxy
-        image: darthsim/imgproxy:v3.8.0
+        image: darthsim/imgproxy:v4.0.14
         volumes:
             - storage:/var/lib/storage
         healthcheck:
@@ -233,7 +233,7 @@ services:
 
     functions:
         hostname: functions
-        image: supabase/edge-runtime:v1.67.4
+        image: supabase/edge-runtime:v1.76.2
         volumes:
             - functions:/home/deno/functions
         environment:
@@ -247,7 +247,7 @@ services:
 
     db:
         hostname: ${POSTGRES_HOST}
-        image: supabase/postgres:15.8.1.060
+        image: supabase/postgres:17.6.1.168
         volumes:
             - ${VOLUMES_PATH}/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
             # Must be superuser to create event trigger
@@ -293,7 +293,7 @@ services:
 
     supavisor:
         hostname: pooler
-        image: supabase/supavisor:2.5.1
+        image: supabase/supavisor:2.9.12
         ports:
             - ${POOLER_PROXY_TRANSACTION_PORT}:6543
         volumes:
