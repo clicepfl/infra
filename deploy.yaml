@@ -24,7 +24,7 @@
           - roboclic
           - rust-workshop
           - s4s
-          - shelfnu
+          #- shelfnu
           - synapse
           - vaultwarden
           - website
