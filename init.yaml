@@ -67,7 +67,7 @@
       ansible.posix.authorized_key:
         user: clic-admin
         state: present
-        key: https://github.com/Thechi2000.keys
+        key: https://github.com/Lumycea.keys
     - name: Import SSH keys for Sidonie
       ansible.posix.authorized_key:
         user: clic-admin
@@ -82,7 +82,7 @@
       ansible.posix.authorized_key:
         user: clic-admin
         state: present
-        key: https://github.com/PadjokeJ
+        key: https://github.com/PadjokeJ.keys
     - name: Import SSH keys for Michal
       ansible.posix.authorized_key:
         user: clic-admin
