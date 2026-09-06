@@ -16,8 +16,8 @@ services:
             SMTP_FROM: '"IT CLIC" <it.clic@epfl.ch>'
             SMTP_PWD: ${SMTP_IT_PASSWORD}
 
-            DISABLE_SSO: "true"
-            DISABLE_SIGNUP: "true"
+            #DISABLE_SSO: "true"
+            #DISABLE_SIGNUP: "true"
 
             INVITE_TOKEN_SECRET: ${INVITE_TOKEN_SECRET}
             MAPTILER_TOKEN: ${MAPTILER_TOKEN}
@@ -55,7 +55,7 @@ services:
   
     meta:
       hostname: meta
-      image: supabase/postgres-meta:v0.99.0
+      image: supabase/postgres-meta:v0.88.9
       environment:
         PG_META_PORT: 8080
         PG_META_DB_HOST: ${POSTGRES_HOST}
@@ -247,7 +247,7 @@ services:
 
     db:
         hostname: ${POSTGRES_HOST}
-        image: supabase/postgres:17.6.1.168
+        image: supabase/postgres:15.8.1.060
         volumes:
             - ${VOLUMES_PATH}/db/realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
             # Must be superuser to create event trigger
