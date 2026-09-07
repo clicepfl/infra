@@ -133,7 +133,7 @@ services:
 
     rest:
         hostname: rest
-        image: postgrest/postgrest:v16.2
+        image: postgrest/postgrest:v12.2.11
         environment:
             PGRST_DB_URI: postgres://authenticator:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_INTERNAL_PORT}/${POSTGRES_DB}
             PGRST_DB_SCHEMAS: public,storage,graphql_public
