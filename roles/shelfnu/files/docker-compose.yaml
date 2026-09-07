@@ -66,7 +66,7 @@ services:
 
     kong:
         hostname: kong
-        image: kong:3.9.3
+        image: kong:2.8.1
         ports:
             - ${KONG_HTTP_PORT}:8000/tcp
         volumes:
