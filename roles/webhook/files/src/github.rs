@@ -54,7 +54,6 @@ where
 
 /// Open an issue on the infra repository using the provided metadata.
 ///
-/// - `log`: The log produced by handling the event (see [log][crate::log]).
 /// - `services`: The services that were targeted for redeployment.
 /// - `headers` and `payload`: Data provided by GitHub through the webhook.
 pub async fn open_issue(service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
