@@ -35,6 +35,7 @@ pub fn stop_capture() -> String {
     let ansi_seq = Regex::new("\u{001b}\\[\\d+?m").unwrap();
     // TODO if we want to log why a service fails again, we should also capture ENV to avoid them
     // from leaking :)
+    // The ansible docker.docker_container plugin is at fault for leaking ENV variables
     let mut lock = CAPTURED_LOG.lock().unwrap();
 
     ansi_seq

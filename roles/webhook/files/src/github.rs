@@ -63,7 +63,7 @@ pub async fn open_issue(service: Option<&str>, headers: &HeaderMap, payload: &[u
         Ok(Payload::Package(PackageAction::Published { package, repository }) )=> PostIssueBody {
             title: format!("Deployment failed for package from '{}'", repository.full_name),
             body: format!(
-                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs:\n```\n{log}\n```\n",
+                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n",
                 service = service.unwrap_or("all services"),
                 package = package.name,
                 date = package.updated_at.unwrap_or("None".to_owned()),
@@ -83,7 +83,7 @@ pub async fn open_issue(service: Option<&str>, headers: &HeaderMap, payload: &[u
            PostIssueBody {
             title: format!("Deployment failed for {service} ({}) from '{}'", &after.as_str()[0..6], repository.full_name),
             body: format!(
-                "Deployment for {service} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
+                "Deployment for {service} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n",
                 count = commits.len(),
                 repo_url = repository.html_url
             ),
