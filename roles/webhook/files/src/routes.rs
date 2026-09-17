@@ -33,7 +33,6 @@ pub async fn all(
 
     spawn(async move {
         tracing::info!("Triggered global restart");
-        start_capture();
         tracing::info!("Triggered global restart");
 
         let mut failed = false;
@@ -46,9 +45,8 @@ pub async fn all(
 
         tracing::info!("Full restart complete");
 
-        let log = stop_capture();
         if failed {
-            open_issue(log, None, req.headers(), &payload).await;
+            open_issue(None, req.headers(), &payload).await;
         } else {
             close_issues(None, req.headers(), &payload).await;
         }
@@ -78,7 +76,6 @@ pub async fn targeted(
 
     spawn(async move {
         tracing::info!("Triggered restart for service {}", service);
-        start_capture();
         tracing::info!("Triggered restart for service {}", service);
 
         let mut failed = false;
@@ -91,9 +88,8 @@ pub async fn targeted(
             tracing::warn!("Service {} not found", service);
         };
 
-        let log = stop_capture();
         if failed {
-            open_issue(log, Some(&service), req.headers(), &payload).await;
+            open_issue(Some(&service), req.headers(), &payload).await;
         } else {
             close_issues(Some(&service), req.headers(), &payload).await;
         }
