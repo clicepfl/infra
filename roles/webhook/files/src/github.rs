@@ -57,7 +57,7 @@ where
 /// - `log`: The log produced by handling the event (see [log][crate::log]).
 /// - `services`: The services that were targeted for redeployment.
 /// - `headers` and `payload`: Data provided by GitHub through the webhook.
-pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
+pub async fn open_issue(service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
     let parsed_payload = parse_payload(headers, payload);
 
     let body = match parsed_payload {
