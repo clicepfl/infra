@@ -54,17 +54,16 @@ where
 
 /// Open an issue on the infra repository using the provided metadata.
 ///
-/// - `log`: The log produced by handling the event (see [log][crate::log]).
 /// - `services`: The services that were targeted for redeployment.
 /// - `headers` and `payload`: Data provided by GitHub through the webhook.
-pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
+pub async fn open_issue(service: Option<&str>, headers: &HeaderMap, payload: &[u8]) {
     let parsed_payload = parse_payload(headers, payload);
 
     let body = match parsed_payload {
         Ok(Payload::Package(PackageAction::Published { package, repository }) )=> PostIssueBody {
             title: format!("Deployment failed for package from '{}'", repository.full_name),
             body: format!(
-                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n\nLogs:\n```\n{log}\n```\n",
+                "Deployment for {service} failed.\nTriggered by the publication of [{package}]({package_url}) at {date}.\n",
                 service = service.unwrap_or("all services"),
                 package = package.name,
                 date = package.updated_at.unwrap_or("None".to_owned()),
@@ -84,7 +83,7 @@ pub async fn open_issue(log: String, service: Option<&str>, headers: &HeaderMap,
            PostIssueBody {
             title: format!("Deployment failed for {service} ({}) from '{}'", &after.as_str()[0..6], repository.full_name),
             body: format!(
-                "Deployment for {service} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n\nLogs:\n```\n{log}\n```\n",
+                "Deployment for {service} failed.\nTriggered by the push of {count} commits on {repo_url}. HEAD after the push is {after}.\n",
                 count = commits.len(),
                 repo_url = repository.html_url
             ),
