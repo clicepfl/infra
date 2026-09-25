@@ -20,6 +20,7 @@
           - roles
           - hifis.unattended_upgrades
           - borgbase.ansible_role_borgbackup
+          - community.docker.docker_swarm
       changed_when: true
 
     - name: Setup unattended-upgrades for automatic updates
@@ -43,6 +44,10 @@
       ignore_errors: true
       changed_when: true
       register: docker_path
+
+    - name: Set up docker swarm
+      community.docker.docker_swarm:
+        state: present
 
     - name: Create cron job to prune unused Docker images, containers and networks weekly
       ansible.builtin.cron:
