@@ -57,61 +57,64 @@
       ansible.builtin.include_role:
         name: borgbase.ansible_role_borgbackup
       vars:
-        borg_repository:
-          - "{{ services.backup.repository }}"
-        borg_encryption_passphrase: "{{ services.backup.encryption_passphrase }}"
-        borgmatic_timer: systemd
-        borgmatic_timer_hour: 0
-        borgmatic_timer_minute: 0
-        borg_source_directories:
-          - /var/lib/docker/volumes/bookstack_app
-          - /var/lib/docker/volumes/directus_directus-extensions
-          - /var/lib/docker/volumes/directus_directus-uploads
-          - /var/lib/docker/volumes/nextcloud_nextcloud-app
-          - /var/lib/docker/volumes/onlyoffice_config
-          - /var/lib/docker/volumes/onlyoffice_data
-          - /var/lib/docker/volumes/onlyoffice_fonts
-          - /var/lib/docker/volumes/onlyoffice_lib
-          - /var/lib/docker/volumes/onlyoffice_log
-          - /var/lib/docker/volumes/onlyoffice_psql
-          - /var/lib/docker/volumes/onlyoffice_rabbit
-          - /var/lib/docker/volumes/onlyoffice_redis
-          - /var/lib/docker/volumes/roboclic_roboclic
-          - /var/lib/docker/volumes/synapse_data
-          - /var/lib/docker/volumes/shelfnu_db-data
-          - /var/lib/docker/volumes/shelfnu_db-encryption
-          - /var/lib/docker/volumes/shelfnu_functions
-          - /var/lib/docker/volumes/shelfnu_storage
-          - /var/lib/docker/volumes/vaultwarden_vaultwarden
-          - /var/db-dumps
-          - /var/secrets.yaml
-          - /etc/webhook
-        borgmatic_hooks:
-          before_backup:
-            - echo "`date` - Starting backup."
-            - mkdir -p /var/db-dumps
-            - >-
-              MYSQL_PWD={{ services.nextcloud.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5000
-              --protocol tcp --user nextcloud --databases nextcloud --result-file /var/db-dumps/nextcloud.sql
-            - >-
-              MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004
-              --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
-            - >-
-              PGPASSWORD={{ services.directus.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005
-              --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
-            - >-
-              PGPASSWORD={{ services.keycloak.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5006
-              --username keycloak --format plain keycloak -f /var/db-dumps/keycloak.sql
-            - >-
-              PGPASSWORD={{ services.synapse.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007
-              --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
-            - >-
-              PGPASSWORD={{ services.crabfit.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5008
-              --username crabfit --format plain crabfit -f /var/db-dumps/crabfit.sql
-            - >-
-              PGPASSWORD={{ services.shelfnu.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5009
-              --username postgres --format plain db -f /var/db-dumps/shelfnu.sql
-        borg_retention_policy:
-          keep_daily: 3
-          keep_weekly: 4
-          keep_monthly: 6
+        # Replace legacy variables: borg_repository, borg_encryption_passphrase, borgmatic_timer, borgmatic_timer_hour, borgmatic_timer_minute, borg_source_directories, borgmatic_hooks, borg_retention_policy.
+        borgbackup_timer:
+          type: systemd
+          hour: 0
+          minute: 0
+        borgbackup_config:
+          repositories:
+            - "{{ services.backup.repository }}"
+          encryption_passphrase: "{{ services.backup.encryption_passphrase }}"
+          source_directories:
+            - /var/lib/docker/volumes/bookstack_app
+            - /var/lib/docker/volumes/directus_directus-extensions
+            - /var/lib/docker/volumes/directus_directus-uploads
+            - /var/lib/docker/volumes/nextcloud_nextcloud-app
+            - /var/lib/docker/volumes/onlyoffice_config
+            - /var/lib/docker/volumes/onlyoffice_data
+            - /var/lib/docker/volumes/onlyoffice_fonts
+            - /var/lib/docker/volumes/onlyoffice_lib
+            - /var/lib/docker/volumes/onlyoffice_log
+            - /var/lib/docker/volumes/onlyoffice_psql
+            - /var/lib/docker/volumes/onlyoffice_rabbit
+            - /var/lib/docker/volumes/onlyoffice_redis
+            - /var/lib/docker/volumes/roboclic_roboclic
+            - /var/lib/docker/volumes/synapse_data
+            - /var/lib/docker/volumes/shelfnu_db-data
+            - /var/lib/docker/volumes/shelfnu_db-encryption
+            - /var/lib/docker/volumes/shelfnu_functions
+            - /var/lib/docker/volumes/shelfnu_storage
+            - /var/lib/docker/volumes/vaultwarden_vaultwarden
+            - /var/db-dumps
+            - /var/secrets.yaml
+            - /etc/webhook
+          hooks:
+            before_backup:
+              - echo "`date` - Starting backup."
+              - mkdir -p /var/db-dumps
+              - >-
+                MYSQL_PWD={{ services.nextcloud.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5000
+                --protocol tcp --user nextcloud --databases nextcloud --result-file /var/db-dumps/nextcloud.sql
+              - >-
+                MYSQL_PWD={{ services.bookstack.database.password }} mariadb-dump --add-drop-database --host 127.0.0.1 --port 5004
+                --protocol tcp --user bookstack --databases bookstackapp --result-file /var/db-dumps/bookstack.sql
+              - >-
+                PGPASSWORD={{ services.directus.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5005
+                --username directus_user --format plain directus_data -f /var/db-dumps/directus.sql
+              - >-
+                PGPASSWORD={{ services.keycloak.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5006
+                --username keycloak --format plain keycloak -f /var/db-dumps/keycloak.sql
+              - >-
+                PGPASSWORD={{ services.synapse.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5007
+                --username synapse --format plain synapse -f /var/db-dumps/synapse.sql
+              - >-
+                PGPASSWORD={{ services.crabfit.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5008
+                --username crabfit --format plain crabfit -f /var/db-dumps/crabfit.sql
+              - >-
+                PGPASSWORD={{ services.shelfnu.database.password }} pg_dump --no-password --clean --if-exists --host 127.0.0.1 --port 5009
+                --username postgres --format plain db -f /var/db-dumps/shelfnu.sql
+          retention:
+            keep_daily: 3
+            keep_weekly: 4
+            keep_monthly: 6
