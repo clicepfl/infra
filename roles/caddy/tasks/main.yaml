@@ -6,6 +6,7 @@
       - debian-archive-keyring
       - apt-transport-https
       - curl
+      - libnss3-tools
 
 - name: Update keyring & mirrorlist
   ansible.builtin.shell: |
