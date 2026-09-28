@@ -4,7 +4,7 @@ services:
     image: ghcr.io/clicgamestar/icelan-website:main
     hostname: icelan
     ports:
-      - 8009:80
+      - 8009:3000
     deploy:
       resources:
         limits:
