@@ -47,7 +47,9 @@ https://clic.epfl.ch {
 	redir /vaultwarden* /armoire/
 	redir /bitwarden* /armoire/
 	redir /armoire /armoire/ permanent
-	reverse_proxy /armoire/* http://0.0.0.0:8003
+	reverse_proxy /armoire/* http://0.0.0.0:8003 {
+    header_up X-Real-IP {remote_host}
+  }
 
 	handle_path /bookstack* {
 		redir * /wiclic{uri} permanent
