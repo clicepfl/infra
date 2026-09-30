@@ -18,7 +18,7 @@ services:
       DB_POOL_MIN: 0
       PUBLIC_URL: https://clic.epfl.ch/directus
       ROOT_REDIRECT: /directus/admin
-      ADMIN_EMAIL: clic@epfl.ch
+      ADMIN_EMAIL: it.clic@epfl.ch
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       ADMIN_TOKEN: ${ADMIN_TOKEN}
 
