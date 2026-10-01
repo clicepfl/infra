@@ -38,6 +38,7 @@ https://clic.epfl.ch {
 		header_up +X-Forwarded-Proto https
 		header_up +X-Forwarded-Scheme https
 		header_up +X-Forwarded-Port 443
+    header_up X-Real-IP {remote_host}
 	}
 	redir /me https://clic.epfl.ch/keyclic/realms/master/account/ permanent
 
