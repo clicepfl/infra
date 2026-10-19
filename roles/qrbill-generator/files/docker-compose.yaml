@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-  icelan:
-    image: ghcr.io/clicepfl/qrbill-generator:main
+  qrbill-generator:
+    image: ghcr.io/clicepfl/qr_bill:master
     hostname: qrbill-generator
     ports:
       - 8017:8000
