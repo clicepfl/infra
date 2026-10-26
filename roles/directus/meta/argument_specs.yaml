@@ -26,6 +26,8 @@ argument_specs:
             required: true
           mail_sender_secret:
             required: true
+          directus_license_key:
+            required: true
 
 
       general:

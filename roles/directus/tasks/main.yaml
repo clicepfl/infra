@@ -15,6 +15,7 @@
     ADMIN_PASSWORD: "{{ service.admin_password }}"
     ADMIN_TOKEN: "{{ service.admin_token }}"
     KEYCLOAK_SECRET: "{{ service.keycloak_secret }}"
+    DIRECTUS_LICENSE_KEY: "{{ service.directus_license_key }}"
     SECRET: "{{ service.secret }}"
     KEY: "{{ service.key }}"
     DATABASE_INIT: "{{ service.database.init }}"
