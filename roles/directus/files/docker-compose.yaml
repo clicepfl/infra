@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   directus:
-    image: tractr/directus-sync:11.12.0
+    image: ghcr.io/clicepfl/directus-config
     hostname: directus
     environment:
       MAIL_SENDER_SECRET: ${MAIL_SENDER_SECRET}
