@@ -45,6 +45,7 @@
   community.docker.docker_container:
     name: directus-sync
     image: ghcr.io/clicepfl/directus-config:main
+    pull: "always"
     command: npx -y directus-sync push
     working_dir: "/directus-config"
     volumes:
