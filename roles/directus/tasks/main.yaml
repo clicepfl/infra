@@ -44,7 +44,7 @@
 - name: Sync docker schema
   community.docker.docker_container:
     name: directus-sync
-    image: tractr/directus-sync:11.12.0
+    image: ghcr.io/clicepfl/directus-config:main
     command: npx -y directus-sync push
     working_dir: "/directus-config"
     volumes:
