@@ -3,7 +3,7 @@
 }
 
 https://clic-epfl.ch {
-  redir * clic.epfl.ch
+  redir * https://clic.epfl.ch
 }
 
 https://clic.epfl.ch {
