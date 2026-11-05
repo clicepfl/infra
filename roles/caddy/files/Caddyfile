@@ -2,6 +2,10 @@
 	email it.clic@epfl.ch
 }
 
+https://clic-epfl.ch {
+  redir * clic.epfl.ch
+}
+
 https://clic.epfl.ch {
 	respond /googlec6cc9bda0ca2d073.html "google-site-verification: googlec6cc9bda0ca2d073.html"
 
@@ -46,6 +50,7 @@ https://clic.epfl.ch {
 	reverse_proxy /_synapse/client/* http://0.0.0.0:8011
 
 	redir /vaultwarden* /armoire/
+	redir /vault* /armoire/
 	redir /bitwarden* /armoire/
 	redir /armoire /armoire/ permanent
 	reverse_proxy /armoire/* http://0.0.0.0:8003 {
