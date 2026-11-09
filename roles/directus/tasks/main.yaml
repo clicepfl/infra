@@ -31,7 +31,9 @@
 
 - name: Wait for directus to be online
   ansible.builtin.uri:
-    url: "https://clic.epfl.ch/directus/server/ping"
+    url: "https://clic.epfl.ch/directus/server/health"
+    headers:
+      Authorization: "Bearer {{ service.secret }}"
     return_content: yes
     status_code:
       - 200
