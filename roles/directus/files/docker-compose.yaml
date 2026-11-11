@@ -31,7 +31,7 @@ services:
       EMAIL_SMTP_USER: it.clic
       EMAIL_SMTP_PASSWORD: ${SMTP_IT_PASSWORD}
       EMAIL_SMTP_SECURE: "false"
-      EMAIL_SMTP_NAME: Directus
+      EMAIL_SMTP_NAME: DiRAWRctus
 
       AUTH_PROVIDERS: keycloak
       AUTH_DISABLE_DEFAULT: "true"
@@ -92,6 +92,25 @@ services:
         "-c",
         "while true; do curl http://directus:8055/items/association; sleep 5m; done",
       ]
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 50M
+
+  flows:
+    image: ghcr.io/clicepfl/directus-flows:main
+    hostname: flows
+    environment:
+      DIRECTUS_URL: https://clic.epfl.ch/directus
+      DIRECTUS_TOKEN: ${ADMIN_TOKEN}
+
+      SMTP_HOST: mail.epfl.ch
+      SMTP_PORT: "587"
+      SMTP_USER: it.clic
+      SMTP_PASSWORD: ${SMTP_IT_PASSWORD}
+      SMTP_SECURE: "false"
+      SMTP_FROM: DiRAWRctus <it.clic@epfl.ch>
     deploy:
       resources:
         limits:
