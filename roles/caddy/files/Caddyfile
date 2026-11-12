@@ -42,6 +42,7 @@ https://clic.epfl.ch {
 		header_up +X-Forwarded-Proto https
 		header_up +X-Forwarded-Scheme https
 		header_up +X-Forwarded-Port 443
+    header_up +X-Forwarded-For {remote_host}
     header_up X-Real-IP {remote_host}
 	}
 	redir /me https://clic.epfl.ch/keyclic/realms/master/account/ permanent
@@ -64,7 +65,10 @@ https://clic.epfl.ch {
 	redir /wiki* /wiclic
 
 	handle_path /wiclic* {
-		reverse_proxy http://0.0.0.0:8002
+		reverse_proxy http://0.0.0.0:8002 {
+    header_up X-Real-IP {remote_host}
+	}
+
 	}
 
 	handle_path /directus* {
