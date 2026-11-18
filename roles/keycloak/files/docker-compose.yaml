@@ -26,6 +26,7 @@ services:
       KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JAVA_OPTS_APPEND: "-XX:-UseBASE64Intrinsics"
     volumes:
       - ${BASE_PATH}/files/clic_theme:/opt/keycloak/providers
     command: start
