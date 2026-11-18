@@ -15,17 +15,18 @@ services:
       KC_HOSTNAME_URL: https://clic.epfl.ch/keyclic
       KC_HOSTNAME_ADMIN_URL: https://clic.epfl.ch/keyclic
       KC_HOSTNAME_STRICT: "true"
+      KC_PROXY_HEADERS: xforwarded
 
       KC_HTTP_ENABLED: "true"
       KC_HTTP_RELATIVE_PATH: /keyclic
       KC_HTTPS_PORT: 443
-      KC_PROXY: edge
 
       KC_LOG_LEVEL: info
       KC_METRICS_ENABLED: "true"
       KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      JAVA_OPTS_APPEND: "-XX:-UseBASE64Intrinsics"
     volumes:
       - ${BASE_PATH}/files/clic_theme:/opt/keycloak/providers
     command: start
