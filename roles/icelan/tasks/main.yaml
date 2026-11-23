@@ -6,4 +6,4 @@
     compose:
       - "{{ role_path }}/files/docker-compose.yaml"
   environment:
-    DIRECTUS_TOKEN: "{{ services.gamestar-website.directus_token }}"
+    DIRECTUS_TOKEN: "{{ service.directus_token }}"
