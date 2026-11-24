@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   rust-workshop:
-    image: httpd:2.4
+    image: httpd:2.4.71
     hostname: rust-workshop
     ports:
       - 8024:80
